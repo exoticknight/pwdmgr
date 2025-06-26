@@ -10,5 +10,5 @@ export default antfu(
     ignores: [
       'cspell.config.yaml',
     ],
-  }
+  },
 )

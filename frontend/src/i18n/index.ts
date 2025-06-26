@@ -29,6 +29,11 @@ const resources = {
         placeholder: 'Search passwords...',
         noResults: 'No matching entries found',
       },
+      stats: {
+        entry: 'entry',
+        entries: 'entries',
+        total: 'total',
+      },
       dropzone: {
         title: 'Drop password file here',
         subtitle: 'Supports .pwd files',
@@ -46,6 +51,8 @@ const resources = {
         back: 'Back',
         open: 'Open',
         create: 'Create',
+        save: 'Save',
+        allSaved: 'All changes saved',
       },
       password: {
         label: 'Password',
@@ -94,6 +101,11 @@ const resources = {
         placeholder: '搜索密码...',
         noResults: '没有找到匹配的条目',
       },
+      stats: {
+        entry: '条目',
+        entries: '条目',
+        total: '总计',
+      },
       dropzone: {
         title: '拖放密码文件到这里',
         subtitle: '支持 .pwd 格式',
@@ -111,6 +123,8 @@ const resources = {
         back: '返回',
         open: '打开',
         create: '创建',
+        save: '保存',
+        allSaved: '所有更改已保存',
       },
       password: {
         label: '密码',
@@ -159,6 +173,11 @@ const resources = {
         placeholder: 'パスワードを検索...',
         noResults: '一致するエントリが見つかりません',
       },
+      stats: {
+        entry: 'エントリ',
+        entries: 'エントリ',
+        total: '合計',
+      },
       dropzone: {
         title: 'パスワードファイルをここにドロップ',
         subtitle: '.pwd ファイルをサポート',
@@ -176,6 +195,8 @@ const resources = {
         back: '戻る',
         open: '開く',
         create: '作成',
+        save: '保存',
+        allSaved: 'すべての変更が保存されました',
       },
       password: {
         label: 'パスワード',

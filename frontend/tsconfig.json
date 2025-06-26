@@ -1,24 +1,7 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
-  "compilerOptions": {
-    "target": "ESNext",
-    "moduleDetection": "force",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true
-  },
-  "include": [
-    "src/**/*.d.ts",
-    "src/**/*.ts",
-    "src/**/*.js",
-    "src/**/*.svelte",
-    "src/**/*.svelte.ts"
-  ],
+  "files": [],
   "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
   ]
 }

@@ -6,7 +6,7 @@
   import { PASSWORD_FILE_CONFIG } from '../config/file-config'
   import i18next from '../i18n'
   import { userState } from '../store/user.svelte'
-  import { navigationService } from '../utils/navigation'
+  import { navigationService, Routes } from '../utils/navigation'
 
   let showPasswordInput = $state(false)
   let selectedFile = $state<File | null>(null)
@@ -88,7 +88,7 @@
         userState.dbData = reader.result as ArrayBuffer
         userState.isNewDatabase = false
         // 使用导航服务
-        navigationService.navigate('/table')
+        navigationService.navigate(Routes.TABLE)
       }
       reader.readAsArrayBuffer(selectedFile)
     }
@@ -97,14 +97,14 @@
       userState.password = password
       userState.dbData = null // 使用路径时，由后端处理文件读取
       userState.isNewDatabase = false
-      navigationService.navigate('/table')
+      navigationService.navigate(Routes.TABLE)
     }
     else if (isNewDatabase) {
       userState.dbPath = 'new_passwords.pwd'
       userState.password = password
       userState.dbData = null
       userState.isNewDatabase = true
-      navigationService.navigate('/table')
+      navigationService.navigate(Routes.TABLE)
     }
   }
 

@@ -1,9 +1,10 @@
 <script lang='ts'>
   import type { RouteConfig, RouteResult, RouterInstanceConfig } from '@mateothegreat/svelte5-router'
-  import { goto, Router } from '@mateothegreat/svelte5-router'
+  import { Router } from '@mateothegreat/svelte5-router'
+  import { onMount } from 'svelte'
   import Landing from './pages/landing.svelte'
   import Table from './pages/table.svelte'
-  import { userState } from './store/user.svelte'
+  import { navigationService } from './utils/navigation'
 
   const routes: RouteConfig[] = [
     {
@@ -16,20 +17,23 @@
   ]
 
   const hooks: RouterInstanceConfig['hooks'] = {
-    pre: (route: RouteResult) => {
-      if (route.result.path.original === '/') {
-        return true
-      }
-
-      if (userState.dbPath === '') {
-        console.warn('No database path set, redirecting to landing page')
-        goto('/')
-        return false
-      }
-
-      return true
+    pre: (_route: RouteResult) => {
+      return navigationService.canNavigate()
     },
   }
+
+  onMount(() => {
+    // 简单的浏览器导航阻止
+    const handlePopstate = (event: PopStateEvent) => {
+      event.preventDefault()
+    }
+
+    window.addEventListener('popstate', handlePopstate, true)
+
+    return () => {
+      window.removeEventListener('popstate', handlePopstate, true)
+    }
+  })
 </script>
 
 <Router {routes} {hooks} />

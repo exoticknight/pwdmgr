@@ -1,4 +1,4 @@
-import { t } from '../hooks/use-translation'
+import i18next from '../i18n'
 
 // 密码管理器文件配置
 export const PASSWORD_FILE_CONFIG = {
@@ -18,6 +18,6 @@ export const PASSWORD_FILE_CONFIG = {
 
   // 错误消息 (使用i18n)
   get errorMessage(): string {
-    return t('errors.invalidFile')
+    return i18next.t('errors.invalidFile')
   },
 } as const

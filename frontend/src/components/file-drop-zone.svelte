@@ -3,7 +3,7 @@
   import { onDestroy, onMount } from 'svelte'
   import { OnFileDrop, OnFileDropOff } from '../../wailsjs/runtime/runtime'
   import { PASSWORD_FILE_CONFIG } from '../config/file-config'
-  import { t } from '../hooks/use-translation'
+  import i18next from '../i18n'
 
   interface Props {
     onFileSelect: (event: Event) => void
@@ -42,28 +42,26 @@
 <div
   role='button'
   tabindex='0'
-  class='border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300'
-  class:border-blue-500={isDragOver}
-  class:bg-blue-50={isDragOver}
-  class:border-gray-300={!isDragOver}
-  class:hover:border-gray-400={!isDragOver}
+  class='border-2 border-dashed border-base-300 rounded-lg p-8 text-center transition-colors hover:border-base-content/20'
+  class:border-primary={isDragOver}
+  class:bg-base-200={isDragOver}
   ondragenter={handleDragEnter}
   ondragleave={handleDragLeave}
   ondragover={handleDragOver}
   style='--wails-drop-target: drop;'
 >
   <div class='mb-4'>
-    <FileLock class='mx-auto h-12 w-12 text-gray-400' />
+    <FileLock class='mx-auto h-10 w-10 text-base-content/50' />
   </div>
-  <p class='text-lg font-medium text-gray-700 mb-2'>{t('dropzone.title')}</p>
-  <p class='text-sm text-gray-500 mb-4'>{t('dropzone.subtitle')}</p>
-  <label class='btn btn-outline btn-primary cursor-pointer'>
+  <p class='font-medium mb-2'>{i18next.t('dropzone.title')}</p>
+  <p class='text-sm text-base-content/70 mb-4'>{i18next.t('dropzone.subtitle')}</p>
+  <label class='btn btn-outline btn-primary btn-sm cursor-pointer'>
     <input
       type='file'
       class='hidden'
       accept={PASSWORD_FILE_CONFIG.acceptAttribute}
       onchange={onFileSelect}
     />
-    {t('dropzone.selectButton')}
+    {i18next.t('dropzone.selectButton')}
   </label>
 </div>

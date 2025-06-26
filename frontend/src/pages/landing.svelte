@@ -143,8 +143,7 @@
       <!-- 文件拖放区域 -->
       <div class='bg-white rounded-xl shadow-xl p-8 transition-all duration-300'>
         <div class='text-center mb-8'>
-          <h1 class='text-3xl font-bold text-gray-800 mb-2'>{t('app.title')}</h1>
-          <p class='text-gray-600'>{t('app.subtitle')}</p>
+          <p class='text-gray-600'>{t('landing.description')}</p>
         </div>
 
         <FileDropZone

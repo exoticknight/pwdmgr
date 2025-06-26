@@ -85,8 +85,8 @@
             <Lock class='w-5 h-5 text-blue-600' />
           </div>
           <div>
-            <h1 class='text-2xl font-bold text-gray-800'>{t('app.title')}</h1>
-            <p class='text-gray-600'>{userState.dbPath}</p>
+            <p class='text-lg font-semibold text-gray-800'>{userState.dbPath}</p>
+            <p class='text-sm text-gray-500'>{t('database.label')}</p>
           </div>
         </div>
 

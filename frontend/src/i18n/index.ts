@@ -10,12 +10,36 @@ const resources = {
       common: {
         file: 'File',
       },
+      landing: {
+        description: 'Select an existing password file or create a new password file',
+      },
+      database: {
+        label: 'Password File',
+      },
+      table: {
+        title: 'Title',
+        username: 'Username',
+        password: 'Password',
+        url: 'URL',
+        actions: 'Actions',
+        empty: 'No password entries found',
+      },
+      search: {
+        placeholder: 'Search passwords...',
+        noResults: 'No matching entries found',
+      },
       dropzone: {
         title: 'Drop password file here',
         subtitle: 'Supports .pwd files',
         selectButton: 'Select File',
       },
       actions: {
+        addNew: 'Add New Entry',
+        copy: 'Copy',
+        edit: 'Edit',
+        delete: 'Delete',
+        show: 'Show',
+        hide: 'Hide',
         createNew: 'Create New Password File',
         or: 'or',
         back: 'Back',
@@ -47,12 +71,36 @@ const resources = {
       common: {
         file: '文件',
       },
+      landing: {
+        description: '选择现有的密码文件或创建新的密码文件',
+      },
+      database: {
+        label: '密码文件',
+      },
+      table: {
+        title: '标题',
+        username: '用户名',
+        password: '密码',
+        url: '网址',
+        actions: '操作',
+        empty: '没有找到密码条目',
+      },
+      search: {
+        placeholder: '搜索密码...',
+        noResults: '没有找到匹配的条目',
+      },
       dropzone: {
         title: '拖放密码文件到这里',
         subtitle: '支持 .pwd 格式',
         selectButton: '选择文件',
       },
       actions: {
+        addNew: '添加新条目',
+        copy: '复制',
+        edit: '编辑',
+        delete: '删除',
+        show: '显示',
+        hide: '隐藏',
         createNew: '创建新的密码文件',
         or: '或者',
         back: '返回',
@@ -64,8 +112,8 @@ const resources = {
         placeholder: '请输入密码',
         confirmLabel: '确认密码',
         confirmPlaceholder: '请再次输入密码',
-        setTitle: '设置密码文件密码',
-        enterTitle: '输入密码文件密码',
+        setTitle: '为密码文件设置密码',
+        enterTitle: '输入密码文件的密码',
         newFile: '新密码文件',
       },
       errors: {
@@ -84,12 +132,36 @@ const resources = {
       common: {
         file: 'ファイル',
       },
+      landing: {
+        description: '既存のパスワードファイルを選択するか、新しいパスワードファイルを作成',
+      },
+      database: {
+        label: 'パスワードファイル',
+      },
+      table: {
+        title: 'タイトル',
+        username: 'ユーザー名',
+        password: 'パスワード',
+        url: 'URL',
+        actions: '操作',
+        empty: 'パスワードエントリが見つかりません',
+      },
+      search: {
+        placeholder: 'パスワードを検索...',
+        noResults: '一致するエントリが見つかりません',
+      },
       dropzone: {
         title: 'パスワードファイルをここにドロップ',
         subtitle: '.pwd ファイルをサポート',
         selectButton: 'ファイルを選択',
       },
       actions: {
+        addNew: '新しいエントリを追加',
+        copy: 'コピー',
+        edit: '編集',
+        delete: '削除',
+        show: '表示',
+        hide: '非表示',
         createNew: '新しいパスワードファイルを作成',
         or: 'または',
         back: '戻る',
@@ -101,8 +173,8 @@ const resources = {
         placeholder: 'パスワードを入力',
         confirmLabel: 'パスワード確認',
         confirmPlaceholder: 'パスワードを再入力',
-        setTitle: 'パスワードファイルのパスワード設定',
-        enterTitle: 'パスワードファイルのパスワード入力',
+        setTitle: 'パスワードファイルのパスワードを設定',
+        enterTitle: 'パスワードファイルのパスワードを入力',
         newFile: '新しいパスワードファイル',
       },
       errors: {

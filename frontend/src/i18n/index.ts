@@ -61,6 +61,9 @@ const resources = {
         passwordRequired: 'Please enter password',
         passwordMismatch: 'Passwords do not match',
       },
+      warnings: {
+        unsavedChanges: 'You have unsaved changes. Are you sure you want to leave without saving?',
+      },
     },
   },
   zh: {
@@ -123,6 +126,9 @@ const resources = {
         passwordRequired: '请输入密码',
         passwordMismatch: '密码确认不匹配',
       },
+      warnings: {
+        unsavedChanges: '您有未保存的更改。您确定要离开而不保存吗？',
+      },
     },
   },
   ja: {
@@ -184,6 +190,9 @@ const resources = {
         invalidFile: '有効なパスワードファイル（.pwd）を選択してください',
         passwordRequired: 'パスワードを入力してください',
         passwordMismatch: 'パスワードが一致しません',
+      },
+      warnings: {
+        unsavedChanges: '保存されていない変更があります。保存せずに終了してもよろしいですか？',
       },
     },
   },

@@ -1,8 +1,9 @@
 <script lang='ts'>
-  import { Copy, Edit, Eye, EyeOff, Lock, Plus, Search, Trash2 } from '@lucide/svelte'
+  import { ArrowLeft, Copy, Edit, Eye, EyeOff, Lock, Plus, Search, Trash2 } from '@lucide/svelte'
   import { onMount } from 'svelte'
   import i18next from '../i18n'
   import { userState } from '../store/user.svelte'
+  import { navigationService, Routes } from '../utils/navigation'
 
   interface PasswordEntry {
     id: string
@@ -15,6 +16,7 @@
 
   let searchTerm = $state('')
   let entries = $state<PasswordEntry[]>([])
+  let hasUnsavedChanges = $state(false)
   const showPasswords = $state<{ [key: string]: boolean }>({})
 
   onMount(() => {
@@ -50,15 +52,36 @@
   }
 
   function editEntry(_id: string) {
-  // TODO: 实现编辑功能
+    // TODO: 实现编辑功能
+    hasUnsavedChanges = true
   }
 
   function deleteEntry(_id: string) {
-  // TODO: 实现删除功能
+    // TODO: 实现删除功能
+    hasUnsavedChanges = true
   }
 
   function addNewEntry() {
-  // TODO: 实现添加新条目功能
+    // TODO: 实现添加新条目功能
+    hasUnsavedChanges = true
+  }
+
+  function handleGoBack() {
+    if (hasUnsavedChanges) {
+      // eslint-disable-next-line no-alert
+      const confirmLeave = window.confirm(i18next.t('warnings.unsavedChanges'))
+      if (!confirmLeave) {
+        return
+      }
+    }
+
+    // 清除用户状态并返回到首页
+    userState.dbPath = ''
+    userState.password = ''
+    userState.dbData = null
+    userState.isNewDatabase = false
+
+    navigationService.navigate(Routes.HOME)
   }
 
   const filteredEntries = $derived.by(() => {
@@ -80,6 +103,16 @@
   <div class='border-b border-base-300 p-4'>
     <div class='max-w-6xl mx-auto flex items-center justify-between'>
       <div class='flex items-center gap-3'>
+        <!-- 返回按钮 -->
+        <button
+          class='btn btn-ghost btn-sm'
+          class:btn-warning={hasUnsavedChanges}
+          onclick={handleGoBack}
+          title={hasUnsavedChanges ? i18next.t('warnings.unsavedChanges') : i18next.t('actions.back')}
+        >
+          <ArrowLeft class='w-4 h-4' />
+        </button>
+
         <div class='w-8 h-8 bg-primary text-primary-content rounded flex items-center justify-center'>
           <Lock class='w-4 h-4' />
         </div>

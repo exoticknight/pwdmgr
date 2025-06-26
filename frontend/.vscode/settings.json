@@ -1,10 +1,4 @@
 {
-  "eslint.workingDirectories": [
-    "frontend"
-  ],
-  "eslint.options": {
-    "cwd": "./frontend"
-  },
   "prettier.enable": false,
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {

@@ -10,8 +10,11 @@
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "dependencies": {
+    "@lucide/svelte": "^0.523.0",
     "@mateothegreat/svelte5-router": "^2.15.3",
     "daisyui": "^5.0.43",
+    "i18next": "^25.2.1",
+    "svelte-i18next": "^2.2.2",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {

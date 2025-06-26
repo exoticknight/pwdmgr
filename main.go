@@ -25,8 +25,16 @@ func main() {
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:        app.startup,
+		DisableResize:    false,
+		Fullscreen:       false,
+		Frameless:        false,
+		MinWidth:         400,
+		MinHeight:        300,
 		Bind: []interface{}{
 			app,
+		},
+		DragAndDrop: &options.DragAndDrop{
+			EnableFileDrop: true,
 		},
 	})
 

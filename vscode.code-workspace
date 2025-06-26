@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "frontend",
+      "path": "frontend"
+    },
+  ],
+  "settings": {
+    "i18n-ally.localesPaths": [
+      "frontend/src/i18n"
+    ]
+  }
+}

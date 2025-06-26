@@ -1,13 +1,12 @@
 <script lang='ts'>
   import { Plus } from '@lucide/svelte'
-  import { goto } from '@mateothegreat/svelte5-router'
-  import { onMount } from 'svelte'
   import ErrorAlert from '../components/error-alert.svelte'
   import FileDropZone from '../components/file-drop-zone.svelte'
   import PasswordForm from '../components/password-form.svelte'
   import { PASSWORD_FILE_CONFIG } from '../config/file-config'
-  import { t } from '../hooks/use-translation'
+  import i18next from '../i18n'
   import { userState } from '../store/user.svelte'
+  import { navigationService } from '../utils/navigation'
 
   let showPasswordInput = $state(false)
   let selectedFile = $state<File | null>(null)
@@ -16,10 +15,6 @@
   let password = $state('')
   let confirmPassword = $state('')
   let error = $state('')
-
-  onMount(() => {
-  // Component mounted
-  })
 
   function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement
@@ -36,7 +31,7 @@
 
       if (PASSWORD_FILE_CONFIG.isValidFile(fileName)) {
         selectedFilePath = filePath
-        selectedFile = null // 使用文件路径而非 File 对象
+        selectedFile = null
         isNewDatabase = false
         showPasswordInput = true
         error = ''
@@ -71,12 +66,12 @@
   function handlePasswordSubmit(event: SubmitEvent) {
     event.preventDefault()
     if (!password) {
-      error = t('errors.passwordRequired')
+      error = i18next.t('errors.passwordRequired')
       return
     }
 
     if (isNewDatabase && password !== confirmPassword) {
-      error = t('errors.passwordMismatch')
+      error = i18next.t('errors.passwordMismatch')
       return
     }
 
@@ -92,25 +87,24 @@
         userState.password = password
         userState.dbData = reader.result as ArrayBuffer
         userState.isNewDatabase = false
-        goto('/table')
+        // 使用导航服务
+        navigationService.navigate('/table')
       }
       reader.readAsArrayBuffer(selectedFile)
     }
     else if (selectedFilePath) {
-      // 处理 Wails 拖放的文件路径
       userState.dbPath = selectedFilePath
       userState.password = password
       userState.dbData = null // 使用路径时，由后端处理文件读取
       userState.isNewDatabase = false
-      goto('/table')
+      navigationService.navigate('/table')
     }
     else if (isNewDatabase) {
-      // 创建新数据库
       userState.dbPath = 'new_passwords.pwd'
       userState.password = password
       userState.dbData = null
       userState.isNewDatabase = true
-      goto('/table')
+      navigationService.navigate('/table')
     }
   }
 
@@ -124,7 +118,6 @@
     error = ''
   }
 
-  // 计算显示的文件名
   const displayFileName = $derived(
     selectedFile?.name || getFileNameFromPath(selectedFilePath),
   )
@@ -137,33 +130,25 @@
   }
 </script>
 
-<div class='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4'>
-  <div class='w-full max-w-md'>
+<div class='min-h-screen bg-base-100 flex items-center justify-center p-8'>
+  <div class='w-full max-w-lg'>
     {#if !showPasswordInput}
-      <!-- 文件拖放区域 -->
-      <div class='bg-white rounded-xl shadow-xl p-8 transition-all duration-300'>
-        <div class='text-center mb-8'>
-          <p class='text-gray-600'>{t('landing.description')}</p>
-        </div>
+      <FileDropZone
+        onFileSelect={handleFileSelect}
+        onFileDrop={handleFileDrop}
+      />
 
-        <FileDropZone
-          onFileSelect={handleFileSelect}
-          onFileDrop={handleFileDrop}
-        />
+      <div class='divider my-6'>{i18next.t('actions.or')}</div>
 
-        <div class='divider my-6'>{t('actions.or')}</div>
+      <button
+        class='btn btn-primary w-full'
+        onclick={createNewDatabase}
+      >
+        <Plus class='w-5 h-5 mr-2' />
+        {i18next.t('actions.createNew')}
+      </button>
 
-        <!-- 新建数据库按钮 -->
-        <button
-          class='btn btn-primary w-full'
-          onclick={createNewDatabase}
-        >
-          <Plus class='w-5 h-5 mr-2' />
-          {t('actions.createNew')}
-        </button>
-
-        <ErrorAlert {error} />
-      </div>
+      <ErrorAlert {error} />
     {:else}
       <PasswordForm
         {isNewDatabase}

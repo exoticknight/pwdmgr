@@ -6,6 +6,24 @@ html, body {
   font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
   "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
   sans-serif;
+  /* 禁止用户选择文本 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* 禁用浏览器导航快捷键 */
+  overscroll-behavior: none;
+  /* 禁止拖拽 */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  /* 禁止缩放 */
+  touch-action: manipulation;
+  /* 禁止高亮 */
+  -webkit-tap-highlight-color: transparent;
+  /* 禁止文本选择和复制 */
+  -webkit-touch-callout: none;
 }
 
 @font-face {
@@ -17,4 +35,69 @@ html, body {
 
 #app {
   height: 100vh;
+  /* 防止选择 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* 防止拖拽 */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+
+/* 允许输入框、文本区域等可以选择文本 */
+input, textarea, [contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+/* 禁用所有元素的默认行为 */
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* 禁用拖拽 */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  /* 禁用轮廓线 */
+  outline: none;
+}
+
+/* 允许特定元素可以选择文本 */
+input, textarea, [contenteditable], .selectable {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* 禁用图片拖拽 */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: none;
+}
+
+/* 禁用链接的默认拖拽行为 */
+a {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+}
+
+/* 但允许URL链接可以选择文本 */
+a.selectable {
+  pointer-events: auto;
 }

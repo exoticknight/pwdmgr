@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { Copy, Edit, Eye, EyeOff, Lock, Plus, Search, Trash2 } from '@lucide/svelte'
   import { onMount } from 'svelte'
-  import { t } from '../hooks/use-translation'
+  import i18next from '../i18n'
   import { userState } from '../store/user.svelte'
 
   interface PasswordEntry {
@@ -75,142 +75,150 @@
   })
 </script>
 
-<div class='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
-  <div class='max-w-6xl mx-auto'>
-    <!-- 头部 -->
-    <div class='bg-white rounded-xl shadow-lg p-6 mb-6'>
-      <div class='flex items-center justify-between mb-4'>
-        <div class='flex items-center gap-3'>
-          <div class='w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center'>
-            <Lock class='w-5 h-5 text-blue-600' />
-          </div>
-          <div>
-            <p class='text-lg font-semibold text-gray-800'>{userState.dbPath}</p>
-            <p class='text-sm text-gray-500'>{t('database.label')}</p>
+<div class='min-h-screen bg-base-100'>
+  <!-- 顶部工具栏 -->
+  <div class='border-b border-base-300 p-4'>
+    <div class='max-w-6xl mx-auto flex items-center justify-between'>
+      <div class='flex items-center gap-3'>
+        <div class='w-8 h-8 bg-primary text-primary-content rounded flex items-center justify-center'>
+          <Lock class='w-4 h-4' />
+        </div>
+        <div>
+          <p class='text-base font-semibold selectable'>{userState.dbPath}</p>
+          <p class='text-xs text-base-content/60'>{i18next.t('database.label')}</p>
+        </div>
+      </div>
+
+      <div class='flex items-center gap-3'>
+        <!-- 搜索框 -->
+        <div class='form-control'>
+          <div class='input-group'>
+            <span class='bg-base-200'>
+              <Search class='w-4 h-4' />
+            </span>
+            <input
+              type='text'
+              class='input input-bordered input-sm w-64 selectable'
+              placeholder={i18next.t('search.placeholder')}
+              bind:value={searchTerm}
+            />
           </div>
         </div>
 
-        <button class='btn btn-primary' onclick={addNewEntry}>
-          <Plus class='w-5 h-5 mr-2' />
-          {t('actions.addNew')}
+        <button class='btn btn-primary btn-sm' onclick={addNewEntry}>
+          <Plus class='w-4 h-4 mr-2' />
+          {i18next.t('actions.addNew')}
         </button>
       </div>
+    </div>
+  </div>
 
-      <!-- 搜索框 -->
-      <div class='relative'>
-        <Search class='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400' />
-        <input
-          type='text'
-          class='input input-bordered w-full pl-10'
-          placeholder={t('search.placeholder')}
-          bind:value={searchTerm}
-        />
+  <!-- 主内容区域 -->
+  <div class='max-w-6xl mx-auto p-4'>
+    {#if filteredEntries.length === 0}
+      <div class='text-center py-16'>
+        <Lock class='w-16 h-16 mx-auto mb-4 text-base-content/30' />
+        <p class='text-lg mb-2'>{searchTerm ? i18next.t('search.noResults') : i18next.t('table.empty')}</p>
+        {#if !searchTerm}
+          <p class='text-base-content/60'>{i18next.t('table.helpText')}</p>
+        {/if}
       </div>
-    </div>
-
-    <!-- 密码条目列表 -->
-    <div class='bg-white rounded-xl shadow-lg overflow-hidden'>
-      {#if filteredEntries.length === 0}
-        <div class='p-8 text-center text-gray-500'>
-          <Lock class='w-12 h-12 mx-auto mb-4 text-gray-300' />
-          <p>{searchTerm ? t('search.noResults') : t('table.empty')}</p>
-        </div>
-      {:else}
-        <div class='overflow-x-auto'>
-          <table class='table table-zebra w-full'>
-            <thead>
-              <tr>
-                <th>{t('table.title')}</th>
-                <th>{t('table.username')}</th>
-                <th>{t('table.password')}</th>
-                <th>{t('table.url')}</th>
-                <th>{t('table.actions')}</th>
+    {:else}
+      <!-- 表格 -->
+      <div class='overflow-x-auto'>
+        <table class='table w-full'>
+          <thead>
+            <tr>
+              <th>{i18next.t('table.title')}</th>
+              <th>{i18next.t('table.username')}</th>
+              <th>{i18next.t('table.password')}</th>
+              <th>{i18next.t('table.url')}</th>
+              <th>{i18next.t('table.actions')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each filteredEntries as entry (entry.id)}
+              <tr class='hover'>
+                <td>
+                  <div class='font-medium text-gray-900'>{entry.title}</div>
+                  {#if entry.notes}
+                    <div class='text-sm text-gray-500'>{entry.notes}</div>
+                  {/if}
+                </td>
+                <td>
+                  <div class='flex items-center gap-2'>
+                    <span class='font-mono text-sm selectable' id={`username-${entry.id}`}>{entry.username}</span>
+                    <button
+                      class='btn btn-ghost btn-xs'
+                      onclick={() => copyToClipboard(entry.username)}
+                      title={i18next.t('actions.copy')}
+                    >
+                      <Copy class='w-3 h-3' />
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class='flex items-center gap-2'>
+                    <span class='font-mono text-sm selectable' id={`password-${entry.id}`}>
+                      {showPasswords[entry.id] ? entry.password : '••••••••'}
+                    </span>
+                    <button
+                      class='btn btn-ghost btn-xs'
+                      onclick={() => togglePasswordVisibility(entry.id)}
+                      title={showPasswords[entry.id] ? i18next.t('actions.hide') : i18next.t('actions.show')}
+                    >
+                      {#if showPasswords[entry.id]}
+                        <EyeOff class='w-3 h-3' />
+                      {:else}
+                        <Eye class='w-3 h-3' />
+                      {/if}
+                    </button>
+                    <button
+                      class='btn btn-ghost btn-xs'
+                      onclick={() => copyToClipboard(entry.password)}
+                      title={i18next.t('actions.copy')}
+                    >
+                      <Copy class='w-3 h-3' />
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  {#if entry.url}
+                    <a
+                      href={entry.url}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      class='link link-primary text-sm selectable'
+                    >
+                      {entry.url}
+                    </a>
+                  {:else}
+                    <span class='text-base-content/50'>-</span>
+                  {/if}
+                </td>
+                <td>
+                  <div class='flex gap-1'>
+                    <button
+                      class='btn btn-ghost btn-xs'
+                      onclick={() => editEntry(entry.id)}
+                      title={i18next.t('actions.edit')}
+                    >
+                      <Edit class='w-3 h-3' />
+                    </button>
+                    <button
+                      class='btn btn-ghost btn-xs btn-error'
+                      onclick={() => deleteEntry(entry.id)}
+                      title={i18next.t('actions.delete')}
+                    >
+                      <Trash2 class='w-3 h-3' />
+                    </button>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {#each filteredEntries as entry (entry.id)}
-                <tr class='hover'>
-                  <td>
-                    <div class='font-medium text-gray-900'>{entry.title}</div>
-                    {#if entry.notes}
-                      <div class='text-sm text-gray-500'>{entry.notes}</div>
-                    {/if}
-                  </td>
-                  <td>
-                    <div class='flex items-center gap-2'>
-                      <span class='font-mono text-sm'>{entry.username}</span>
-                      <button
-                        class='btn btn-ghost btn-xs'
-                        onclick={() => copyToClipboard(entry.username)}
-                        title={t('actions.copy')}
-                      >
-                        <Copy class='w-3 h-3' />
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    <div class='flex items-center gap-2'>
-                      <span class='font-mono text-sm'>
-                        {showPasswords[entry.id] ? entry.password : '••••••••'}
-                      </span>
-                      <button
-                        class='btn btn-ghost btn-xs'
-                        onclick={() => togglePasswordVisibility(entry.id)}
-                        title={showPasswords[entry.id] ? t('actions.hide') : t('actions.show')}
-                      >
-                        {#if showPasswords[entry.id]}
-                          <EyeOff class='w-3 h-3' />
-                        {:else}
-                          <Eye class='w-3 h-3' />
-                        {/if}
-                      </button>
-                      <button
-                        class='btn btn-ghost btn-xs'
-                        onclick={() => copyToClipboard(entry.password)}
-                        title={t('actions.copy')}
-                      >
-                        <Copy class='w-3 h-3' />
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    {#if entry.url}
-                      <a
-                        href={entry.url}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        class='link link-primary text-sm'
-                      >
-                        {entry.url}
-                      </a>
-                    {:else}
-                      <span class='text-gray-400'>-</span>
-                    {/if}
-                  </td>
-                  <td>
-                    <div class='flex gap-1'>
-                      <button
-                        class='btn btn-ghost btn-xs'
-                        onclick={() => editEntry(entry.id)}
-                        title={t('actions.edit')}
-                      >
-                        <Edit class='w-3 h-3' />
-                      </button>
-                      <button
-                        class='btn btn-ghost btn-xs text-error'
-                        onclick={() => deleteEntry(entry.id)}
-                        title={t('actions.delete')}
-                      >
-                        <Trash2 class='w-3 h-3' />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      {/if}
-    </div>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+    {/if}
   </div>
 </div>

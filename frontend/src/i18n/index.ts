@@ -23,6 +23,7 @@ const resources = {
         url: 'URL',
         actions: 'Actions',
         empty: 'No password entries found',
+        helpText: 'Click "Add New Entry" to start managing your passwords',
       },
       search: {
         placeholder: 'Search passwords...',
@@ -84,6 +85,7 @@ const resources = {
         url: '网址',
         actions: '操作',
         empty: '没有找到密码条目',
+        helpText: '点击"添加新条目"开始管理您的密码',
       },
       search: {
         placeholder: '搜索密码...',
@@ -145,6 +147,7 @@ const resources = {
         url: 'URL',
         actions: '操作',
         empty: 'パスワードエントリが見つかりません',
+        helpText: '「新しいエントリを追加」をクリックしてパスワード管理を開始',
       },
       search: {
         placeholder: 'パスワードを検索...',

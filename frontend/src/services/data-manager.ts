@@ -29,9 +29,8 @@ class DataManager implements DataManagerService {
       const jsonData = await decryptData(encryptedData, password)
 
       // Initialize database
-      const database = await getDatabaseService()
-      await database.initialize(jsonData)
-      database.markAsSaved() // File was just loaded, so no unsaved changes
+      const database = getDatabaseService()
+      database.initialize(jsonData)
 
       return database
     }
@@ -47,9 +46,8 @@ class DataManager implements DataManagerService {
       const jsonData = await decryptData(encryptedData, password)
 
       // Initialize database
-      const database = await getDatabaseService()
-      await database.initialize(jsonData)
-      database.markAsSaved() // Data was just loaded, so no unsaved changes
+      const database = getDatabaseService()
+      database.initialize(jsonData)
 
       return database
     }
@@ -62,16 +60,13 @@ class DataManager implements DataManagerService {
   async saveToFile(database: DatabaseService, filePath: string, password: string): Promise<void> {
     try {
       // Export JSON data
-      const jsonData = await database.exportJSON()
+      const jsonData = database.exportJSON()
 
       // Encrypt data
       const encryptedData = await encryptData(jsonData, password)
 
-      // Save to file
+      // Write to file
       await this.fileService.saveFile(filePath, encryptedData)
-
-      // Mark as saved
-      database.markAsSaved()
     }
     catch (error) {
       console.error('Failed to save to file:', error)
@@ -82,13 +77,10 @@ class DataManager implements DataManagerService {
   async getEncryptedData(database: DatabaseService, password: string): Promise<ArrayBuffer> {
     try {
       // Export JSON data
-      const jsonData = await database.exportJSON()
+      const jsonData = database.exportJSON()
 
       // Encrypt data
       const encryptedData = await encryptData(jsonData, password)
-
-      // Mark as saved (data was exported)
-      database.markAsSaved()
 
       return encryptedData
     }
@@ -100,15 +92,11 @@ class DataManager implements DataManagerService {
 }
 
 // Singleton instance
-let dataManagerInstance: DataManagerService | null = null
+let dataManagerInstance: DataManager | null = null
 
 export function getDataManagerService(): DataManagerService {
   if (!dataManagerInstance) {
     dataManagerInstance = new DataManager()
   }
   return dataManagerInstance
-}
-
-export function resetDataManagerService(): void {
-  dataManagerInstance = null
 }

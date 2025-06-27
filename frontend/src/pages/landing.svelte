@@ -67,8 +67,8 @@
       }
       else if (isNewDatabase) {
         // Create new database by initializing with empty data
-        const database = await getDatabaseService()
-        await database.initialize() // Initialize with empty data
+        const database = getDatabaseService()
+        database.initialize() // Initialize with empty data
         userState.dbPath = ''
         userState.password = password
       }
@@ -106,7 +106,6 @@
             title: i18next.t('landing.dialogTitle'),
             filters: [
               { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
-              { displayName: i18next.t('landing.dataFiles'), pattern: '*.dat' },
               { displayName: i18next.t('landing.allFiles'), pattern: '*.*' },
             ],
           },
@@ -115,7 +114,7 @@
             multiple: false,
             enableDrop: true,
             dropFilter: paths => paths.filter(path =>
-              path.toLowerCase().endsWith('.pwd') || path.toLowerCase().endsWith('.dat'),
+              path.toLowerCase().endsWith('.pwd'),
             ),
           },
           appearance: {

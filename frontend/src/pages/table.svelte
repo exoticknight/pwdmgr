@@ -14,11 +14,8 @@
   import { navigationService, Routes } from '../utils/navigation'
 
   // Services
-  let database: DatabaseService | null = null
+  let database = $state<DatabaseService | null>(null)
   const dataManager = getDataManagerService()
-
-  // Data state
-  let entries = $state<PasswordEntry[]>([])
 
   // Modal state
   let showModal = $state(false)
@@ -37,35 +34,56 @@
   // Search term binding
   let searchTerm = $state('')
 
-  // Computed filtered entries and other derived states
-  const filteredEntries = $derived((database as DatabaseService | null)?.getFilteredEntries() ?? [])
-  const hasUnsavedChanges = $derived((database as DatabaseService | null)?.hasUnsavedChanges() ?? false)
+  // Force reactive updates using subscription
+  let updateTrigger = $state(0)
 
-  onMount(async () => {
+  // Local unsaved changes tracking
+  let hasUnsavedChanges = $state(false)
+
+  // Computed filtered entries and other derived states
+  const filteredEntries = $derived.by(() => {
+    if (!database) {
+      return []
+    }
+    // Access updateTrigger and searchTerm to make this reactive
+    void updateTrigger
+    return database.getFilteredEntries(searchTerm)
+  })
+  const totalCount = $derived.by(() => {
+    if (!database) {
+      return 0
+    }
+    // Access updateTrigger to make this reactive to database changes
+    void updateTrigger
+    return database.getAllEntries().length
+  })
+
+  onMount(() => {
     try {
       // Get the already initialized database from the data manager
-      database = await getDatabaseService()
+      database = getDatabaseService()
 
       if (!database) {
         throw new Error('Database not initialized')
       }
 
-      // Load entries from database
-      const loadedEntries = await database.getAllEntries()
-      entries = loadedEntries
+      // Subscribe to database changes to trigger reactive updates
+      const unsubscribe = database.subscribe(() => {
+        updateTrigger++
+      })
 
+      // Reset unsaved changes state when component mounts (file was just loaded)
+      hasUnsavedChanges = false
       isLoading = false
+
+      // Return cleanup function for component unmount
+      return unsubscribe
     }
     catch (err) {
       console.error('Failed to initialize database:', err)
       setErrorWithAutoClose(i18next.t('messages.initializationFailed'))
       isLoading = false
     }
-  })
-
-  // Update search term in database when it changes
-  $effect(() => {
-    (database as DatabaseService | null)?.setSearchTerm(searchTerm)
   })
 
   // Event handlers
@@ -100,7 +118,7 @@
   }
 
   async function handleSave() {
-    if (!database || !database.hasUnsavedChanges()) {
+    if (!database || !hasUnsavedChanges) {
       return
     }
 
@@ -113,6 +131,7 @@
       // If there's a file path, save to file
       if (userState.dbPath) {
         await dataManager.saveToFile(database, userState.dbPath, password)
+        hasUnsavedChanges = false
       }
       else {
         // New file, show save dialog
@@ -136,6 +155,7 @@
 
         await dataManager.saveToFile(database, filePath, password)
         userState.dbPath = filePath
+        hasUnsavedChanges = false
         showSaveDialog = false
       }
       catch (err) {
@@ -155,7 +175,12 @@
   }
 
   function handleEditEntry(id: string) {
-    const entry = entries.find(e => e.id === id)
+    if (!database) {
+      return
+    }
+
+    const allEntries = database.getAllEntries()
+    const entry = allEntries.find(e => e.id === id)
     if (entry) {
       editingEntry = entry
       showModal = true
@@ -175,8 +200,9 @@
     }
 
     try {
-      await database.deleteEntry(id)
-      entries = entries.filter(entry => entry.id !== id)
+      database.deleteEntry(id)
+      // Mark as having unsaved changes
+      hasUnsavedChanges = true
     }
     catch (err) {
       console.error('Failed to delete entry:', err)
@@ -192,17 +218,15 @@
     try {
       if ('id' in entryData) {
         // Update existing entry
-        const updatedEntry = await database.updateEntry(entryData.id, entryData)
-        entries = entries.map(entry =>
-          entry.id === entryData.id ? updatedEntry : entry,
-        )
+        database.updateEntry(entryData.id, entryData)
       }
       else {
         // Add new entry
-        const newEntry = await database.addEntry(entryData)
-        entries = [...entries, newEntry]
+        database.addEntry(entryData)
       }
 
+      // Mark as having unsaved changes
+      hasUnsavedChanges = true
       showModal = false
       editingEntry = null
     }
@@ -262,7 +286,7 @@
     {hasUnsavedChanges}
     bind:searchTerm
     filteredCount={filteredEntries.length}
-    totalCount={entries.length}
+    {totalCount}
     onGoBack={handleGoBack}
     onSearchChange={handleSearchChange}
     onAddNew={handleAddNew}

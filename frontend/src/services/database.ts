@@ -24,36 +24,35 @@ const DEFAULT_SEARCH_CONFIG: SearchConfig = {
   shouldSort: true,
 }
 
-// Enhanced database service interface with search functionality
+// Database service interface
 export interface DatabaseService {
   // Core database operations
-  initialize: (data?: string) => Promise<void>
-  getAllEntries: () => Promise<PasswordEntry[]>
-  addEntry: (entry: Omit<PasswordEntry, 'id'>) => Promise<PasswordEntry>
-  updateEntry: (id: string, updates: Partial<PasswordEntry>) => Promise<PasswordEntry>
-  deleteEntry: (id: string) => Promise<void>
-  exportJSON: () => Promise<string>
+  initialize: (data?: string) => void
+  getAllEntries: () => PasswordEntry[]
+  addEntry: (entry: Omit<PasswordEntry, 'id'>) => PasswordEntry
+  updateEntry: (id: string, updates: Partial<PasswordEntry>) => PasswordEntry
+  deleteEntry: (id: string) => void
+  exportJSON: () => string
   close: () => void
 
   // Search functionality
-  setSearchTerm: (term: string) => void
-  getSearchTerm: () => string
-  getFilteredEntries: () => PasswordEntry[]
+  getFilteredEntries: (searchTerm: string) => PasswordEntry[]
 
-  // Change tracking
-  hasUnsavedChanges: () => boolean
-  markAsSaved: () => void
+  // Data access
+  getEntries: () => PasswordEntry[]
+
+  // Subscription for reactive updates
+  subscribe: (callback: () => void) => () => void
 }
 
-// JSON database implementation with search functionality
+// JSON database implementation
 class JSONDatabase implements DatabaseService {
   private entries: PasswordEntry[] = []
   private initialized = false
-  private searchTerm = ''
   private fuse: Fuse<PasswordEntry> | null = null
-  private unsavedChanges = false
+  private subscribers: (() => void)[] = [] // Callbacks to notify on changes
 
-  async initialize(data?: string): Promise<void> {
+  initialize(data?: string) {
     if (this.initialized) {
       return
     }
@@ -82,22 +81,44 @@ class JSONDatabase implements DatabaseService {
 
     // Initialize search
     this.updateSearchIndex()
-    this.unsavedChanges = false
     this.initialized = true
+    this.notifySubscribers()
   }
 
   private updateSearchIndex() {
     this.fuse = new Fuse(this.entries, DEFAULT_SEARCH_CONFIG)
   }
 
-  async getAllEntries(): Promise<PasswordEntry[]> {
+  private notifySubscribers() {
+    this.subscribers.forEach(callback => callback())
+  }
+
+  subscribe(callback: () => void): () => void {
+    this.subscribers.push(callback)
+    // Return unsubscribe function
+    return () => {
+      const index = this.subscribers.indexOf(callback)
+      if (index > -1) {
+        this.subscribers.splice(index, 1)
+      }
+    }
+  }
+
+  getAllEntries(): PasswordEntry[] {
     if (!this.initialized) {
       throw new Error('Database not initialized')
     }
     return [...this.entries].sort((a, b) => a.title.localeCompare(b.title))
   }
 
-  async addEntry(entry: Omit<PasswordEntry, 'id'>): Promise<PasswordEntry> {
+  getEntries(): PasswordEntry[] {
+    if (!this.initialized) {
+      return []
+    }
+    return [...this.entries]
+  }
+
+  addEntry(entry: Omit<PasswordEntry, 'id'>): PasswordEntry {
     if (!this.initialized) {
       throw new Error('Database not initialized')
     }
@@ -109,11 +130,11 @@ class JSONDatabase implements DatabaseService {
 
     this.entries.push(newEntry)
     this.updateSearchIndex()
-    this.unsavedChanges = true
+    this.notifySubscribers()
     return newEntry
   }
 
-  async updateEntry(id: string, updates: Partial<PasswordEntry>): Promise<PasswordEntry> {
+  updateEntry(id: string, updates: Partial<PasswordEntry>): PasswordEntry {
     if (!this.initialized) {
       throw new Error('Database not initialized')
     }
@@ -126,11 +147,11 @@ class JSONDatabase implements DatabaseService {
     const updatedEntry = { ...this.entries[index], ...updates }
     this.entries[index] = updatedEntry
     this.updateSearchIndex()
-    this.unsavedChanges = true
+    this.notifySubscribers()
     return updatedEntry
   }
 
-  async deleteEntry(id: string): Promise<void> {
+  deleteEntry(id: string) {
     if (!this.initialized) {
       throw new Error('Database not initialized')
     }
@@ -142,10 +163,24 @@ class JSONDatabase implements DatabaseService {
 
     this.entries.splice(index, 1)
     this.updateSearchIndex()
-    this.unsavedChanges = true
+    this.notifySubscribers()
   }
 
-  async exportJSON(): Promise<string> {
+  // Reactive search that takes searchTerm as parameter instead of storing it
+  getFilteredEntries(searchTerm: string): PasswordEntry[] {
+    if (!this.initialized) {
+      return []
+    }
+
+    if (!searchTerm.trim() || !this.fuse) {
+      return [...this.entries].sort((a, b) => a.title.localeCompare(b.title))
+    }
+
+    const results = this.fuse.search(searchTerm)
+    return results.map(result => result.item)
+  }
+
+  exportJSON(): string {
     if (!this.initialized) {
       throw new Error('Database not initialized')
     }
@@ -164,50 +199,18 @@ class JSONDatabase implements DatabaseService {
     return JSON.stringify(dbFile, null, 2)
   }
 
-  // Search functionality
-  setSearchTerm(term: string): void {
-    this.searchTerm = term
-  }
-
-  getSearchTerm(): string {
-    return this.searchTerm
-  }
-
-  getFilteredEntries(): PasswordEntry[] {
-    if (!this.initialized) {
-      return []
-    }
-
-    if (!this.searchTerm || !this.fuse) {
-      return [...this.entries].sort((a, b) => a.title.localeCompare(b.title))
-    }
-
-    const results = this.fuse.search(this.searchTerm)
-    return results.map(result => result.item)
-  }
-
-  // Change tracking
-  hasUnsavedChanges(): boolean {
-    return this.unsavedChanges
-  }
-
-  markAsSaved(): void {
-    this.unsavedChanges = false
-  }
-
   close(): void {
     this.entries = []
     this.fuse = null
-    this.searchTerm = ''
-    this.unsavedChanges = false
     this.initialized = false
+    this.subscribers = []
   }
 }
 
 // Singleton instance
 let databaseInstance: JSONDatabase | null = null
 
-export async function getDatabaseService(): Promise<DatabaseService> {
+export function getDatabaseService(): DatabaseService {
   if (!databaseInstance) {
     databaseInstance = new JSONDatabase()
   }

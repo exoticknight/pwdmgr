@@ -12,6 +12,7 @@
   import { getDatabaseService } from '../services/database'
   import { userState } from '../stores/user.svelte'
   import { navigationService, Routes } from '../utils/navigation'
+  import { notifications } from '../utils/notifications'
 
   // Services
   let database = $state<DatabaseService | null>(null)
@@ -23,10 +24,6 @@
 
   // Loading state
   let isLoading = $state(true)
-  let error = $state<string | null>(null)
-
-  // Error auto-dismiss timer
-  let errorTimer: number | null = null
 
   // Save file dialog state
   let showSaveDialog = $state(false)
@@ -81,7 +78,7 @@
     }
     catch (err) {
       console.error('Failed to initialize database:', err)
-      setErrorWithAutoClose(i18next.t('messages.initializationFailed'))
+      notifications.error(i18next.t('messages.initializationFailed'))
       isLoading = false
     }
   })
@@ -140,7 +137,7 @@
     }
     catch (err) {
       console.error('Failed to save database:', err)
-      setErrorWithAutoClose(i18next.t('messages.saveFailed'))
+      notifications.error(i18next.t('messages.saveFailed'))
     }
   }
 
@@ -160,7 +157,7 @@
       }
       catch (err) {
         console.error('Failed to save file:', err)
-        setErrorWithAutoClose(i18next.t('messages.saveFileFailed'))
+        notifications.error(i18next.t('messages.saveFileFailed'))
       }
     }
     else {
@@ -206,7 +203,7 @@
     }
     catch (err) {
       console.error('Failed to delete entry:', err)
-      setErrorWithAutoClose(i18next.t('messages.deleteEntryFailed'))
+      notifications.error(i18next.t('messages.deleteEntryFailed'))
     }
   }
 
@@ -232,7 +229,7 @@
     }
     catch (err) {
       console.error('Failed to save entry:', err)
-      setErrorWithAutoClose(i18next.t('messages.saveEntryFailed'))
+      notifications.error(i18next.t('messages.saveEntryFailed'))
     }
   }
 
@@ -244,44 +241,16 @@
   function handleCopyToClipboard(text: string) {
     navigator.clipboard.writeText(text)
       .then(() => {
-        // Show success notification temporarily
-        const originalError = error
-        setErrorWithAutoClose(i18next.t('notifications.copied'))
-        setTimeout(() => {
-          error = originalError
-        }, 2000)
+        // Show success notification
+        notifications.success(i18next.t('notifications.copied'))
       })
       .catch(() => {
-        setErrorWithAutoClose(i18next.t('notifications.copyFailed'))
+        notifications.error(i18next.t('notifications.copyFailed'))
       })
-  }
-
-  function setErrorWithAutoClose(message: string) {
-    // Clear existing timer
-    if (errorTimer) {
-      clearTimeout(errorTimer)
-    }
-
-    error = message
-
-    // Set auto-close timer for 5 seconds
-    errorTimer = setTimeout(() => {
-      error = null
-      errorTimer = null
-    }, 5000)
   }
 </script>
 
 <div class='min-h-screen bg-base-100'>
-  <!-- Error Alert -->
-  {#if error}
-    <div class='toast toast-bottom toast-end'>
-      <div class='alert alert-error'>
-        <span class='text-white'>{error}</span>
-      </div>
-    </div>
-  {/if}
-
   <TableHeader
     {hasUnsavedChanges}
     bind:searchTerm

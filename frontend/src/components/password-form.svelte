@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { AlertCircle, ArrowLeft, CheckCircle, FolderOpen, Plus } from '@lucide/svelte'
+  import { ArrowLeft, CheckCircle, FolderOpen, Plus } from '@lucide/svelte'
   import i18next from '../i18n'
 
   interface Props {
@@ -7,7 +7,6 @@
     selectedFile: File | null
     password: string
     confirmPassword: string
-    error: string
     isLoading?: boolean
     onSubmit: (event: SubmitEvent) => void
     onReset: () => void
@@ -18,7 +17,6 @@
     selectedFile,
     password = $bindable(),
     confirmPassword = $bindable(),
-    error,
     isLoading = false,
     onSubmit,
     onReset,
@@ -66,13 +64,6 @@
           bind:value={confirmPassword}
           required
         />
-      </div>
-    {/if}
-
-    {#if error}
-      <div class='alert alert-error'>
-        <AlertCircle class='w-6 h-6' />
-        <span>{error}</span>
       </div>
     {/if}
 

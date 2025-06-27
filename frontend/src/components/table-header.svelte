@@ -32,7 +32,7 @@
 
 <div class='border-b border-base-300 p-4'>
   <div class='max-w-6xl mx-auto flex items-center justify-between'>
-    <!-- 左侧：返回按钮和信息 -->
+    <!-- Left: Back button and info -->
     <div class='flex items-center gap-4'>
       <button
         class='btn btn-ghost btn-sm'
@@ -43,7 +43,7 @@
         <ArrowLeft class='w-4 h-4' />
       </button>
 
-      <!-- 信息显示 -->
+      <!-- Info display -->
       <div class='text-sm text-base-content/70'>
         <span class='font-medium'>{filteredCount}</span>
         {filteredCount === 1 ? i18next.t('stats.entry') : i18next.t('stats.entries')}
@@ -55,9 +55,9 @@
       </div>
     </div>
 
-    <!-- 右侧：搜索框和操作按钮组 -->
+    <!-- Right: Search box and action buttons -->
     <div class='flex items-center gap-3'>
-      <!-- 搜索框 -->
+      <!-- Search box -->
       <label class='input input-sm w-64 flex'>
         <Search class='w-4 h-4 text-base-content/60' />
         <input
@@ -69,7 +69,7 @@
         />
       </label>
 
-      <!-- 操作按钮 -->
+      <!-- Action buttons -->
       <button class='btn btn-primary btn-sm' onclick={onAddNew}>
         <Plus class='w-4 h-4 mr-2' />
         {i18next.t('actions.addNew')}

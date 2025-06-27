@@ -41,7 +41,7 @@ export class PasswordManager {
   get hasUnsavedChanges() { return this.state.hasUnsavedChanges }
   get showPasswords() { return this.state.showPasswords }
 
-  // 获取过滤后的条目
+  // Get filtered entries
   get filteredEntries(): PasswordEntry[] {
     if (!this.state.searchTerm || !this.fuse) {
       return this.state.entries

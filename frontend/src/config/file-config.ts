@@ -1,22 +1,22 @@
 import i18next from '../i18n'
 
-// 密码管理器文件配置
+// Password manager file configuration
 export const PASSWORD_FILE_CONFIG = {
-  // 文件扩展名
+  // File extensions
   extensions: ['.pwd'],
 
-  // 文件类型描述
+  // File type description
   description: '密码管理器文件',
 
-  // accept属性值
+  // Accept attribute value
   acceptAttribute: '.pwd',
 
-  // 文件验证函数
+  // File validation function
   isValidFile: (filename: string): boolean => {
     return PASSWORD_FILE_CONFIG.extensions.some(ext => filename.endsWith(ext))
   },
 
-  // 错误消息 (使用i18n)
+  // Error message (using i18n)
   get errorMessage(): string {
     return i18next.t('errors.invalidFile')
   },

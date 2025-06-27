@@ -1,7 +1,7 @@
 <script lang='ts'>
   import type { Snippet } from 'svelte'
   import { onDestroy, onMount } from 'svelte'
-  import { OpenFileDialogWithOptions, OpenMultipleFilesDialog, SaveFileDialogWithOptions } from '../../wailsjs/go/main/App'
+  import { OpenFileDialog, OpenMultipleFilesDialog, SaveFileDialog } from '../../wailsjs/go/main/FileService'
   import { main } from '../../wailsjs/go/models'
   import { OnFileDrop, OnFileDropOff } from '../../wailsjs/runtime/runtime'
 
@@ -144,7 +144,7 @@
           treatPackagesAsDirectories: false,
         })
 
-        const filePath = await SaveFileDialogWithOptions(saveOptions)
+        const filePath = await SaveFileDialog(saveOptions)
         if (filePath) {
           filePaths = [filePath]
         }
@@ -153,7 +153,7 @@
         filePaths = await OpenMultipleFilesDialog(dialogOptions)
       }
       else {
-        const filePath = await OpenFileDialogWithOptions(dialogOptions)
+        const filePath = await OpenFileDialog(dialogOptions)
         if (filePath) {
           filePaths = [filePath]
         }

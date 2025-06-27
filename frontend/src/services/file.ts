@@ -1,5 +1,5 @@
 // File operation service - only handles file read/write operations
-import { ReadFile, SaveFile } from '../../wailsjs/go/main/App'
+import { ReadFile, SaveFile } from '../../wailsjs/go/main/FileService'
 
 export interface FileService {
   // Read file content

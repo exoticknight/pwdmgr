@@ -4,6 +4,7 @@
   import ErrorAlert from '../components/error-alert.svelte'
   import FileDropZone from '../components/file-drop-zone.svelte'
   import PasswordForm from '../components/password-form.svelte'
+  import { PASSWORD_FILE_CONFIG } from '../config/file-config'
   import i18next from '../i18n'
   import { userState } from '../stores/user.svelte'
   import { navigationService, Routes } from '../utils/navigation'
@@ -14,6 +15,13 @@
   let password = $state('')
   let confirmPassword = $state('')
   let error = $state('')
+
+  function validatePasswordFile(fileName: string) {
+    return {
+      isValid: PASSWORD_FILE_CONFIG.isValidFile(fileName),
+      error: PASSWORD_FILE_CONFIG.isValidFile(fileName) ? undefined : PASSWORD_FILE_CONFIG.errorMessage,
+    }
+  }
 
   function handleFileSelected(selection: FileSelection) {
     if (!selection.isValid) {
@@ -88,6 +96,8 @@
     {#if !showPasswordInput}
       <FileDropZone
         onFileSelected={handleFileSelected}
+        acceptAttribute={PASSWORD_FILE_CONFIG.acceptAttribute}
+        validateFile={validatePasswordFile}
       />
 
       <div class='divider my-6'>{i18next.t('actions.or')}</div>

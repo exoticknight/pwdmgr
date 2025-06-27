@@ -5,7 +5,7 @@
   import PasswordForm from '../components/password-form.svelte'
   import { PASSWORD_FILE_CONFIG } from '../config/file-config'
   import i18next from '../i18n'
-  import { userState } from '../store/user.svelte'
+  import { userState } from '../stores/user.svelte'
   import { navigationService, Routes } from '../utils/navigation'
 
   let showPasswordInput = $state(false)

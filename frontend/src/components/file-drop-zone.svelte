@@ -15,7 +15,7 @@
   let isDragOver = $state(false)
 
   onMount(() => {
-    // 使用Wails原生拖放API
+    // Use Wails native drag and drop API
     OnFileDrop((x, y, paths) => {
       isDragOver = false
       onFileDrop(paths)

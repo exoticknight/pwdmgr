@@ -80,14 +80,14 @@
 
   function processDatabase() {
     if (selectedFile) {
-      // 处理浏览器选择的文件
+      // Handle browser-selected file
       const reader = new FileReader()
       reader.onload = () => {
         userState.dbPath = selectedFile!.name
         userState.password = password
         userState.dbData = reader.result as ArrayBuffer
         userState.isNewDatabase = false
-        // 使用导航服务
+        // Use navigation service
         navigationService.navigate(Routes.TABLE)
       }
       reader.readAsArrayBuffer(selectedFile)
@@ -95,7 +95,7 @@
     else if (selectedFilePath) {
       userState.dbPath = selectedFilePath
       userState.password = password
-      userState.dbData = null // 使用路径时，由后端处理文件读取
+      userState.dbData = null // When using path, let backend handle file reading
       userState.isNewDatabase = false
       navigationService.navigate(Routes.TABLE)
     }

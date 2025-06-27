@@ -1,42 +1,42 @@
-// 路由枚举 - 集中管理所有路由
+// Route enum - centralized management of all routes
 export enum Routes {
   HOME = '',
   TABLE = 'table',
 }
 
-// 导航控制服务
+// Navigation control service
 class NavigationService {
   private allowNextNavigation = false
   private isInitialLoad = true
 
-  // 检查是否允许导航
+  // Check if navigation is allowed
   canNavigate(): boolean {
-    // 首次加载总是允许
+    // Initial load is always allowed
     if (this.isInitialLoad) {
       this.isInitialLoad = false
       return true
     }
 
-    // 如果有标记允许，就放行并清除标记
+    // If marked as allowed, permit and clear the flag
     if (this.allowNextNavigation) {
       this.allowNextNavigation = false
       return true
     }
 
-    // 其他情况阻止
+    // Block in other cases
     return false
   }
 
-  // 程序化导航 - 只能使用枚举值
+  // Programmatic navigation - only enum values allowed
   navigate(route: Routes): void {
     this.allowNextNavigation = true
 
-    // 使用 history.pushState 和事件触发路由更新
+    // Use history.pushState and event to trigger route update
     const path = route === Routes.HOME ? '/' : `/${route}`
     window.history.pushState({}, '', path)
     window.dispatchEvent(new PopStateEvent('popstate'))
   }
 }
 
-// 导出单例实例
+// Export singleton instance
 export const navigationService = new NavigationService()

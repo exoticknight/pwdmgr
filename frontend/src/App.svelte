@@ -23,7 +23,7 @@
   }
 
   onMount(() => {
-    // 简单的浏览器导航阻止
+    // Simple browser navigation blocking
     const handlePopstate = (event: PopStateEvent) => {
       event.preventDefault()
     }

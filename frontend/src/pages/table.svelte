@@ -9,12 +9,12 @@
   import { userState } from '../stores/user.svelte'
   import { navigationService, Routes } from '../utils/navigation'
 
-  // 初始化密码管理器
+  // Initialize password manager
   const passwordManager = new PasswordManager()
 
   onMount(() => {
-    // 这里应该从后端加载密码数据
-    // 暂时使用模拟数据
+    // TODO: Load password data from backend
+    // Using mock data for now
     const mockData: PasswordEntry[] = [
       {
         id: '1',
@@ -36,7 +36,7 @@
     passwordManager.setEntries(mockData)
   })
 
-  // 事件处理器
+  // Event handlers
   function handleGoBack() {
     if (passwordManager.hasUnsavedChanges) {
       // eslint-disable-next-line no-alert
@@ -46,7 +46,7 @@
       }
     }
 
-    // 清除用户状态并返回到首页
+    // Clear user state and return to home page
     userState.dbPath = ''
     userState.password = ''
     userState.dbData = null
@@ -60,9 +60,9 @@
   }
 
   function handleAddNew() {
-    // TODO: 实现添加新条目功能
+    // TODO: Implement add new entry functionality
     // eslint-disable-next-line no-console
-    console.log('添加新条目')
+    console.log('Add new entry')
   }
 
   function handleSave() {
@@ -70,30 +70,30 @@
       return
     }
 
-    // TODO: 实现保存功能，将当前数据持久化
+    // TODO: Implement save functionality to persist current data
     // eslint-disable-next-line no-console
-    console.log('保存数据到:', userState.dbPath)
+    console.log('Save data to:', userState.dbPath)
 
-    // 保存完成后清除未保存标记
+    // Clear unsaved changes flag after saving
     passwordManager.markAsSaved()
   }
 
   function handleEditEntry(id: string) {
-    // TODO: 实现编辑功能
+    // TODO: Implement edit functionality
     // eslint-disable-next-line no-console
-    console.log('编辑条目:', id)
+    console.log('Edit entry:', id)
   }
 
   function handleDeleteEntry(id: string) {
-    // TODO: 实现删除功能
+    // TODO: Implement delete functionality
     // eslint-disable-next-line no-console
-    console.log('删除条目:', id)
+    console.log('Delete entry:', id)
   // passwordManager.deleteEntry(id)
   }
 
   function handleCopyToClipboard(text: string) {
     navigator.clipboard.writeText(text)
-  // TODO: 显示复制成功提示
+  // TODO: Show copy success notification
   }
 </script>
 
@@ -109,12 +109,12 @@
     onSave={handleSave}
   />
 
-  <!-- 主内容区域 -->
+  <!-- Main content area -->
   <div class='max-w-6xl mx-auto p-4'>
     {#if passwordManager.filteredEntries.length === 0}
       <EmptyState isSearching={!!passwordManager.searchTerm} />
     {:else}
-      <!-- 表格 -->
+      <!-- Table -->
       <div class='overflow-x-auto'>
         <table class='table w-full'>
           <thead>

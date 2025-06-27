@@ -1,6 +1,5 @@
 <script lang='ts'>
   import { FileLock, Plus } from '@lucide/svelte'
-  import ErrorAlert from '../components/error-alert.svelte'
   import PasswordForm from '../components/password-form.svelte'
   import WailsFileSelect from '../components/wails-file-select.svelte'
   import i18next from '../i18n'
@@ -8,19 +7,18 @@
   import { getDatabaseService } from '../services/database'
   import { userState } from '../stores/user.svelte'
   import { navigationService, Routes } from '../utils/navigation'
+  import { notifications } from '../utils/notifications'
 
   let showPasswordInput = $state(false)
   let selectedFilePath = $state<string | null>(null)
   let isNewDatabase = $state(false)
   let password = $state('')
   let confirmPassword = $state('')
-  let error = $state('')
   let isLoading = $state(false)
 
   const dataManager = getDataManagerService()
 
   function handleFileSelected(filePath: string) {
-    error = ''
     isNewDatabase = false
     showPasswordInput = true
     selectedFilePath = filePath
@@ -36,18 +34,17 @@
     isNewDatabase = true
     selectedFilePath = null
     showPasswordInput = true
-    error = ''
   }
 
   async function handlePasswordSubmit(event: SubmitEvent) {
     event.preventDefault()
     if (!password) {
-      error = i18next.t('errors.passwordRequired')
+      notifications.error(i18next.t('errors.passwordRequired'))
       return
     }
 
     if (isNewDatabase && password !== confirmPassword) {
-      error = i18next.t('errors.passwordMismatch')
+      notifications.error(i18next.t('errors.passwordMismatch'))
       return
     }
 
@@ -57,7 +54,6 @@
   async function processDatabase() {
     try {
       isLoading = true
-      error = ''
 
       if (selectedFilePath) {
         // Load existing file with decryption validation
@@ -78,7 +74,7 @@
     }
     catch (err) {
       console.error('Failed to process database:', err)
-      error = String(err) || i18next.t('messages.loadDatabaseFileFailed')
+      notifications.error(String(err) || i18next.t('messages.loadDatabaseFileFailed'))
     }
     finally {
       isLoading = false
@@ -91,7 +87,6 @@
     isNewDatabase = false
     password = ''
     confirmPassword = ''
-    error = ''
   }
 
   const displayFileName = $derived(selectedFilePath ? selectedFilePath.split(/[/\\]/).pop() || '' : '')
@@ -147,15 +142,12 @@
         <Plus class='w-5 h-5 mr-2' />
         {i18next.t('actions.createNew')}
       </button>
-
-      <ErrorAlert {error} />
     {:else}
       <PasswordForm
         {isNewDatabase}
         selectedFile={{ name: displayFileName } as File}
         bind:password
         bind:confirmPassword
-        {error}
         {isLoading}
         onSubmit={handlePasswordSubmit}
         onReset={resetState}

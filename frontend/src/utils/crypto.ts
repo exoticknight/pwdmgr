@@ -1,28 +1,41 @@
 // Encryption/decryption utility functions
 
+// 可选的额外安全增强措施：
+// 1. 增加PBKDF2迭代次数（如50万次）
+// 2. 使用Argon2算法（更抗ASIC攻击）
+// 3. 添加设备指纹作为额外盐值
+// 4. 实现密钥拉伸（key stretching）
+//
+// 但这些都比使用强密码的影响小
+
 const ENCRYPTION_CONFIG = {
   algorithm: 'AES-GCM',
   keyLength: 128,
   ivLength: 12,
+  saltLength: 32, // 32 bytes for salt
   iterations: 100000,
 }
 
 /**
- * Encrypt JSON string
+ * Encrypt JSON string with random salt
+ * Data format: [32-byte salt][12-byte IV][encrypted data]
  * @param jsonString - JSON string to encrypt
  * @param password - User password
- * @returns Encrypted ArrayBuffer
+ * @returns Encrypted ArrayBuffer containing salt + IV + encrypted data
  */
 export async function encryptData(jsonString: string, password: string): Promise<ArrayBuffer> {
   const encoder = new TextEncoder()
   const dataBuffer = encoder.encode(jsonString)
 
-  // Derive key from password
+  // Generate random salt for this encryption
+  const salt = window.crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.saltLength))
+
+  // Derive key from password using the random salt
   const keyMaterial = await getKeyMaterial(password)
   const key = await window.crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: encoder.encode('password-manager-salt'),
+      salt,
       iterations: ENCRYPTION_CONFIG.iterations,
       hash: 'SHA-256',
     },
@@ -48,45 +61,48 @@ export async function encryptData(jsonString: string, password: string): Promise
     dataBuffer,
   )
 
-  // Merge IV and encrypted data
-  const result = new Uint8Array(iv.length + encryptedData.byteLength)
-  result.set(iv, 0)
-  result.set(new Uint8Array(encryptedData), iv.length)
+  // Merge salt + IV + encrypted data
+  const result = new Uint8Array(salt.length + iv.length + encryptedData.byteLength)
+  result.set(salt, 0)
+  result.set(iv, salt.length)
+  result.set(new Uint8Array(encryptedData), salt.length + iv.length)
 
   return result.buffer
 }
 
 /**
- * Decrypt data
- * @param encryptedData - Encrypted data
+ * Decrypt data with embedded salt
+ * Expected format: [32-byte salt][12-byte IV][encrypted data]
+ * @param encryptedData - Encrypted data with embedded salt and IV
  * @param password - User password
  * @returns Decrypted JSON string
  */
 export async function decryptData(encryptedData: ArrayBuffer, password: string): Promise<string> {
-  const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
-  // Check if data is large enough to contain IV + encrypted content
-  if (encryptedData.byteLength < ENCRYPTION_CONFIG.ivLength + 1) {
-    throw new Error(`Encrypted data is too small. Expected at least ${ENCRYPTION_CONFIG.ivLength + 1} bytes, got ${encryptedData.byteLength} bytes.`)
+  // Check if data is large enough to contain salt + IV + encrypted content
+  const minSize = ENCRYPTION_CONFIG.saltLength + ENCRYPTION_CONFIG.ivLength + 1
+  if (encryptedData.byteLength < minSize) {
+    throw new Error(`Encrypted data is too small. Expected at least ${minSize} bytes, got ${encryptedData.byteLength} bytes.`)
   }
 
-  // Extract IV and encrypted data
+  // Extract salt, IV and encrypted data
   const data = new Uint8Array(encryptedData)
-  const iv = data.slice(0, ENCRYPTION_CONFIG.ivLength)
-  const encrypted = data.slice(ENCRYPTION_CONFIG.ivLength)
+  const salt = data.slice(0, ENCRYPTION_CONFIG.saltLength)
+  const iv = data.slice(ENCRYPTION_CONFIG.saltLength, ENCRYPTION_CONFIG.saltLength + ENCRYPTION_CONFIG.ivLength)
+  const encrypted = data.slice(ENCRYPTION_CONFIG.saltLength + ENCRYPTION_CONFIG.ivLength)
 
   // Verify we have some encrypted content
   if (encrypted.length === 0) {
-    throw new Error('No encrypted content found after IV.')
+    throw new Error('No encrypted content found after salt and IV.')
   }
 
-  // Derive key from password
+  // Derive key from password using the stored salt
   const keyMaterial = await getKeyMaterial(password)
   const key = await window.crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: encoder.encode('password-manager-salt'),
+      salt,
       iterations: ENCRYPTION_CONFIG.iterations,
       hash: 'SHA-256',
     },

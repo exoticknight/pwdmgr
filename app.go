@@ -129,16 +129,29 @@ func (a *App) SaveFileDialogWithOptions(options SaveDialogOptions) (string, erro
 }
 
 // ReadFile reads data from a file
-func (a *App) ReadFile(filePath string) ([]byte, error) {
+func (a *App) ReadFile(filePath string) ([]int, error) {
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file: %w", err)
 	}
-	return data, nil
+
+	// Convert []byte to []int for JavaScript compatibility
+	result := make([]int, len(data))
+	for i, b := range data {
+		result[i] = int(b)
+	}
+
+	return result, nil
 }
 
 // SaveFile saves data to a file
-func (a *App) SaveFile(filePath string, data []byte) error {
+func (a *App) SaveFile(filePath string, data []int) error {
+	// Convert []int to []byte
+	byteData := make([]byte, len(data))
+	for i, val := range data {
+		byteData[i] = byte(val)
+	}
+
 	// Ensure the directory exists
 	dir := filepath.Dir(filePath)
 	if err := os.MkdirAll(dir, 0755); err != nil {
@@ -146,7 +159,7 @@ func (a *App) SaveFile(filePath string, data []byte) error {
 	}
 
 	// Write the file
-	if err := os.WriteFile(filePath, data, 0644); err != nil {
+	if err := os.WriteFile(filePath, byteData, 0644); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 

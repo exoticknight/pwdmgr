@@ -47,7 +47,8 @@ class JSONDatabase implements DatabaseService {
 
   initialize(data?: string) {
     if (this.initialized) {
-      return
+      // Close existing database before reinitializing
+      this.close()
     }
 
     if (data != null && data.trim()) {

@@ -5,10 +5,6 @@ import Fuse from 'fuse.js'
 interface DatabaseFile {
   version: string
   entries: PasswordEntry[]
-  metadata: {
-    createdAt: string
-    updatedAt: string
-  }
 }
 
 const DEFAULT_SEARCH_CONFIG: SearchConfig = {
@@ -19,7 +15,7 @@ const DEFAULT_SEARCH_CONFIG: SearchConfig = {
     { name: 'notes', weight: 0.1 },
   ],
   threshold: 0.4,
-  includeScore: true,
+  includeScore: false,
   ignoreLocation: true,
   shouldSort: true,
 }
@@ -37,9 +33,6 @@ export interface DatabaseService {
 
   // Search functionality
   getFilteredEntries: (searchTerm: string) => PasswordEntry[]
-
-  // Data access
-  getEntries: () => PasswordEntry[]
 
   // Subscription for reactive updates
   subscribe: (callback: () => void) => () => void
@@ -109,13 +102,6 @@ class JSONDatabase implements DatabaseService {
       throw new Error('Database not initialized')
     }
     return [...this.entries].sort((a, b) => a.title.localeCompare(b.title))
-  }
-
-  getEntries(): PasswordEntry[] {
-    if (!this.initialized) {
-      return []
-    }
-    return [...this.entries]
   }
 
   addEntry(entry: Omit<PasswordEntry, 'id'>): PasswordEntry {
@@ -189,10 +175,6 @@ class JSONDatabase implements DatabaseService {
     const dbFile: DatabaseFile = {
       version: '1.0.0',
       entries: this.entries,
-      metadata: {
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
     }
 
     // Return JSON string

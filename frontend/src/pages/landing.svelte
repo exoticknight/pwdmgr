@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { FileText, Plus } from '@lucide/svelte'
+  import { FileLock, Plus } from '@lucide/svelte'
   import ErrorAlert from '../components/error-alert.svelte'
   import PasswordForm from '../components/password-form.svelte'
   import WailsFileSelect from '../components/wails-file-select.svelte'
@@ -123,14 +123,10 @@
         }}
         onSelect={handleFilesSelected}
       >
-        {#snippet children({ isDragOver })}
+        {#snippet children()}
           <div class='w-12 h-12 mx-auto mb-4 text-base-content/50'>
-            <FileText class='w-full h-full' />
+            <FileLock class='w-full h-full' />
           </div>
-
-          <h3 class='text-lg font-semibold mb-2'>
-            {i18next.t('landing.selectFileTitle')}
-          </h3>
 
           <p class='text-base-content/70 mb-4'>
             {i18next.t('landing.selectFileDescription')}
@@ -138,10 +134,6 @@
 
           <div class='text-sm text-base-content/50 space-y-1'>
             <p>{i18next.t('landing.selectFileFormats')}</p>
-            <p class='text-xs'>{i18next.t('landing.selectFileHint')}</p>
-            {#if isDragOver}
-              <p class='text-xs text-primary font-medium'>Release to select files</p>
-            {/if}
           </div>
         {/snippet}
       </WailsFileSelect>

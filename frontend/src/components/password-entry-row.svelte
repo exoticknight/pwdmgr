@@ -24,7 +24,7 @@
   }: Props = $props()
 </script>
 
-<tr class='hover'>
+<tr>
   <td>
     <div class='font-medium text-gray-900'>{entry.title}</div>
     {#if entry.notes}

@@ -26,7 +26,7 @@
 <div class='p-8'>
   <div class='text-center mb-6'>
     <div class='w-12 h-12 bg-success text-success-content rounded-lg flex items-center justify-center mx-auto mb-4'>
-      <CheckCircle class='w-6 h-6' />
+      <CheckCircle class='w-6 h-6 text-white' />
     </div>
     <h2 class='text-xl font-semibold mb-2'>
       {isNewDatabase ? i18next.t('password.setTitle') : i18next.t('password.enterTitle')}

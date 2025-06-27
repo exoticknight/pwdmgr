@@ -8,6 +8,7 @@
     password: string
     confirmPassword: string
     error: string
+    isLoading?: boolean
     onSubmit: (event: SubmitEvent) => void
     onReset: () => void
   }
@@ -18,6 +19,7 @@
     password = $bindable(),
     confirmPassword = $bindable(),
     error,
+    isLoading = false,
     onSubmit,
     onReset,
   }: Props = $props()
@@ -79,6 +81,7 @@
         type='button'
         class='btn btn-outline flex-1'
         onclick={onReset}
+        disabled={isLoading}
       >
         <ArrowLeft class='w-4 h-4 mr-2' />
         {i18next.t('actions.back')}
@@ -86,8 +89,12 @@
       <button
         type='submit'
         class='btn btn-primary flex-1'
+        disabled={isLoading}
       >
-        {#if isNewDatabase}
+        {#if isLoading}
+          <span class='loading loading-spinner w-4 h-4 mr-2'></span>
+          {i18next.t('common.loading')}
+        {:else if isNewDatabase}
           <Plus class='w-4 h-4 mr-2' />
           {i18next.t('actions.create')}
         {:else}

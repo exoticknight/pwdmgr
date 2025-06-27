@@ -1,13 +1,5 @@
 // Encryption/decryption utility functions
 
-// 可选的额外安全增强措施：
-// 1. 增加PBKDF2迭代次数（如50万次）
-// 2. 使用Argon2算法（更抗ASIC攻击）
-// 3. 添加设备指纹作为额外盐值
-// 4. 实现密钥拉伸（key stretching）
-//
-// 但这些都比使用强密码的影响小
-
 const ENCRYPTION_CONFIG = {
   algorithm: 'AES-GCM',
   keyLength: 128,

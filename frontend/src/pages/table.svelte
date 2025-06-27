@@ -5,8 +5,8 @@
   import EmptyState from '../components/empty-state.svelte'
   import EntryModal from '../components/entry-modal.svelte'
   import EntryRow from '../components/entry-row.svelte'
+  import SaveFileDialog from '../components/save-file-dialog.svelte'
   import TableHeader from '../components/table-header.svelte'
-  import WailsFileSelect from '../components/wails-file-select.svelte'
   import i18next from '../i18n'
   import { getDataManagerService } from '../services/data-manager'
   import { getDatabaseService } from '../services/database'
@@ -309,44 +309,8 @@
 />
 
 <!-- Save File Dialog -->
-{#if showSaveDialog}
-  <div class='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-    <div class='bg-white rounded-lg p-6 max-w-md w-full mx-4'>
-      <h3 class='text-lg font-semibold mb-4'>{i18next.t('dialogs.savePasswordFile')}</h3>
-      <WailsFileSelect
-        config={{
-          dialog: {
-            title: i18next.t('dialogs.savePasswordFile'),
-            defaultFilename: 'passwords.pwd',
-            filters: [
-              { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
-            ],
-            canCreateDirs: true,
-          },
-          behavior: {
-            mode: 'save',
-            enableDrop: false,
-          },
-          appearance: {
-            containerClass: 'border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:border-blue-500',
-          },
-        }}
-        onSelect={handleSaveLocationSelected}
-      >
-        {#snippet children({ mode: _mode })}
-          <p class='text-center text-gray-600'>
-            {i18next.t('dialogs.saveLocation')}
-          </p>
-        {/snippet}
-      </WailsFileSelect>
-      <div class='mt-4 flex justify-end gap-2'>
-        <button
-          class='btn btn-ghost'
-          onclick={handleCancelSave}
-        >
-          {i18next.t('dialogs.cancel')}
-        </button>
-      </div>
-    </div>
-  </div>
-{/if}
+<SaveFileDialog
+  isOpen={showSaveDialog}
+  onSave={handleSaveLocationSelected}
+  onCancel={handleCancelSave}
+/>

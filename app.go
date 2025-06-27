@@ -128,45 +128,6 @@ func (a *App) SaveFileDialogWithOptions(options SaveDialogOptions) (string, erro
 	return filePath, nil
 }
 
-// OpenFileDialog opens a file dialog to select a password file
-func (a *App) OpenFileDialog() (string, error) {
-	filePath, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-		Title: "Select Password File",
-		Filters: []runtime.FileFilter{
-			{
-				DisplayName: "Password Files (*.pwd)",
-				Pattern:     "*.pwd",
-			},
-			{
-				DisplayName: "All Files (*.*)",
-				Pattern:     "*.*",
-			},
-		},
-	})
-	if err != nil {
-		return "", fmt.Errorf("failed to open file dialog: %w", err)
-	}
-	return filePath, nil
-}
-
-// SaveFileDialog opens a save file dialog
-func (a *App) SaveFileDialog(defaultFilename string) (string, error) {
-	filePath, err := runtime.SaveFileDialog(a.ctx, runtime.SaveDialogOptions{
-		Title:           "Save Password File",
-		DefaultFilename: defaultFilename,
-		Filters: []runtime.FileFilter{
-			{
-				DisplayName: "Password Files (*.pwd)",
-				Pattern:     "*.pwd",
-			},
-		},
-	})
-	if err != nil {
-		return "", fmt.Errorf("failed to open save dialog: %w", err)
-	}
-	return filePath, nil
-}
-
 // ReadFile reads data from a file
 func (a *App) ReadFile(filePath string) ([]byte, error) {
 	data, err := os.ReadFile(filePath)

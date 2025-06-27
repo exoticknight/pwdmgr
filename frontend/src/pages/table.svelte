@@ -365,22 +365,8 @@
         onSelect={handleSaveLocationSelected}
       >
         {#snippet children({ mode: _mode })}
-          <div class='w-12 h-12 mx-auto mb-4 text-gray-400'>
-            <svg fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-              <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4'></path>
-            </svg>
-          </div>
-
-          <h4 class='text-lg font-semibold mb-2'>
+          <p class='text-center text-gray-600'>
             {i18next.t('dialogs.saveLocation')}
-          </h4>
-
-          <p class='text-gray-600 mb-4'>
-            {i18next.t('dialogs.saveDescription')}
-          </p>
-
-          <p class='text-sm text-gray-500'>
-            {i18next.t('dialogs.saveHint')}
           </p>
         {/snippet}
       </WailsFileSelect>

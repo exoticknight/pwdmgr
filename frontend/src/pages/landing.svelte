@@ -1,64 +1,35 @@
 <script lang='ts'>
+  import type { FileSelection } from '../types/file'
   import { Plus } from '@lucide/svelte'
   import ErrorAlert from '../components/error-alert.svelte'
   import FileDropZone from '../components/file-drop-zone.svelte'
   import PasswordForm from '../components/password-form.svelte'
-  import { PASSWORD_FILE_CONFIG } from '../config/file-config'
   import i18next from '../i18n'
   import { userState } from '../stores/user.svelte'
   import { navigationService, Routes } from '../utils/navigation'
 
   let showPasswordInput = $state(false)
   let selectedFile = $state<File | null>(null)
-  let selectedFilePath = $state<string>('')
   let isNewDatabase = $state(false)
   let password = $state('')
   let confirmPassword = $state('')
   let error = $state('')
 
-  function handleFileSelect(event: Event) {
-    const input = event.target as HTMLInputElement
-    const files = input.files
-    if (files && files.length > 0) {
-      handleFileSelection(files[0])
+  function handleFileSelected(selection: FileSelection) {
+    if (!selection.isValid) {
+      error = selection.error || 'Invalid file'
+      return
     }
-  }
 
-  function handleFileDrop(filePaths: string[]) {
-    if (filePaths.length > 0) {
-      const filePath = filePaths[0]
-      const fileName = filePath.split('/').pop() || filePath.split('\\').pop() || filePath
-
-      if (PASSWORD_FILE_CONFIG.isValidFile(fileName)) {
-        selectedFilePath = filePath
-        selectedFile = null
-        isNewDatabase = false
-        showPasswordInput = true
-        error = ''
-      }
-      else {
-        error = PASSWORD_FILE_CONFIG.errorMessage
-      }
-    }
-  }
-
-  function handleFileSelection(file: File) {
-    if (PASSWORD_FILE_CONFIG.isValidFile(file.name)) {
-      selectedFile = file
-      selectedFilePath = ''
-      isNewDatabase = false
-      showPasswordInput = true
-      error = ''
-    }
-    else {
-      error = PASSWORD_FILE_CONFIG.errorMessage
-    }
+    error = ''
+    isNewDatabase = false
+    showPasswordInput = true
+    selectedFile = selection.file
   }
 
   function createNewDatabase() {
     isNewDatabase = true
     selectedFile = null
-    selectedFilePath = ''
     showPasswordInput = true
     error = ''
   }
@@ -80,24 +51,16 @@
 
   function processDatabase() {
     if (selectedFile) {
-      // Handle browser-selected file
+      // Handle file using FileReader
       const reader = new FileReader()
       reader.onload = () => {
         userState.dbPath = selectedFile!.name
         userState.password = password
         userState.dbData = reader.result as ArrayBuffer
         userState.isNewDatabase = false
-        // Use navigation service
         navigationService.navigate(Routes.TABLE)
       }
       reader.readAsArrayBuffer(selectedFile)
-    }
-    else if (selectedFilePath) {
-      userState.dbPath = selectedFilePath
-      userState.password = password
-      userState.dbData = null // When using path, let backend handle file reading
-      userState.isNewDatabase = false
-      navigationService.navigate(Routes.TABLE)
     }
     else if (isNewDatabase) {
       userState.dbPath = 'new_passwords.pwd'
@@ -111,31 +74,20 @@
   function resetState() {
     showPasswordInput = false
     selectedFile = null
-    selectedFilePath = ''
     isNewDatabase = false
     password = ''
     confirmPassword = ''
     error = ''
   }
 
-  const displayFileName = $derived(
-    selectedFile?.name || getFileNameFromPath(selectedFilePath),
-  )
-
-  function getFileNameFromPath(path: string): string {
-    if (!path) {
-      return ''
-    }
-    return path.split('/').pop() || path.split('\\').pop() || path
-  }
+  const displayFileName = $derived(selectedFile?.name || '')
 </script>
 
 <div class='min-h-screen bg-base-100 flex items-center justify-center p-8'>
   <div class='w-full max-w-lg'>
     {#if !showPasswordInput}
       <FileDropZone
-        onFileSelect={handleFileSelect}
-        onFileDrop={handleFileDrop}
+        onFileSelected={handleFileSelected}
       />
 
       <div class='divider my-6'>{i18next.t('actions.or')}</div>

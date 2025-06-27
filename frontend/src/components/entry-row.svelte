@@ -5,8 +5,6 @@
 
   interface Props {
     entry: PasswordEntry
-    showPassword: boolean
-    onTogglePassword: () => void
     onCopyUsername: () => void
     onCopyPassword: () => void
     onEdit: () => void
@@ -15,13 +13,18 @@
 
   const {
     entry,
-    showPassword,
-    onTogglePassword,
     onCopyUsername,
     onCopyPassword,
     onEdit,
     onDelete,
   }: Props = $props()
+
+  // Handle password visibility locally
+  let showPassword = $state(false)
+
+  function togglePasswordVisibility() {
+    showPassword = !showPassword
+  }
 </script>
 
 <tr>
@@ -52,7 +55,7 @@
       </span>
       <button
         class='btn btn-ghost btn-xs'
-        onclick={onTogglePassword}
+        onclick={togglePasswordVisibility}
         title={showPassword ? i18next.t('actions.hide') : i18next.t('actions.show')}
       >
         {#if showPassword}

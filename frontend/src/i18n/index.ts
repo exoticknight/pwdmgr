@@ -3,26 +3,19 @@ import i18next from 'i18next'
 const resources = {
   en: {
     translation: {
-      app: {
-        title: 'Password Manager',
-        subtitle: 'Select or create your password file',
-      },
       common: {
         file: 'File',
+        loading: 'Loading...',
       },
       landing: {
         description: 'Select an existing password file or create a new password file',
         selectFileTitle: 'Select your password file',
         selectFileDescription: 'Choose an existing password database file or drag & drop here',
-        selectFileFormats: 'Supported: *.pwd, *.dat',
+        selectFileFormats: 'Supported: *.pwd',
         selectFileHint: 'Drag & drop enabled',
         dialogTitle: 'Select Password File',
         passwordFiles: 'Password Files (*.pwd)',
-        dataFiles: 'Data Files (*.dat)',
         allFiles: 'All Files (*.*)',
-      },
-      database: {
-        label: 'Password File',
       },
       table: {
         title: 'Title',
@@ -37,18 +30,23 @@ const resources = {
         placeholder: 'Search passwords...',
         noResults: 'No matching entries found',
       },
+      forms: {
+        title: 'Title',
+        username: 'Username',
+        password: 'Password',
+        url: 'URL',
+        notes: 'Notes',
+      },
       stats: {
         entry: 'entry',
         entries: 'entries',
         total: 'total',
       },
-      dropzone: {
-        title: 'Drop password file here',
-        subtitle: 'Supports .pwd files',
-        selectButton: 'Select File',
-      },
       actions: {
         addNew: 'Add New Entry',
+        add: 'Add',
+        update: 'Update',
+        cancel: 'Cancel',
         copy: 'Copy',
         edit: 'Edit',
         delete: 'Delete',
@@ -110,26 +108,19 @@ const resources = {
   },
   zh: {
     translation: {
-      app: {
-        title: '密码管理器',
-        subtitle: '选择或创建您的密码文件',
-      },
       common: {
         file: '文件',
+        loading: '加载中...',
       },
       landing: {
         description: '选择现有的密码文件或创建新的密码文件',
         selectFileTitle: '选择您的密码文件',
         selectFileDescription: '选择现有的密码数据库文件或拖放到这里',
-        selectFileFormats: '支持格式: *.pwd, *.dat',
+        selectFileFormats: '支持格式: *.pwd',
         selectFileHint: '支持拖拽',
         dialogTitle: '选择密码文件',
         passwordFiles: '密码文件 (*.pwd)',
-        dataFiles: '数据文件 (*.dat)',
         allFiles: '所有文件 (*.*)',
-      },
-      database: {
-        label: '密码文件',
       },
       table: {
         title: '标题',
@@ -144,18 +135,23 @@ const resources = {
         placeholder: '搜索密码...',
         noResults: '没有找到匹配的条目',
       },
+      forms: {
+        title: '标题',
+        username: '用户名',
+        password: '密码',
+        url: '网址',
+        notes: '备注',
+      },
       stats: {
         entry: '条目',
         entries: '条目',
         total: '总计',
       },
-      dropzone: {
-        title: '拖放密码文件到这里',
-        subtitle: '支持 .pwd 格式',
-        selectButton: '选择文件',
-      },
       actions: {
         addNew: '添加新条目',
+        add: '添加',
+        update: '更新',
+        cancel: '取消',
         copy: '复制',
         edit: '编辑',
         delete: '删除',
@@ -217,26 +213,19 @@ const resources = {
   },
   ja: {
     translation: {
-      app: {
-        title: 'パスワードマネージャー',
-        subtitle: 'パスワードファイルを選択または作成',
-      },
       common: {
         file: 'ファイル',
+        loading: '読み込み中...',
       },
       landing: {
         description: '既存のパスワードファイルを選択するか、新しいパスワードファイルを作成',
         selectFileTitle: 'パスワードファイルを選択',
         selectFileDescription: '既存のパスワードデータベースファイルを選択するか、ここにドラッグ&ドロップ',
-        selectFileFormats: 'サポート形式: *.pwd, *.dat',
+        selectFileFormats: 'サポート形式: *.pwd',
         selectFileHint: 'ドラッグ&ドロップ対応',
         dialogTitle: 'パスワードファイルを選択',
         passwordFiles: 'パスワードファイル (*.pwd)',
-        dataFiles: 'データファイル (*.dat)',
         allFiles: 'すべてのファイル (*.*)',
-      },
-      database: {
-        label: 'パスワードファイル',
       },
       table: {
         title: 'タイトル',
@@ -251,18 +240,23 @@ const resources = {
         placeholder: 'パスワードを検索...',
         noResults: '一致するエントリが見つかりません',
       },
+      forms: {
+        title: 'タイトル',
+        username: 'ユーザー名',
+        password: 'パスワード',
+        url: 'URL',
+        notes: 'メモ',
+      },
       stats: {
         entry: 'エントリ',
         entries: 'エントリ',
         total: '合計',
       },
-      dropzone: {
-        title: 'パスワードファイルをここにドロップ',
-        subtitle: '.pwd ファイルをサポート',
-        selectButton: 'ファイルを選択',
-      },
       actions: {
         addNew: '新しいエントリを追加',
+        add: '追加',
+        update: '更新',
+        cancel: 'キャンセル',
         copy: 'コピー',
         edit: '編集',
         delete: '削除',

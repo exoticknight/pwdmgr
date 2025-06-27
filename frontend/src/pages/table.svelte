@@ -350,7 +350,7 @@
             title: i18next.t('dialogs.savePasswordFile'),
             defaultFilename: 'passwords.pwd',
             filters: [
-              { displayName: 'Password Files (*.pwd)', pattern: '*.pwd' },
+              { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
             ],
             canCreateDirs: true,
           },

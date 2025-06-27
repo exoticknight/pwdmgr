@@ -1,6 +1,6 @@
 import type { DatabaseService } from './database'
 import { decryptData, encryptData } from '../utils/crypto'
-import { getDatabaseService } from './database'
+import { getDatabaseService, resetDatabaseService } from './database'
 import { getFileService } from './file'
 
 export interface DataManagerService {
@@ -22,6 +22,9 @@ class DataManager implements DataManagerService {
 
   async loadFromFile(filePath: string, password: string): Promise<DatabaseService> {
     try {
+      // Reset any existing database instance first
+      resetDatabaseService()
+
       // Read encrypted file
       const encryptedData = await this.fileService.readFile(filePath)
 
@@ -42,6 +45,9 @@ class DataManager implements DataManagerService {
 
   async loadFromEncryptedData(encryptedData: ArrayBuffer, password: string): Promise<DatabaseService> {
     try {
+      // Reset any existing database instance first
+      resetDatabaseService()
+
       // Decrypt data
       const jsonData = await decryptData(encryptedData, password)
 

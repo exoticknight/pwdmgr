@@ -13,8 +13,10 @@ class WailsFileService implements FileService {
   async readFile(filePath: string): Promise<ArrayBuffer> {
     try {
       const data = await ReadFile(filePath)
-      // Convert number[] to ArrayBuffer
-      const uint8Array = new Uint8Array(data)
+
+      // Convert number[] to ArrayBuffer properly
+      const uint8Array = Uint8Array.from(data)
+
       return uint8Array.buffer
     }
     catch (error: unknown) {
@@ -28,6 +30,7 @@ class WailsFileService implements FileService {
       // Convert ArrayBuffer to number[]
       const uint8Array = new Uint8Array(data)
       const dataArray = Array.from(uint8Array)
+
       await SaveFile(filePath, dataArray)
     }
     catch (error: unknown) {

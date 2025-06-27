@@ -66,10 +66,20 @@ export async function decryptData(encryptedData: ArrayBuffer, password: string):
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
 
+  // Check if data is large enough to contain IV + encrypted content
+  if (encryptedData.byteLength < ENCRYPTION_CONFIG.ivLength + 1) {
+    throw new Error(`Encrypted data is too small. Expected at least ${ENCRYPTION_CONFIG.ivLength + 1} bytes, got ${encryptedData.byteLength} bytes.`)
+  }
+
   // Extract IV and encrypted data
   const data = new Uint8Array(encryptedData)
   const iv = data.slice(0, ENCRYPTION_CONFIG.ivLength)
   const encrypted = data.slice(ENCRYPTION_CONFIG.ivLength)
+
+  // Verify we have some encrypted content
+  if (encrypted.length === 0) {
+    throw new Error('No encrypted content found after IV.')
+  }
 
   // Derive key from password
   const keyMaterial = await getKeyMaterial(password)

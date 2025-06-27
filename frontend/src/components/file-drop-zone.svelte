@@ -1,25 +1,33 @@
 <script lang='ts'>
   import type { FileSelection } from '../types/file'
   import { FileLock } from '@lucide/svelte'
-  import { PASSWORD_FILE_CONFIG } from '../config/file-config'
   import i18next from '../i18n'
 
   interface Props {
     onFileSelected: (selection: FileSelection) => void
     disabled?: boolean
+    acceptAttribute?: string
+    validateFile?: (fileName: string) => { isValid: boolean, error?: string }
   }
 
-  const { onFileSelected, disabled = false }: Props = $props()
+  const {
+    onFileSelected,
+    disabled = false,
+    acceptAttribute = '*',
+    validateFile = () => ({ isValid: true }),
+  }: Props = $props()
 
   let isDragOver = $state(false)
   let fileInputRef: HTMLInputElement | undefined
 
   function handleFileSelection(file: File) {
+    const validation = validateFile(file.name)
+
     const selection: FileSelection = {
       file,
       fileName: file.name,
-      isValid: PASSWORD_FILE_CONFIG.isValidFile(file.name),
-      error: PASSWORD_FILE_CONFIG.isValidFile(file.name) ? undefined : PASSWORD_FILE_CONFIG.errorMessage,
+      isValid: validation.isValid,
+      error: validation.error,
     }
 
     onFileSelected(selection)
@@ -94,7 +102,7 @@
       bind:this={fileInputRef}
       type='file'
       class='hidden'
-      accept={PASSWORD_FILE_CONFIG.acceptAttribute}
+      accept={acceptAttribute}
       onchange={(e) => {
         const input = e.target as HTMLInputElement
         const files = input.files

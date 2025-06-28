@@ -30,9 +30,6 @@
 <tr>
   <td>
     <div class='font-medium text-gray-900'>{entry.title}</div>
-    {#if entry.notes}
-      <div class='text-sm text-gray-500'>{entry.notes}</div>
-    {/if}
   </td>
   <td>
     <div class='flex items-center gap-2'>
@@ -74,15 +71,10 @@
     </div>
   </td>
   <td>
-    {#if entry.url}
-      <a
-        href={entry.url}
-        target='_blank'
-        rel='noopener noreferrer'
-        class='link link-primary text-sm selectable'
-      >
-        {entry.url}
-      </a>
+    {#if entry.notes}
+      <div class='text-sm text-gray-700 max-w-xs truncate selectable' title={entry.notes}>
+        {entry.notes}
+      </div>
     {:else}
       <span class='text-base-content/50'>-</span>
     {/if}

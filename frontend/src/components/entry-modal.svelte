@@ -16,7 +16,6 @@
     title: '',
     username: '',
     password: '',
-    url: '',
     notes: '',
   })
 
@@ -26,14 +25,12 @@
       form.title = entry.title
       form.username = entry.username
       form.password = entry.password
-      form.url = entry.url || ''
       form.notes = entry.notes || ''
     }
     else {
       form.title = ''
       form.username = ''
       form.password = ''
-      form.url = ''
       form.notes = ''
     }
   })
@@ -55,7 +52,6 @@
         title: form.title.trim(),
         username: form.username.trim(),
         password: form.password.trim(),
-        url: form.url.trim(),
         notes: form.notes.trim(),
       })
     }
@@ -65,7 +61,6 @@
         title: form.title.trim(),
         username: form.username.trim(),
         password: form.password.trim(),
-        url: form.url.trim(),
         notes: form.notes.trim(),
       })
     }
@@ -139,20 +134,6 @@
             placeholder={i18next.t('forms.passwordPlaceholder')}
             class='input input-bordered w-full'
             required
-          />
-        </div>
-
-        <!-- URL -->
-        <div class='form-control w-full mb-4'>
-          <label class='label' for='url'>
-            <span class='label-text'>{i18next.t('forms.url')}</span>
-          </label>
-          <input
-            id='url'
-            type='url'
-            bind:value={form.url}
-            placeholder={i18next.t('forms.urlPlaceholder')}
-            class='input input-bordered w-full'
           />
         </div>
 

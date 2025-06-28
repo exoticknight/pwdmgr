@@ -96,6 +96,7 @@
   <div class='w-full max-w-lg'>
     {#if !showPasswordInput}
       <WailsFileSelect
+        class='border-2 border-dashed border-base-300 rounded-lg p-8 text-center cursor-pointer transition-colors hover:border-primary hover:bg-base-200'
         config={{
           dialog: {
             title: i18next.t('landing.dialogTitle'),
@@ -111,9 +112,6 @@
             dropFilter: paths => paths.filter(path =>
               path.toLowerCase().endsWith('.pwd'),
             ),
-          },
-          appearance: {
-            containerClass: 'border-2 border-dashed border-base-300 rounded-lg p-8 text-center cursor-pointer transition-colors hover:border-primary hover:bg-base-200',
           },
         }}
         onSelect={handleFilesSelected}

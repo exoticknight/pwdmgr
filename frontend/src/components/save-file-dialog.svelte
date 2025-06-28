@@ -16,6 +16,7 @@
     <div class='bg-white rounded-lg p-6 max-w-md w-full mx-4'>
       <h3 class='text-lg font-semibold mb-4'>{i18next.t('dialogs.savePasswordFile')}</h3>
       <WailsFileSelect
+        class='border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:border-blue-500'
         config={{
           dialog: {
             title: i18next.t('dialogs.savePasswordFile'),
@@ -28,9 +29,6 @@
           behavior: {
             mode: 'save',
             enableDrop: false,
-          },
-          appearance: {
-            containerClass: 'border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:border-blue-500',
           },
         }}
         onSelect={onSave}

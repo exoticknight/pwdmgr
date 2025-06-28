@@ -31,14 +31,10 @@
       dropFilter?: (paths: string[]) => string[]
       disabled?: boolean
     }
-
-    // === Appearance settings ===
-    appearance?: {
-      containerClass?: string
-    }
   }
 
   interface Props {
+    class?: string
     config?: WailsFileSelectConfig
     onSelect: (filePaths: string[]) => void
     children?: Snippet<[{
@@ -51,7 +47,7 @@
     }]>
   }
 
-  const { config = {}, onSelect, children }: Props = $props()
+  const { class: containerClass, config = {}, onSelect, children }: Props = $props()
 
   // Default configuration
   const defaults = {
@@ -70,16 +66,12 @@
       dropFilter: (paths: string[]) => paths,
       disabled: false,
     },
-    appearance: {
-      containerClass: '',
-    },
   }
 
   // Merge configuration
   const cfg = {
     dialog: { ...defaults.dialog, ...config.dialog },
     behavior: { ...defaults.behavior, ...config.behavior },
-    appearance: { ...defaults.appearance, ...config.appearance },
   }
 
   let isDragOver = $state(false)
@@ -106,7 +98,7 @@
       if (filteredPaths.length > 0) {
         onSelect(filteredPaths)
       }
-    }, false)
+    }, true)
   }
 
   async function handleSelectFiles() {
@@ -219,13 +211,9 @@
 
 <div
   role='button'
+  style='--wails-drop-target: drop'
   tabindex={cfg.behavior.disabled ? -1 : 0}
-  class={`
-    ${cfg.appearance.containerClass || 'border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors'}
-    ${cfg.behavior.disabled ? 'opacity-50 cursor-not-allowed' : ''}
-    ${isDragOver && cfg.behavior.enableDrop && cfg.behavior.mode !== 'save' ? 'border-blue-500 bg-blue-50' : ''}
-    ${!cfg.behavior.enableDrop || cfg.behavior.mode === 'save' ? 'border-solid' : ''}
-  `}
+  class={containerClass}
   ondragenter={handleDragEnter}
   ondragleave={handleDragLeave}
   ondragover={handleDragOver}

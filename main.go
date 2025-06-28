@@ -35,8 +35,8 @@ func main() {
 		DisableResize: false,
 		Fullscreen:    false,
 		Frameless:     false,
-		MinWidth:      400,
-		MinHeight:     300,
+		MinWidth:      800,
+		MinHeight:     600,
 		Bind: []interface{}{
 			app,
 			fileService,

@@ -279,7 +279,7 @@
               <th>{i18next.t('table.title')}</th>
               <th>{i18next.t('table.username')}</th>
               <th>{i18next.t('table.password')}</th>
-              <th>{i18next.t('table.url')}</th>
+              <th>{i18next.t('table.notes')}</th>
               <th>{i18next.t('table.actions')}</th>
             </tr>
           </thead>

@@ -182,7 +182,13 @@
       return
     }
     event.preventDefault()
-    isDragOver = false
+
+    const target = event.currentTarget as HTMLElement
+    const relatedTarget = event.relatedTarget as HTMLElement
+
+    if (!relatedTarget || !target.contains(relatedTarget)) {
+      isDragOver = false
+    }
   }
 
   function handleDragOver(event: DragEvent) {

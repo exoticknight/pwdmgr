@@ -6,23 +6,23 @@ html, body {
   font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
   "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
   sans-serif;
-  /* 禁止用户选择文本 */
+  /* Disable text selection */
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  /* 禁用浏览器导航快捷键 */
+  /* Disable browser navigation shortcuts */
   overscroll-behavior: none;
-  /* 禁止拖拽 */
+  /* Disable drag */
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-  /* 禁止缩放 */
+  /* Disable zoom */
   touch-action: manipulation;
-  /* 禁止高亮 */
+  /* Disable highlight */
   -webkit-tap-highlight-color: transparent;
-  /* 禁止文本选择和复制 */
+  /* Disable text selection and copy */
   -webkit-touch-callout: none;
 }
 
@@ -35,19 +35,19 @@ html, body {
 
 #app {
   height: 100vh;
-  /* 防止选择 */
+  /* Prevent selection */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  /* 防止拖拽 */
+  /* Prevent drag */
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
 }
 
-/* 允许输入框、文本区域等可以选择文本 */
+/* Allow input, textarea and other elements to be selectable */
 input, textarea, [contenteditable] {
   user-select: text;
   -webkit-user-select: text;
@@ -55,7 +55,7 @@ input, textarea, [contenteditable] {
   -ms-user-select: text;
 }
 
-/* 禁用所有元素的默认行为 */
+/* Disable default behavior for all elements */
 * {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -63,16 +63,16 @@ input, textarea, [contenteditable] {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  /* 禁用拖拽 */
+  /* Disable drag */
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-  /* 禁用轮廓线 */
+  /* Disable outline */
   outline: none;
 }
 
-/* 允许特定元素可以选择文本 */
+/* Allow specific elements to be selectable */
 input, textarea, [contenteditable], .selectable {
   -webkit-user-select: text;
   -moz-user-select: text;
@@ -80,7 +80,7 @@ input, textarea, [contenteditable], .selectable {
   user-select: text;
 }
 
-/* 禁用图片拖拽 */
+/* Disable image drag */
 img {
   -webkit-user-drag: none;
   -khtml-user-drag: none;
@@ -89,7 +89,7 @@ img {
   pointer-events: none;
 }
 
-/* 禁用链接的默认拖拽行为 */
+/* Disable default drag behavior for links */
 a {
   -webkit-user-drag: none;
   -khtml-user-drag: none;
@@ -97,7 +97,7 @@ a {
   -o-user-drag: none;
 }
 
-/* 但允许URL链接可以选择文本 */
+/* But allow URL links to be selectable */
 a.selectable {
   pointer-events: auto;
 }

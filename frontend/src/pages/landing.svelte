@@ -70,6 +70,7 @@
       }
 
       // If we reach here, operation was successful
+      // Let user choose which interface to use
       navigationService.navigate(Routes.TABLE)
     }
     catch (err) {

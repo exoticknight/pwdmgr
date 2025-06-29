@@ -1,14 +1,19 @@
 export const zh = {
   translation: {
+    // 应用程序品牌
     app: {
       title: '密码管理器',
       slogan: '安全 • 简单 • 本地',
     },
+
+    // 通用界面元素
     common: {
       loading: '加载中...',
       back: '返回',
       file: '文件',
     },
+
+    // 登录页面内容
     landing: {
       selectFileDescription: '选择现有的密码数据库文件或拖放到这里',
       selectFileFormats: '支持格式: *.pwd',
@@ -16,29 +21,36 @@ export const zh = {
       passwordFiles: '密码文件 (*.pwd)',
       allFiles: '所有文件 (*.*)',
     },
+
+    // 搜索功能
     search: {
       placeholder: '搜索密码...',
       noResults: '没有找到匹配的条目',
-      noResultsDesc: '尝试调整搜索词或添加新条目',
     },
+
+    // 表单字段和条目管理
     forms: {
+      // 字段标签
       username: '用户名',
       password: '密码',
       notes: '备注',
       title: '标题',
+
+      // 字段占位符
       usernamePlaceholder: '请输入用户名',
       passwordPlaceholder: '请输入密码',
       notesPlaceholder: '可选备注...',
       titlePlaceholder: '请输入标题',
-      selectEntry: '选择条目',
-      selectEntryDesc: '从列表中点击一个条目以查看和编辑其详细信息',
+
+      // 条目管理
       emptySubtitle: '选择一个条目来查看详细信息',
-      delete: '删除',
       confirmDelete: '您确定要删除此条目吗？',
       save: '保存',
       addEntry: '添加条目',
       editEntry: '编辑条目',
     },
+
+    // 密码对话框
     password: {
       setTitle: '设置密码',
       enterTitle: '输入密码',
@@ -48,24 +60,36 @@ export const zh = {
       confirmLabel: '确认密码',
       confirmPlaceholder: '请确认密码',
     },
+
+    // 操作按钮
     actions: {
-      copy: '复制',
-      show: '显示',
-      hide: '隐藏',
-      createNew: '创建新的密码文件',
-      or: '或者',
+      // 通用操作
       back: '返回',
+      cancel: '取消',
       create: '创建',
       open: '打开',
-      cancel: '取消',
-      update: '更新',
+      save: '保存',
       add: '添加',
+      update: '更新',
+      or: '或者',
+
+      // 密码特定操作
+      copy: '复制',
+      showPassword: '显示密码',
+      hidePassword: '隐藏密码',
+
+      // 文件操作
+      createNew: '创建新的密码文件',
     },
+
+    // 对话框内容
     dialogs: {
       savePasswordFile: '保存密码文件',
       saveLocation: '选择密码文件的保存位置',
       cancel: '取消',
     },
+
+    // 错误消息
     errors: {
       passwordRequired: '请输入密码',
       passwordMismatch: '密码确认不匹配',
@@ -76,9 +100,13 @@ export const zh = {
       unsavedChanges: '您有未保存的更改。您确定要离开而不保存吗？',
       noPasswordAvailable: '没有可用密码',
     },
+
+    // 系统消息
     messages: {
       loadDatabaseFileFailed: '加载数据库文件失败',
     },
+
+    // 提示通知
     notifications: {
       copied: '已复制到剪贴板',
       copyFailed: '复制到剪贴板失败',

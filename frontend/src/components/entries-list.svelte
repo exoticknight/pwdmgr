@@ -1,6 +1,6 @@
 <script lang='ts'>
   import type { PasswordEntry } from '../types/password'
-  import { Key, Search } from '@lucide/svelte'
+  import { Search } from '@lucide/svelte'
   import i18next from '../i18n'
 
   interface Props {
@@ -55,6 +55,13 @@
     onSelect?.({ entry })
   }
 
+  function handleKeydown(event: KeyboardEvent, entry: PasswordEntry) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleEntryClick(entry)
+    }
+  }
+
   function handleSearchInput(event: Event) {
     const target = event.target as HTMLInputElement
     onSearch?.({ term: target.value })
@@ -77,7 +84,7 @@
   </div>
 
   <!-- Divider -->
-  <div class='border-b border-base-300' />
+  <div class='border-b border-base-300'></div>
 
   <!-- Entries List -->
   <div class='flex-1 overflow-y-auto'>
@@ -87,7 +94,7 @@
       </div>
     {:else}
       {#each [...groupedEntries.entries()] as [letter, groupEntries]}
-        <div class='mb-4'>
+        <div>
           <!-- Group Header -->
           <div class='sticky top-0 bg-base-200 px-4 py-2 text-sm font-semibold text-base-content/80 border-b'>
             {letter}
@@ -95,9 +102,12 @@
 
           <!-- Group Entries -->
           {#each groupEntries as entry}
-            <button
+            <div
+              role='button'
+              tabindex='0'
               class='w-full p-3 text-left transition-colors border-b border-base-300 {selectedId === entry.id ? 'bg-primary/10 border-l-4 border-l-primary' : 'hover:bg-base-200'}'
               onclick={() => handleEntryClick(entry)}
+              onkeydown={e => handleKeydown(e, entry)}
             >
               <div class='flex items-center gap-3'>
                 <div class='flex-1 min-w-0'>
@@ -111,7 +121,7 @@
                   {/if}
                 </div>
               </div>
-            </button>
+            </div>
           {/each}
         </div>
       {/each}

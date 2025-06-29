@@ -257,7 +257,7 @@
             onSave={handleSaveAll}
           />
 
-          <div class='border-b border-base-300' />
+          <div class='border-b border-base-300'></div>
 
           <!-- Entries List -->
           <div class='flex-1 overflow-hidden'>

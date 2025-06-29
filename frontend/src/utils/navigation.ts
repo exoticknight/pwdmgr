@@ -1,7 +1,7 @@
 // Route enum - centralized management of all routes
 export enum Routes {
   HOME = '',
-  TABLE = 'table',
+  TABLE = 'home',
 }
 
 // Navigation control service

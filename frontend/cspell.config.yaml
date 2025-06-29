@@ -8,5 +8,10 @@ words:
   - vercel
   - vite
   - vitest
+  - svelte
+  - wails
+  - wailsjs
+  - pnpm
+  - tsconfig
 ignoreWords: []
 import: []

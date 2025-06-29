@@ -11,8 +11,7 @@ const DEFAULT_SEARCH_CONFIG: SearchConfig = {
   keys: [
     { name: 'title', weight: 0.5 },
     { name: 'username', weight: 0.3 },
-    { name: 'url', weight: 0.2 },
-    { name: 'notes', weight: 0.1 },
+    { name: 'notes', weight: 0.2 },
   ],
   threshold: 0.4,
   includeScore: false,

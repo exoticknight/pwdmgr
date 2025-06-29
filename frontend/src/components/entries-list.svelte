@@ -1,54 +1,18 @@
 <script lang='ts'>
   import type { PasswordEntry } from '../types/password'
-  import { Search } from '@lucide/svelte'
   import i18next from '../i18n'
 
   interface Props {
     entries: PasswordEntry[]
     selectedId?: string
-    searchTerm?: string
     onSelect?: (data: { entry: PasswordEntry }) => void
-    onSearch?: (data: { term: string }) => void
   }
 
-  const { entries, selectedId, searchTerm = '', onSelect, onSearch }: Props = $props()
+  const { entries, selectedId, onSelect }: Props = $props()
 
-  // Group entries by first letter
-  const groupedEntries = $derived.by(() => {
-    const groups = new Map<string, PasswordEntry[]>()
-
-    for (const entry of entries) {
-      if (!entry.title) {
-        continue
-      }
-
-      // Get first character and normalize it
-      let firstChar = entry.title.charAt(0).toUpperCase()
-
-      // For Chinese characters, we'll use a simple approach
-      // In a real app, you might want to use a library like pinyin
-      if (firstChar.match(/[\u4E00-\u9FFF]/)) {
-        // Chinese character - for now, group under #
-        firstChar = '#'
-      }
-      else if (!firstChar.match(/[A-Z]/)) {
-        // Non-alphabetic character
-        firstChar = '#'
-      }
-
-      if (!groups.has(firstChar)) {
-        groups.set(firstChar, [])
-      }
-      groups.get(firstChar)!.push(entry)
-    }
-
-    // Sort groups by key and entries within groups by title
-    const sortedGroups = new Map([...groups.entries()].sort())
-    for (const [, groupEntries] of sortedGroups) {
-      groupEntries.sort((a, b) => a.title.localeCompare(b.title))
-    }
-
-    return sortedGroups
+  // Filter entries with title
+  const filteredEntries = $derived.by(() => {
+    return entries.filter(entry => entry.title)
   })
 
   function handleEntryClick(entry: PasswordEntry) {
@@ -61,68 +25,28 @@
       handleEntryClick(entry)
     }
   }
-
-  function handleSearchInput(event: Event) {
-    const target = event.target as HTMLInputElement
-    onSearch?.({ term: target.value })
-  }
 </script>
 
-<div class='h-full flex flex-col'>
-  <!-- Search Box -->
-  <div class='p-2'>
-    <label class='input'>
-      <Search class='h-[1em] text-base-content/50' />
-      <input
-        type='text'
-        placeholder={i18next.t('search.placeholder')}
-        class='grow'
-        value={searchTerm}
-        oninput={handleSearchInput}
-      />
-    </label>
-  </div>
-
-  <!-- Divider -->
-  <div class='border-b border-base-300'></div>
-
+<div class='entries-list'>
   <!-- Entries List -->
-  <div class='flex-1 overflow-y-auto'>
-    {#if groupedEntries.size === 0}
-      <div class='p-2 text-center text-base-content/60'>
+  <div class='list-container'>
+    {#if filteredEntries.length === 0}
+      <div class='empty-state'>
         {i18next.t('search.noResults')}
       </div>
     {:else}
-      {#each [...groupedEntries.entries()] as [letter, groupEntries]}
-        <div>
-          <!-- Group Header -->
-          <div class='sticky top-0 bg-base-200 px-4 py-2 text-sm font-semibold text-base-content/80 border-b'>
-            {letter}
+      {#each filteredEntries as entry}
+        <div
+          class='list-item {selectedId === entry.id ? 'list-item-selected' : ''}'
+          onclick={() => handleEntryClick(entry)}
+          onkeydown={e => handleKeydown(e, entry)}
+          role='button'
+          tabindex='0'
+        >
+          <div class='item-content'>
+            <div class='item-title'>{entry.title}</div>
+            <div class='item-subtitle'>{entry.username || ''}</div>
           </div>
-
-          <!-- Group Entries -->
-          {#each groupEntries as entry}
-            <div
-              role='button'
-              tabindex='0'
-              class='w-full p-3 text-left transition-colors border-b border-base-300 {selectedId === entry.id ? 'bg-primary/10 border-l-4 border-l-primary' : 'hover:bg-base-200'}'
-              onclick={() => handleEntryClick(entry)}
-              onkeydown={e => handleKeydown(e, entry)}
-            >
-              <div class='flex items-center gap-3'>
-                <div class='flex-1 min-w-0'>
-                  <div class='font-medium text-base-content truncate'>
-                    {entry.title}
-                  </div>
-                  {#if entry.notes}
-                    <div class='text-sm text-base-content/60 mt-1 whitespace-pre-wrap line-clamp-2'>
-                      {entry.notes}
-                    </div>
-                  {/if}
-                </div>
-              </div>
-            </div>
-          {/each}
         </div>
       {/each}
     {/if}
@@ -130,17 +54,98 @@
 </div>
 
 <style>
-  /* Ensure proper scrolling behavior */
-  :global(.entries-list) {
-    scrollbar-width: thin;
+  .entries-list {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-bg-primary);
   }
 
-  /* Support for multi-line notes with line clamping */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
+  .list-container {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .empty-state {
+    padding: var(--space-lg);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
+  }
+
+  .list-item {
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--color-border-light);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    background-color: var(--color-bg-primary);
+  }
+
+  .list-item:hover:not(.list-item-selected) {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .list-item:focus {
+    outline: none;
+  }
+
+  .list-item-selected {
+    background-color: var(--color-primary);
+    color: white;
+    border-left: 3px solid var(--color-primary-hover);
+  }
+
+  .list-item-selected:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .list-item-selected .item-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .item-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .item-title {
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    color: inherit;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Scrollbar styling */
+  .list-container {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  .list-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .list-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .list-container::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 3px;
+  }
+
+  .list-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-text-muted);
   }
 </style>

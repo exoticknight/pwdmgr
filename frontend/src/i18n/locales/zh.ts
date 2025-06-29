@@ -1,5 +1,9 @@
 export const zh = {
   translation: {
+    app: {
+      title: '密码管理器',
+      slogan: '安全 • 简单 • 本地',
+    },
     common: {
       loading: '加载中...',
       back: '返回',
@@ -28,6 +32,7 @@ export const zh = {
       titlePlaceholder: '请输入标题',
       selectEntry: '选择条目',
       selectEntryDesc: '从列表中点击一个条目以查看和编辑其详细信息',
+      emptySubtitle: '选择一个条目来查看详细信息',
       delete: '删除',
       confirmDelete: '您确定要删除此条目吗？',
       save: '保存',

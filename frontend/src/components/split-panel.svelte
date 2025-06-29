@@ -63,11 +63,11 @@
 <!-- Container wrapper -->
 <div
   bind:this={container}
-  class='flex h-full w-full overflow-hidden'
+  class='split-container'
 >
   <!-- Left panel -->
   <div
-    class='flex-none overflow-hidden'
+    class='split-panel-left'
     style='width: {leftWidth}%'
   >
     {@render left()}
@@ -75,7 +75,7 @@
 
   <!-- Resizer -->
   <button
-    class='flex-none w-1 bg-base-300 hover:bg-primary cursor-col-resize transition-colors user-select-none border-none p-0 {isDragging ? 'bg-primary' : ''}'
+    class='split-resizer {isDragging ? 'split-resizer-active' : ''}'
     aria-label='Resize panels'
     type='button'
     onmousedown={handleMouseDown}
@@ -83,7 +83,7 @@
 
   <!-- Right panel -->
   <div
-    class='flex-1 h-full'
+    class='split-panel-right'
     style='width: {100 - leftWidth}%'
   >
     {@render right()}
@@ -91,7 +91,62 @@
 </div>
 
 <style>
-  .user-select-none {
+  .split-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .split-panel-left {
+    flex: none;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .split-panel-right {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .split-resizer {
+    flex: none;
+    width: 1px;
+    background-color: var(--color-border);
+    cursor: col-resize;
+    border: none;
+    padding: 0;
+    transition: background-color 0.2s ease;
     user-select: none;
+    position: relative;
+  }
+
+  .split-resizer:hover,
+  .split-resizer-active {
+    background-color: var(--color-primary);
+  }
+
+  .split-resizer::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 20px;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 1px,
+      var(--color-text-muted) 1px,
+      var(--color-text-muted) 2px
+    );
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .split-resizer:hover::before {
+    opacity: 0.5;
   }
 </style>

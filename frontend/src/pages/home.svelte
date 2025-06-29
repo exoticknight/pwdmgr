@@ -2,6 +2,7 @@
   import type { DatabaseService } from '../services/database'
   import type { PasswordEntry } from '../types/password'
   import { onMount } from 'svelte'
+  import DetailToolbar from '../components/detail-toolbar.svelte'
   import EntriesList from '../components/entries-list.svelte'
   import EntryDetailPanel from '../components/entry-detail-panel.svelte'
   import EntryModal from '../components/entry-modal.svelte'
@@ -234,52 +235,126 @@
   }
 </script>
 
+<style>
+  .loading-screen {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-bg-primary);
+  }
+
+  .loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--color-border);
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .loading-text {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .app-layout {
+    height: 100vh;
+    background-color: var(--color-bg-primary);
+  }
+
+  .sidebar {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-bg-secondary);
+    border-right: 1px solid var(--color-border);
+  }
+
+  .sidebar-content {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .main-content {
+    height: 100%;
+    background-color: var(--color-bg-primary);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detail-content {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
 {#if isLoading}
-  <div class='h-screen flex items-center justify-center'>
-    <div class='text-center'>
-      <div class='loading loading-spinner loading-lg'></div>
-      <p class='mt-4 text-base-content/60'>{i18next.t('common.loading')}</p>
+  <div class='loading-screen'>
+    <div class='loading-content'>
+      <div class='loading-spinner'></div>
+      <p class='loading-text'>{i18next.t('common.loading')}</p>
     </div>
   </div>
 {:else}
-  <div class='h-screen'>
+  <div class='app-layout'>
     <SplitPanel
       initialLeftWidth={leftPanelWidth}
       onResize={handleResize}
     >
       {#snippet left()}
-        <div class='h-full flex flex-col bg-base-100'>
+        <div class='sidebar'>
           <!-- Toolbar -->
           <SidebarToolbar
             {hasUnsavedChanges}
+            {searchTerm}
             onBack={handleBack}
             onNew={handleNewEntry}
             onSave={handleSaveAll}
+            onSearch={handleSearch}
           />
 
-          <div class='border-b border-base-300'></div>
-
           <!-- Entries List -->
-          <div class='flex-1 overflow-hidden'>
+          <div class='sidebar-content'>
             <EntriesList
               entries={filteredEntries}
               selectedId={selectedEntry?.id}
-              {searchTerm}
               onSelect={handleEntrySelect}
-              onSearch={handleSearch}
             />
           </div>
         </div>
       {/snippet}
 
       {#snippet right()}
-        <div class='h-full bg-base-50 flex flex-col'>
-          <EntryDetailPanel
-            entry={selectedEntry}
-            onUpdate={handleEntryUpdate}
-            onDelete={handleEntryDelete}
-            onMarkDirty={handleMarkDirty}
+        <div class='main-content'>
+          <!-- Detail Toolbar -->
+          <DetailToolbar
+            entryTitle={selectedEntry?.title}
+            onDelete={() => selectedEntry && handleEntryDelete({ id: selectedEntry.id })}
           />
+
+          <!-- Detail Content -->
+          <div class='detail-content'>
+            <EntryDetailPanel
+              entry={selectedEntry}
+              onUpdate={handleEntryUpdate}
+              onMarkDirty={handleMarkDirty}
+            />
+          </div>
         </div>
       {/snippet}
     </SplitPanel>

@@ -1,5 +1,9 @@
 export const ja = {
   translation: {
+    app: {
+      title: 'パスワードマネージャー',
+      slogan: 'セキュア • シンプル • ローカル',
+    },
     common: {
       loading: '読み込み中...',
       back: '戻る',
@@ -28,6 +32,7 @@ export const ja = {
       titlePlaceholder: 'タイトルを入力',
       selectEntry: 'エントリを選択',
       selectEntryDesc: 'リストからエントリをクリックして詳細を表示・編集',
+      emptySubtitle: 'エントリを選択して詳細を表示',
       delete: '削除',
       confirmDelete: 'このエントリを削除してもよろしいですか？',
       save: '保存',

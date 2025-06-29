@@ -1,5 +1,9 @@
 export const en = {
   translation: {
+    app: {
+      title: 'Password Manager',
+      slogan: 'Secure • Simple • Local',
+    },
     common: {
       loading: 'Loading...',
       back: 'Back',
@@ -28,6 +32,7 @@ export const en = {
       titlePlaceholder: 'Enter title',
       selectEntry: 'Select an Entry',
       selectEntryDesc: 'Choose an entry from the list to view and edit details',
+      emptySubtitle: 'Select an entry to view details',
       delete: 'Delete',
       confirmDelete: 'Are you sure you want to delete this entry?',
       save: 'Save',

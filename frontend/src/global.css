@@ -1,11 +1,51 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+/* Desktop App Color System */
+:root {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-tertiary: #e9ecef;
+  --color-border: #dee2e6;
+  --color-border-light: #e9ecef;
+  --color-primary: #0066cc;
+  --color-primary-hover: #0056b3;
+  --color-text-primary: #212529;
+  --color-text-secondary: #6c757d;
+  --color-text-muted: #adb5bd;
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-danger: #dc3545;
+  --color-focus: #80bdff;
+
+  /* Spacing System */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Border Radius */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+
+  /* Typography */
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-2xl: 20px;
+  --font-size-3xl: 24px;
+}
+
 html, body {
   margin: 0;
-  font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
   "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
   sans-serif;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
   /* Disable text selection */
   user-select: none;
   -webkit-user-select: none;
@@ -27,10 +67,11 @@ html, body {
 }
 
 @font-face {
-  font-family: "Nunito";
+  font-family: "Inter";
   font-style: normal;
   font-weight: 400;
-  src: local(""), url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+  src: local("Inter"), local("Inter-Regular"), url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+  font-display: swap;
 }
 
 #app {

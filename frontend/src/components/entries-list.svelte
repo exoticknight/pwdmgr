@@ -1,5 +1,6 @@
 <script lang='ts'>
   import type { PasswordEntry } from '../types/password'
+  import { Key, Search } from '@lucide/svelte'
   import i18next from '../i18n'
 
   interface Props {
@@ -62,22 +63,26 @@
 
 <div class='h-full flex flex-col'>
   <!-- Search Box -->
-  <div class='p-4 border-b'>
-    <div class='form-control'>
+  <div class='p-2'>
+    <label class='input'>
+      <Search class='h-[1em] text-base-content/50' />
       <input
         type='text'
         placeholder={i18next.t('search.placeholder')}
-        class='input input-bordered w-full'
+        class='grow'
         value={searchTerm}
         oninput={handleSearchInput}
       />
-    </div>
+    </label>
   </div>
+
+  <!-- Divider -->
+  <div class='border-b border-base-300' />
 
   <!-- Entries List -->
   <div class='flex-1 overflow-y-auto'>
     {#if groupedEntries.size === 0}
-      <div class='p-4 text-center text-base-content/60'>
+      <div class='p-2 text-center text-base-content/60'>
         {i18next.t('search.noResults')}
       </div>
     {:else}
@@ -94,14 +99,18 @@
               class='w-full p-3 text-left transition-colors border-b border-base-300 {selectedId === entry.id ? 'bg-primary/10 border-l-4 border-l-primary' : 'hover:bg-base-200'}'
               onclick={() => handleEntryClick(entry)}
             >
-              <div class='font-medium text-base-content truncate'>
-                {entry.title}
-              </div>
-              {#if entry.notes}
-                <div class='text-sm text-base-content/60 mt-1 whitespace-pre-wrap line-clamp-2'>
-                  {entry.notes}
+              <div class='flex items-center gap-3'>
+                <div class='flex-1 min-w-0'>
+                  <div class='font-medium text-base-content truncate'>
+                    {entry.title}
+                  </div>
+                  {#if entry.notes}
+                    <div class='text-sm text-base-content/60 mt-1 whitespace-pre-wrap line-clamp-2'>
+                      {entry.notes}
+                    </div>
+                  {/if}
                 </div>
-              {/if}
+              </div>
             </button>
           {/each}
         </div>

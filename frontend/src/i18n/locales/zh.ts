@@ -15,6 +15,7 @@ export const zh = {
     search: {
       placeholder: '搜索密码...',
       noResults: '没有找到匹配的条目',
+      noResultsDesc: '尝试调整搜索词或添加新条目',
     },
     forms: {
       username: '用户名',

@@ -15,6 +15,7 @@ export const ja = {
     search: {
       placeholder: 'パスワードを検索...',
       noResults: '一致するエントリが見つかりません',
+      noResultsDesc: '検索条件を調整するか、新しいエントリを追加してください',
     },
     forms: {
       username: 'ユーザー名',

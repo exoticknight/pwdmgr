@@ -1,6 +1,6 @@
 <script lang='ts'>
   import type { PasswordEntry } from '../types/password'
-  import { Eye, EyeOff } from '@lucide/svelte'
+  import { Copy, Eye, EyeOff, Trash2 } from '@lucide/svelte'
   import i18next from '../i18n'
   import { notificationStore } from '../stores/notification.svelte'
 
@@ -61,9 +61,9 @@
 {#if !entry}
   <div class='flex-1 flex items-center justify-center'>
     <div class='text-center text-base-content/60'>
-      <div class='text-6xl mb-4'>📝</div>
-      <h3 class='text-lg font-medium mb-2'>{i18next.t('forms.selectEntry')}</h3>
-      <p class='text-sm'>{i18next.t('forms.selectEntryDesc')}</p>
+      <h3 class='text-3xl font-light tracking-wider text-base-content/80'>
+        secure simple local
+      </h3>
     </div>
   </div>
 {:else}
@@ -92,7 +92,7 @@
               onclick={() => copyToClipboard(entry.username)}
               title={i18next.t('actions.copy')}
             >
-              📋
+              <Copy class='w-4 h-4' />
             </button>
           </div>
 
@@ -126,7 +126,7 @@
               onclick={() => copyToClipboard(entry.password)}
               title={i18next.t('actions.copy')}
             >
-              📋
+              <Copy class='w-4 h-4' />
             </button>
           </div>
 
@@ -145,6 +145,7 @@
 
           <!-- Delete Button -->
           <button class='btn btn-error w-full mt-8' onclick={handleDelete}>
+            <Trash2 class='w-4 h-4 mr-2' />
             {i18next.t('forms.delete')}
           </button>
 

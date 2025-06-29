@@ -1,5 +1,6 @@
 <script lang='ts'>
   import type { PasswordEntry } from '../types/password'
+  import { Plus, Save, X } from '@lucide/svelte'
   import i18next from '../i18n'
 
   interface Props {
@@ -158,6 +159,7 @@
             class='btn btn-ghost'
             onclick={handleCancel}
           >
+            <X class='w-4 h-4 mr-2' />
             {i18next.t('actions.cancel')}
           </button>
           <button
@@ -165,7 +167,13 @@
             class='btn btn-primary'
             disabled={!isValid}
           >
-            {entry ? i18next.t('actions.update') : i18next.t('actions.add')}
+            {#if entry}
+              <Save class='w-4 h-4 mr-2' />
+              {i18next.t('actions.update')}
+            {:else}
+              <Plus class='w-4 h-4 mr-2' />
+              {i18next.t('actions.add')}
+            {/if}
           </button>
         </div>
       </form>

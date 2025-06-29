@@ -1,14 +1,19 @@
 export const en = {
   translation: {
+    // Application branding
     app: {
       title: 'Password Manager',
       slogan: 'Secure • Simple • Local',
     },
+
+    // Common UI elements
     common: {
       loading: 'Loading...',
       back: 'Back',
       file: 'File',
     },
+
+    // Landing page content
     landing: {
       selectFileDescription: 'Choose an existing password database file or drag & drop here',
       selectFileFormats: 'Supported: *.pwd',
@@ -16,29 +21,36 @@ export const en = {
       passwordFiles: 'Password Files (*.pwd)',
       allFiles: 'All Files (*.*)',
     },
+
+    // Search functionality
     search: {
       placeholder: 'Search passwords...',
       noResults: 'No matching entries found',
-      noResultsDesc: 'Try adjusting your search terms or add a new entry',
     },
+
+    // Form fields and entry management
     forms: {
+      // Field labels
       username: 'Username',
       password: 'Password',
       notes: 'Notes',
       title: 'Title',
+
+      // Field placeholders
       usernamePlaceholder: 'Enter username',
       passwordPlaceholder: 'Enter password',
       notesPlaceholder: 'Optional notes...',
       titlePlaceholder: 'Enter title',
-      selectEntry: 'Select an Entry',
-      selectEntryDesc: 'Choose an entry from the list to view and edit details',
+
+      // Entry management
       emptySubtitle: 'Select an entry to view details',
-      delete: 'Delete',
       confirmDelete: 'Are you sure you want to delete this entry?',
       save: 'Save',
       addEntry: 'Add Entry',
       editEntry: 'Edit Entry',
     },
+
+    // Password dialogs
     password: {
       setTitle: 'Set Password',
       enterTitle: 'Enter Password',
@@ -48,24 +60,36 @@ export const en = {
       confirmLabel: 'Confirm Password',
       confirmPlaceholder: 'Confirm password',
     },
+
+    // Action buttons
     actions: {
-      copy: 'Copy',
-      show: 'Show',
-      hide: 'Hide',
-      createNew: 'Create New Password File',
-      or: 'or',
+      // General actions
       back: 'Back',
+      cancel: 'Cancel',
       create: 'Create',
       open: 'Open',
-      cancel: 'Cancel',
-      update: 'Update',
+      save: 'Save',
       add: 'Add',
+      update: 'Update',
+      or: 'or',
+
+      // Password specific actions
+      copy: 'Copy',
+      showPassword: 'Show password',
+      hidePassword: 'Hide password',
+
+      // File actions
+      createNew: 'Create New Password File',
     },
+
+    // Dialog content
     dialogs: {
       savePasswordFile: 'Save Password File',
       saveLocation: 'Choose save location for your password file',
       cancel: 'Cancel',
     },
+
+    // Error messages
     errors: {
       passwordRequired: 'Please enter password',
       passwordMismatch: 'Passwords do not match',
@@ -76,9 +100,13 @@ export const en = {
       unsavedChanges: 'You have unsaved changes. Are you sure you want to leave?',
       noPasswordAvailable: 'No password available',
     },
+
+    // System messages
     messages: {
       loadDatabaseFileFailed: 'Failed to load database file',
     },
+
+    // Toast notifications
     notifications: {
       copied: 'Copied to clipboard',
       copyFailed: 'Failed to copy to clipboard',

@@ -15,6 +15,7 @@ export const en = {
     search: {
       placeholder: 'Search passwords...',
       noResults: 'No matching entries found',
+      noResultsDesc: 'Try adjusting your search terms or add a new entry',
     },
     forms: {
       username: 'Username',

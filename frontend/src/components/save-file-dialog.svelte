@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import { Save, X } from '@lucide/svelte'
   import i18next from '../i18n'
   import WailsFileSelect from './wails-file-select.svelte'
 
@@ -34,6 +35,9 @@
         onSelect={onSave}
       >
         {#snippet children({ mode: _mode })}
+          <div class='flex justify-center mb-4'>
+            <Save class='w-8 h-8 text-base-content/50' />
+          </div>
           <p class='text-center text-gray-600'>
             {i18next.t('dialogs.saveLocation')}
           </p>
@@ -44,6 +48,7 @@
           class='btn btn-ghost'
           onclick={onCancel}
         >
+          <X class='w-4 h-4 mr-2' />
           {i18next.t('dialogs.cancel')}
         </button>
       </div>

@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import { ArrowLeft, Plus, Save } from '@lucide/svelte'
   import i18next from '../i18n'
 
   interface Props {
@@ -23,7 +24,7 @@
   }
 </script>
 
-<div class='p-4 border-b flex items-center justify-between'>
+<div class='p-2 flex items-center justify-between'>
   <!-- Left side - Back and Save -->
   <div class='flex items-center gap-3'>
     <button
@@ -31,7 +32,7 @@
       onclick={handleBack}
       title={i18next.t('common.back')}
     >
-      ←
+      <ArrowLeft class='w-4 h-4' />
     </button>
 
     <button
@@ -40,7 +41,7 @@
       disabled={!hasUnsavedChanges}
       title={i18next.t('forms.save')}
     >
-      💾
+      <Save class='w-4 h-4' />
     </button>
   </div>
 
@@ -50,6 +51,6 @@
     onclick={handleNew}
     title={i18next.t('forms.addEntry')}
   >
-    ➕
+    <Plus class='w-4 h-4' />
   </button>
 </div>

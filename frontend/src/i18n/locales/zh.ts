@@ -2,7 +2,7 @@ export const zh = {
   translation: {
     // 应用程序品牌
     app: {
-      title: '密码管理器',
+      title: 'mat6maa5',
       slogan: '安全 • 简单 • 本地',
     },
 

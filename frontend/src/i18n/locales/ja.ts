@@ -2,7 +2,7 @@ export const ja = {
   translation: {
     // アプリケーションブランド
     app: {
-      title: 'パスワードマネージャー',
+      title: 'mat6maa5',
       slogan: 'セキュア • シンプル • ローカル',
     },
 

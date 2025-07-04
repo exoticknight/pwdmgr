@@ -11,6 +11,7 @@ export const en = {
       loading: 'Loading...',
       back: 'Back',
       file: 'File',
+      cancel: 'Cancel',
     },
 
     // Landing page content
@@ -114,6 +115,26 @@ export const en = {
       entryAdded: 'Entry added successfully',
       entryUpdated: 'Entry updated successfully',
       entryDeleted: 'Entry deleted successfully',
+    },
+
+    // Password generator
+    passwordGenerator: {
+      title: 'Password Generator',
+      regenerate: 'Regenerate',
+      length: 'Length',
+      includeUppercase: 'Include Uppercase (A-Z)',
+      includeLowercase: 'Include Lowercase (a-z)',
+      includeNumbers: 'Include Numbers (0-9)',
+      includeSymbols: 'Include Symbols (!@#$%^&*)',
+      excludeSimilar: 'Exclude Similar Characters (il1Lo0O)',
+      excludeAmbiguous: 'Exclude Ambiguous Characters ({}[]()/\\\'"`~,;.<>)',
+      usePassword: 'Use Password',
+      strength: {
+        weak: 'Weak',
+        fair: 'Fair',
+        good: 'Good',
+        strong: 'Strong',
+      },
     },
   },
 }

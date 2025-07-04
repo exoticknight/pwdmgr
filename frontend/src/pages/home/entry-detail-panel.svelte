@@ -1,6 +1,7 @@
 <script lang='ts'>
   import type { PasswordEntry } from '../../types/password'
   import { Copy, Eye, EyeOff } from '@lucide/svelte'
+  import PasswordStrength from '../../components/password-strength.svelte'
   import i18next from '../../i18n'
   import { notificationStore } from '../../stores/notification.svelte'
 
@@ -116,6 +117,9 @@
               <Copy size={16} />
             </button>
           </div>
+
+          <!-- Password strength indicator -->
+          <PasswordStrength password={formData.password || ''} />
         </div>
 
         <!-- Notes Field -->

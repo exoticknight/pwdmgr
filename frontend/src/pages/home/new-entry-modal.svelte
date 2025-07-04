@@ -1,7 +1,9 @@
 <script lang='ts'>
   import type { PasswordEntry } from '../../types/password'
-  import { Plus, Save, X } from '@lucide/svelte'
+  import { Key, Plus, Save, X } from '@lucide/svelte'
   import Modal from '../../components/modal.svelte'
+  import PasswordGenerator from '../../components/password-generator.svelte'
+  import PasswordStrength from '../../components/password-strength.svelte'
   import i18next from '../../i18n'
 
   interface Props {
@@ -20,6 +22,10 @@
     password: '',
     notes: '',
   })
+
+  // UI state
+  let showPasswordGenerator = $state(false)
+  let showPassword = $state(false)
 
   // Reset form when entry changes
   $effect(() => {
@@ -76,6 +82,23 @@
   function handleCancel() {
     onCancel()
   }
+
+  function handleOpenPasswordGenerator() {
+    showPasswordGenerator = true
+  }
+
+  function handleClosePasswordGenerator() {
+    showPasswordGenerator = false
+  }
+
+  function handleSelectPassword(password: string) {
+    form.password = password
+    showPasswordGenerator = false
+  }
+
+  function togglePasswordVisibility() {
+    showPassword = !showPassword
+  }
 </script>
 
 <Modal
@@ -121,14 +144,44 @@
         <label class='label' for='password'>
           <span class='label-text'>{i18next.t('forms.password')} *</span>
         </label>
-        <input
-          id='password'
-          type='password'
-          bind:value={form.password}
-          placeholder={i18next.t('forms.passwordPlaceholder')}
-          class='input input-bordered w-full'
-          required
-        />
+        <div class='input-group'>
+          <input
+            id='password'
+            type={showPassword ? 'text' : 'password'}
+            bind:value={form.password}
+            placeholder={i18next.t('forms.passwordPlaceholder')}
+            class='input input-bordered w-full'
+            required
+          />
+          <button
+            type='button'
+            class='btn btn-outline btn-square'
+            onclick={togglePasswordVisibility}
+            title={showPassword ? i18next.t('actions.hidePassword') : i18next.t('actions.showPassword')}
+          >
+            {#if showPassword}
+              <svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L12 12m-2.122-2.122l4.242 4.242M12 12l2.878 2.878m-5.757-5.757l2.879 2.879M12 12l2.878 2.878'></path>
+              </svg>
+            {:else}
+              <svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'></path>
+                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'></path>
+              </svg>
+            {/if}
+          </button>
+          <button
+            type='button'
+            class='btn btn-outline btn-square'
+            onclick={handleOpenPasswordGenerator}
+            title={i18next.t('passwordGenerator.title')}
+          >
+            <Key class='w-4 h-4' />
+          </button>
+        </div>
+
+        <!-- Password strength indicator -->
+        <PasswordStrength password={form.password} />
       </div>
 
       <!-- Notes -->
@@ -172,3 +225,11 @@
     </button>
   {/snippet}
 </Modal>
+
+<!-- Password Generator Modal -->
+{#if showPasswordGenerator}
+  <PasswordGenerator
+    onClose={handleClosePasswordGenerator}
+    onSelect={handleSelectPassword}
+  />
+{/if}

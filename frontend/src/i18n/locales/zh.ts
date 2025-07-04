@@ -11,6 +11,7 @@ export const zh = {
       loading: '加载中...',
       back: '返回',
       file: '文件',
+      cancel: '取消',
     },
 
     // 登录页面内容
@@ -114,6 +115,26 @@ export const zh = {
       entryAdded: '条目已成功添加',
       entryUpdated: '条目已成功更新',
       entryDeleted: '条目已成功删除',
+    },
+
+    // 密码生成器
+    passwordGenerator: {
+      title: '密码生成器',
+      regenerate: '重新生成',
+      length: '长度',
+      includeUppercase: '包含大写字母 (A-Z)',
+      includeLowercase: '包含小写字母 (a-z)',
+      includeNumbers: '包含数字 (0-9)',
+      includeSymbols: '包含符号 (!@#$%^&*)',
+      excludeSimilar: '排除相似字符 (il1Lo0O)',
+      excludeAmbiguous: '排除模糊字符 ({}[]()/\\\'"`~,;.<>)',
+      usePassword: '使用密码',
+      strength: {
+        weak: '弱',
+        fair: '一般',
+        good: '良好',
+        strong: '强',
+      },
     },
   },
 }

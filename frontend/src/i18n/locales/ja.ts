@@ -11,6 +11,7 @@ export const ja = {
       loading: '読み込み中...',
       back: '戻る',
       file: 'ファイル',
+      cancel: 'キャンセル',
     },
 
     // ランディングページコンテンツ
@@ -114,6 +115,26 @@ export const ja = {
       entryAdded: 'エントリが正常に追加されました',
       entryUpdated: 'エントリが正常に更新されました',
       entryDeleted: 'エントリが正常に削除されました',
+    },
+
+    // パスワード生成器
+    passwordGenerator: {
+      title: 'パスワード生成器',
+      regenerate: '再生成',
+      length: '長さ',
+      includeUppercase: '大文字を含む (A-Z)',
+      includeLowercase: '小文字を含む (a-z)',
+      includeNumbers: '数字を含む (0-9)',
+      includeSymbols: '記号を含む (!@#$%^&*)',
+      excludeSimilar: '類似文字を除く (il1Lo0O)',
+      excludeAmbiguous: '曖昧な文字を除く ({}[]()/\\\'"`~,;.<>)',
+      usePassword: 'パスワードを使用',
+      strength: {
+        weak: '弱い',
+        fair: '普通',
+        good: '良い',
+        strong: '強い',
+      },
     },
   },
 }

@@ -1,8 +1,8 @@
-# README
+# mat6maa5
 
 ## About
 
-This is the official Wails Svelte-TS template.
+This is a password manager application built with Wails and Svelte-TS.
 
 ## Live Development
 

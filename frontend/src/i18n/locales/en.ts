@@ -2,7 +2,7 @@ export const en = {
   translation: {
     // Application branding
     app: {
-      title: 'Password Manager',
+      title: 'mat6maa5',
       slogan: 'Secure • Simple • Local',
     },
 

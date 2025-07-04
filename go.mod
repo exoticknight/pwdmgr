@@ -1,4 +1,4 @@
-module pwdmgr
+module mat6maa5
 
 go 1.23
 

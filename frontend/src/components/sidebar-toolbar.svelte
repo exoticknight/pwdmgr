@@ -1,17 +1,15 @@
 <script lang='ts'>
-  import { ArrowLeft, Plus, Save, Search } from '@lucide/svelte'
+  import { ArrowLeft, Plus, Save } from '@lucide/svelte'
   import i18next from '../i18n'
 
   interface Props {
     hasUnsavedChanges: boolean
-    searchTerm?: string
     onBack?: () => void
     onNew?: () => void
     onSave?: () => void
-    onSearch?: (data: { term: string }) => void
   }
 
-  const { hasUnsavedChanges, searchTerm = '', onBack, onNew, onSave, onSearch }: Props = $props()
+  const { hasUnsavedChanges, onBack, onNew, onSave }: Props = $props()
 
   function handleBack() {
     onBack?.()
@@ -23,11 +21,6 @@
 
   function handleSave() {
     onSave?.()
-  }
-
-  function handleSearchInput(event: Event) {
-    const target = event.target as HTMLInputElement
-    onSearch?.({ term: target.value })
   }
 </script>
 
@@ -57,21 +50,7 @@
     </button>
   </div>
 
-  <!-- Center - Search -->
-  <div class='toolbar-search'>
-    <div class='search-box'>
-      <Search size={14} />
-      <input
-        type='text'
-        placeholder={i18next.t('search.placeholder')}
-        class='search-input'
-        value={searchTerm}
-        oninput={handleSearchInput}
-      />
-    </div>
-  </div>
-
-  <!-- Right side - Add New (icon only) -->
+  <!-- Right side - Add New -->
   <div class='toolbar-section'>
     <button
       class='toolbar-btn toolbar-btn-primary'
@@ -98,41 +77,6 @@
     display: flex;
     align-items: center;
     gap: var(--space-xs);
-  }
-
-  .toolbar-search {
-    flex: 1;
-    max-width: 200px;
-    margin: 0 var(--space-md);
-  }
-
-  .search-box {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-    padding: 0 var(--space-xs);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background-color: var(--color-bg-primary);
-    height: 28px;
-  }
-
-  .search-box:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 1px var(--color-primary);
-  }
-
-  .search-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: var(--font-size-sm);
-    color: var(--color-text-primary);
-  }
-
-  .search-input::placeholder {
-    color: var(--color-text-muted);
   }
 
   .toolbar-btn {

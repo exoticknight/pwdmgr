@@ -24,7 +24,7 @@ export const zh = {
 
     // 搜索功能
     search: {
-      placeholder: '搜索密码...',
+      placeholder: '搜索标题，用户名，备注',
       noResults: '没有找到匹配的条目',
     },
 

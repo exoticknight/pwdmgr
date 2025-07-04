@@ -10,7 +10,7 @@ const resources = {
 }
 
 void i18next.init({
-  lng: 'zh', // default language
+  lng: 'en', // default language
   fallbackLng: 'en',
   resources,
   interpolation: {

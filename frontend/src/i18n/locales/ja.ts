@@ -24,7 +24,7 @@ export const ja = {
 
     // 検索機能
     search: {
-      placeholder: 'パスワードを検索...',
+      placeholder: 'タイトル、ユーザー名、メモを検索',
       noResults: '一致するエントリが見つかりません',
     },
 

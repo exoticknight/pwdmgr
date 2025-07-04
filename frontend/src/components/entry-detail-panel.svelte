@@ -174,7 +174,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
-    max-width: 500px;
   }
 
   .form-field {

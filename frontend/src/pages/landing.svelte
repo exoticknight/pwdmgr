@@ -1,6 +1,5 @@
 <script lang='ts'>
   import { FileLock, Plus } from '@lucide/svelte'
-  import PasswordForm from '../components/password-form.svelte'
   import WailsFileSelect from '../components/wails-file-select.svelte'
   import i18next from '../i18n'
   import { getDataManagerService } from '../services/data-manager'
@@ -8,6 +7,7 @@
   import { userState } from '../stores/user.svelte'
   import { navigationService, Routes } from '../utils/navigation'
   import { notifications } from '../utils/notifications'
+  import PasswordForm from './landing/password-form.svelte'
 
   let showPasswordInput = $state(false)
   let selectedFilePath = $state<string | null>(null)

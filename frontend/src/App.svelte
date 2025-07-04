@@ -2,7 +2,7 @@
   import type { RouteConfig, RouteResult, RouterInstanceConfig } from '@mateothegreat/svelte5-router'
   import { Router } from '@mateothegreat/svelte5-router'
   import { onMount } from 'svelte'
-  import GlobalNotifications from './components/global-notifications.svelte'
+  import Notification from './components/notification.svelte'
   import Home from './pages/home.svelte'
   import Landing from './pages/landing.svelte'
   import { navigationService } from './utils/navigation'
@@ -40,7 +40,7 @@
 <Router {routes} {hooks} />
 
 <!-- Global Notifications -->
-<GlobalNotifications />
+<Notification />
 
 <style>
 </style>

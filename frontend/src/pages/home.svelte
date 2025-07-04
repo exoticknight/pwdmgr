@@ -7,6 +7,7 @@
   import EntryDetailPanel from '../components/entry-detail-panel.svelte'
   import EntryModal from '../components/entry-modal.svelte'
   import SaveFileDialog from '../components/save-file-dialog.svelte'
+  import SearchBox from '../components/search-box.svelte'
   import SidebarToolbar from '../components/sidebar-toolbar.svelte'
   import SplitPanel from '../components/split-panel.svelte'
   import i18next from '../i18n'
@@ -21,7 +22,7 @@
   const dataManager = getDataManagerService()
 
   // UI State
-  let leftPanelWidth = $state(40) // percentage
+  let leftPanelWidth = $state(30) // percentage
   let searchTerm = $state('')
   let selectedEntry = $state<PasswordEntry | null>(null)
   let hasUnsavedChanges = $state(false)
@@ -251,15 +252,6 @@
     gap: var(--space-md);
   }
 
-  .loading-spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--color-border);
-    border-top: 3px solid var(--color-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
   .loading-text {
     font-size: var(--font-size-base);
     color: var(--color-text-secondary);
@@ -306,7 +298,7 @@
 {#if isLoading}
   <div class='loading-screen'>
     <div class='loading-content'>
-      <div class='loading-spinner'></div>
+      <span class='loading loading-spinner loading-xl'></span>
       <p class='loading-text'>{i18next.t('common.loading')}</p>
     </div>
   </div>
@@ -321,12 +313,18 @@
           <!-- Toolbar -->
           <SidebarToolbar
             {hasUnsavedChanges}
-            {searchTerm}
             onBack={handleBack}
             onNew={handleNewEntry}
             onSave={handleSaveAll}
-            onSearch={handleSearch}
           />
+
+          <!-- Search Box - Only show when there are entries in database -->
+          {#if database && database.getAllEntries().length > 0}
+            <SearchBox
+              {searchTerm}
+              onSearch={handleSearch}
+            />
+          {/if}
 
           <!-- Entries List -->
           <div class='sidebar-content'>

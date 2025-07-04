@@ -24,7 +24,7 @@ export const en = {
 
     // Search functionality
     search: {
-      placeholder: 'Search passwords...',
+      placeholder: 'Search title, username, notes',
       noResults: 'No matching entries found',
     },
 

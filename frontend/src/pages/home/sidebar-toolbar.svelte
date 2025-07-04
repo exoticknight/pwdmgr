@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { ArrowLeft, Plus, Save } from '@lucide/svelte'
-  import i18next from '../i18n'
+  import i18next from '../../i18n'
 
   interface Props {
     hasUnsavedChanges: boolean

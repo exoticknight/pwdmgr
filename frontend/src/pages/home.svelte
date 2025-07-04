@@ -2,13 +2,6 @@
   import type { DatabaseService } from '../services/database'
   import type { PasswordEntry } from '../types/password'
   import { onMount } from 'svelte'
-  import DetailToolbar from '../components/detail-toolbar.svelte'
-  import EntriesList from '../components/entries-list.svelte'
-  import EntryDetailPanel from '../components/entry-detail-panel.svelte'
-  import EntryModal from '../components/entry-modal.svelte'
-  import SaveFileDialog from '../components/save-file-dialog.svelte'
-  import SearchBox from '../components/search-box.svelte'
-  import SidebarToolbar from '../components/sidebar-toolbar.svelte'
   import SplitPanel from '../components/split-panel.svelte'
   import i18next from '../i18n'
   import { getDataManagerService } from '../services/data-manager'
@@ -16,6 +9,13 @@
   import { userState } from '../stores/user.svelte'
   import { navigationService, Routes } from '../utils/navigation'
   import { notifications } from '../utils/notifications'
+  import DetailToolbar from './home/detail-toolbar.svelte'
+  import EntriesList from './home/entries-list.svelte'
+  import EntryDetailPanel from './home/entry-detail-panel.svelte'
+  import NewEntryModal from './home/new-entry-modal.svelte'
+  import SaveFileModal from './home/save-file-modal.svelte'
+  import SearchBox from './home/search-box.svelte'
+  import SidebarToolbar from './home/sidebar-toolbar.svelte'
 
   // Services
   let database = $state<DatabaseService | null>(null)
@@ -360,7 +360,7 @@
 
   <!-- Modals -->
   {#if showModal}
-    <EntryModal
+    <NewEntryModal
       entry={editingEntry}
       isOpen={showModal}
       onSave={handleModalSave}
@@ -369,7 +369,7 @@
   {/if}
 
   {#if showSaveDialog}
-    <SaveFileDialog
+    <SaveFileModal
       isOpen={showSaveDialog}
       onSave={handleSaveDialogSave}
       onCancel={handleSaveDialogCancel}

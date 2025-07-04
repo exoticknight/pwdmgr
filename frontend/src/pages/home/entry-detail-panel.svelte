@@ -1,8 +1,8 @@
 <script lang='ts'>
-  import type { PasswordEntry } from '../types/password'
+  import type { PasswordEntry } from '../../types/password'
   import { Copy, Eye, EyeOff } from '@lucide/svelte'
-  import i18next from '../i18n'
-  import { notificationStore } from '../stores/notification.svelte'
+  import i18next from '../../i18n'
+  import { notificationStore } from '../../stores/notification.svelte'
 
   interface Props {
     entry: PasswordEntry | null

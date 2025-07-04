@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { Search } from '@lucide/svelte'
-  import i18next from '../i18n'
+  import i18next from '../../i18n'
 
   interface Props {
     searchTerm?: string

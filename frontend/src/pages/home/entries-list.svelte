@@ -1,6 +1,6 @@
 <script lang='ts'>
-  import type { PasswordEntry } from '../types/password'
-  import i18next from '../i18n'
+  import type { PasswordEntry } from '../../types/password'
+  import i18next from '../../i18n'
 
   interface Props {
     entries: PasswordEntry[]

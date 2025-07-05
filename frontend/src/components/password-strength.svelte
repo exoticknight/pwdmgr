@@ -5,9 +5,10 @@
   interface Props {
     password: string
     showDetails?: boolean
+    alwaysShow?: boolean
   }
 
-  const { password, showDetails = false }: Props = $props()
+  const { password, showDetails = false, alwaysShow = false }: Props = $props()
 
   const strength = $derived(PasswordGenerator.checkStrength(password))
 
@@ -45,7 +46,7 @@
   }
 </script>
 
-{#if password}
+{#if alwaysShow || password}
   <div class='password-strength'>
     <div class='strength-bars'>
       <div class='strength-bar {getBarClass(0)}' title={i18next.t('passwordGenerator.strength.weak')}></div>

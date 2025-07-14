@@ -79,6 +79,10 @@ export const ja = {
       showPassword: 'パスワードを表示',
       hidePassword: 'パスワードを非表示',
 
+      // お気に入りアクション
+      addToFavorites: 'お気に入りに追加',
+      removeFromFavorites: 'お気に入りから削除',
+
       // ファイルアクション
       createNew: '新しいパスワードファイルを作成',
     },

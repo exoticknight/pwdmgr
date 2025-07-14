@@ -1,19 +1,19 @@
 <script lang='ts'>
-  import type { PasswordEntry } from '../../types/password'
-  import { Copy, Eye, EyeOff } from '@lucide/svelte'
+  import type { PasswordData } from '../../types/datafile'
+  import { Copy, Eye, EyeOff, Heart } from '@lucide/svelte'
   import PasswordStrength from '../../components/password-strength.svelte'
   import i18next from '../../i18n'
-  import { notificationStore } from '../../stores/notification.svelte'
+  import { notification } from '../../stores/notification.svelte'
 
   interface Props {
-    entry: PasswordEntry | null
-    onUpdate?: (data: { id: string, updates: Partial<PasswordEntry> }) => void
+    entry: PasswordData | null
+    onUpdate?: (data: { id: string, updates: Partial<PasswordData> }) => void
     onMarkDirty?: () => void
   }
 
   const { entry, onUpdate, onMarkDirty }: Props = $props()
 
-  let formData = $state<Partial<PasswordEntry>>({})
+  let formData = $state<Partial<PasswordData>>({})
   let showPassword = $state(false)
 
   // Update form data when entry changes
@@ -25,13 +25,13 @@
       formData = {}
     }
   })
-  function handleFieldChange(field: keyof PasswordEntry, value: string) {
+  function handleFieldChange(field: keyof PasswordData, value: string) {
     formData[field] = value as any
     onMarkDirty?.()
 
     // Auto-save when field changes
     if (entry && onUpdate) {
-      onUpdate({ id: entry.id, updates: { [field]: value } })
+      onUpdate({ id: entry._id, updates: { [field]: value } })
     }
   }
 
@@ -43,11 +43,24 @@
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        notificationStore.success(i18next.t('notifications.copied'))
+        notification.success(i18next.t('notifications.copied'))
       })
       .catch(() => {
-        notificationStore.error(i18next.t('notifications.copyFailed'))
+        notification.error(i18next.t('notifications.copyFailed'))
       })
+  }
+
+  function toggleFavorite() {
+    if (entry && onUpdate) {
+      const newFavoriteStatus = !entry._isFavorite
+      onUpdate({
+        id: entry._id,
+        updates: {
+          _isFavorite: newFavoriteStatus,
+        },
+      })
+      onMarkDirty?.()
+    }
   }
 </script>
 
@@ -59,6 +72,24 @@
   </div>
 {:else}
   <div class='detail-panel'>
+    <!-- Header with title and favorite button -->
+    <div class='detail-header'>
+      <h2 class='detail-title'>{entry.title}</h2>
+      <button
+        type='button'
+        class='btn btn-ghost favorite-btn'
+        onclick={toggleFavorite}
+        title={entry._isFavorite
+          ? i18next.t('actions.removeFromFavorites')
+          : i18next.t('actions.addToFavorites')}
+      >
+        <Heart
+          size={20}
+          class={entry._isFavorite ? 'favorite-active' : 'favorite-inactive'}
+        />
+      </button>
+    </div>
+
     <!-- Content - Scrollable -->
     <div class='detail-content'>
       <fieldset class='fieldset w-full'>
@@ -167,6 +198,50 @@
     display: flex;
     flex-direction: column;
     background-color: var(--color-bg-primary);
+  }
+
+  .detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-bg-primary);
+  }
+
+  .detail-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .favorite-btn {
+    padding: var(--space-xs);
+    min-height: auto;
+    border-radius: var(--radius-md);
+  }
+
+  .favorite-btn:hover {
+    background-color: var(--color-bg-secondary);
+  }
+
+  :global(.favorite-active) {
+    fill: var(--color-error);
+    color: var(--color-error);
+  }
+
+  :global(.favorite-inactive) {
+    fill: none;
+    color: var(--color-text-muted);
+  }
+
+  :global(.favorite-inactive:hover) {
+    color: var(--color-error);
   }
 
   .detail-content {

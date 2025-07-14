@@ -79,6 +79,10 @@ export const zh = {
       showPassword: '显示密码',
       hidePassword: '隐藏密码',
 
+      // 收藏操作
+      addToFavorites: '添加到收藏',
+      removeFromFavorites: '从收藏中移除',
+
       // 文件操作
       createNew: '创建新的密码文件',
     },

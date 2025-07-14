@@ -1,41 +1,33 @@
-import type { DatabaseService } from './database'
-import { decryptData, encryptData } from '../utils/crypto'
-import { getDatabaseService, resetDatabaseService } from './database'
-import { getFileService } from './file'
+import { decryptData, encryptData } from '@/utils/crypto'
+import { getFile } from './file'
 
-export interface DataManagerService {
-  // Load database from file
-  loadFromFile: (filePath: string, password: string) => Promise<DatabaseService>
+export interface DataManager {
+  // Load database from file and return parsed data
+  loadFromFile: <T>(filePath: string, password: string) => Promise<T>
 
-  // Load database from encrypted data
-  loadFromEncryptedData: (encryptedData: ArrayBuffer, password: string) => Promise<DatabaseService>
+  // Load database from encrypted data and return parsed data
+  loadFromEncryptedData: <T>(encryptedData: ArrayBuffer, password: string) => Promise<T>
 
-  // Save database to file
-  saveToFile: (database: DatabaseService, filePath: string, password: string) => Promise<void>
+  // Save structured data to file
+  saveToFile: <T>(filePath: string, password: string, data: T) => Promise<void>
 
-  // Get encrypted data
-  getEncryptedData: (database: DatabaseService, password: string) => Promise<ArrayBuffer>
+  // Get encrypted data from structured data
+  getEncryptedData: <T>(password: string, data: T) => Promise<ArrayBuffer>
 }
 
-class DataManager implements DataManagerService {
-  private fileService = getFileService()
+class DataManagerImpl implements DataManager {
+  private file = getFile()
 
-  async loadFromFile(filePath: string, password: string): Promise<DatabaseService> {
+  async loadFromFile<T>(filePath: string, password: string): Promise<T> {
     try {
-      // Reset any existing database instance first
-      resetDatabaseService()
-
       // Read encrypted file
-      const encryptedData = await this.fileService.readFile(filePath)
+      const encryptedData = await this.file.readFile(filePath)
 
       // Decrypt data
       const jsonData = await decryptData(encryptedData, password)
 
-      // Initialize database
-      const database = getDatabaseService()
-      database.initialize(jsonData)
-
-      return database
+      // Parse and return structured data
+      return JSON.parse(jsonData) as T
     }
     catch (error) {
       console.error('Failed to load from file:', error)
@@ -43,19 +35,13 @@ class DataManager implements DataManagerService {
     }
   }
 
-  async loadFromEncryptedData(encryptedData: ArrayBuffer, password: string): Promise<DatabaseService> {
+  async loadFromEncryptedData<T>(encryptedData: ArrayBuffer, password: string): Promise<T> {
     try {
-      // Reset any existing database instance first
-      resetDatabaseService()
-
       // Decrypt data
       const jsonData = await decryptData(encryptedData, password)
 
-      // Initialize database
-      const database = getDatabaseService()
-      database.initialize(jsonData)
-
-      return database
+      // Parse and return structured data
+      return JSON.parse(jsonData) as T
     }
     catch (error) {
       console.error('Failed to load from encrypted data:', error)
@@ -63,16 +49,16 @@ class DataManager implements DataManagerService {
     }
   }
 
-  async saveToFile(database: DatabaseService, filePath: string, password: string): Promise<void> {
+  async saveToFile<T>(filePath: string, password: string, data: T): Promise<void> {
     try {
-      // Export JSON data
-      const jsonData = database.exportJSON()
+      // Convert data to JSON string
+      const jsonData = JSON.stringify(data)
 
       // Encrypt data
       const encryptedData = await encryptData(jsonData, password)
 
-      // Write to file
-      await this.fileService.saveFile(filePath, encryptedData)
+      // Save encrypted data to file
+      await this.file.saveFile(filePath, encryptedData)
     }
     catch (error) {
       console.error('Failed to save to file:', error)
@@ -80,15 +66,13 @@ class DataManager implements DataManagerService {
     }
   }
 
-  async getEncryptedData(database: DatabaseService, password: string): Promise<ArrayBuffer> {
+  async getEncryptedData<T>(password: string, data: T): Promise<ArrayBuffer> {
     try {
-      // Export JSON data
-      const jsonData = database.exportJSON()
+      // Convert data to JSON string
+      const jsonData = JSON.stringify(data, null, 2)
 
       // Encrypt data
-      const encryptedData = await encryptData(jsonData, password)
-
-      return encryptedData
+      return await encryptData(jsonData, password)
     }
     catch (error) {
       console.error('Failed to get encrypted data:', error)
@@ -100,9 +84,13 @@ class DataManager implements DataManagerService {
 // Singleton instance
 let dataManagerInstance: DataManager | null = null
 
-export function getDataManagerService(): DataManagerService {
-  if (!dataManagerInstance) {
-    dataManagerInstance = new DataManager()
+export function getDataManager(): DataManager {
+  if (dataManagerInstance == null) {
+    dataManagerInstance = new DataManagerImpl()
   }
   return dataManagerInstance
+}
+
+export function resetDataManager(): void {
+  dataManagerInstance = null
 }

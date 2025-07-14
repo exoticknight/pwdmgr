@@ -1,11 +1,11 @@
 <script lang='ts'>
-  import type { PasswordEntry } from '../../types/password'
+  import type { PasswordData } from '../../types/datafile'
   import i18next from '../../i18n'
 
   interface Props {
-    entries: PasswordEntry[]
+    entries: PasswordData[]
     selectedId?: string
-    onSelect?: (data: { entry: PasswordEntry }) => void
+    onSelect?: (data: { entry: PasswordData }) => void
   }
 
   const { entries, selectedId, onSelect }: Props = $props()
@@ -15,11 +15,11 @@
     return entries.filter(entry => entry.title)
   })
 
-  function handleEntryClick(entry: PasswordEntry) {
+  function handleEntryClick(entry: PasswordData) {
     onSelect?.({ entry })
   }
 
-  function handleKeydown(event: KeyboardEvent, entry: PasswordEntry) {
+  function handleKeydown(event: KeyboardEvent, entry: PasswordData) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       handleEntryClick(entry)
@@ -37,7 +37,7 @@
     {:else}
       {#each filteredEntries as entry}
         <div
-          class='list-item {selectedId === entry.id ? 'list-item-selected' : ''}'
+          class='list-item {selectedId === entry._id ? 'list-item-selected' : ''}'
           onclick={() => handleEntryClick(entry)}
           onkeydown={e => handleKeydown(e, entry)}
           role='button'

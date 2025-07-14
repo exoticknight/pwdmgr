@@ -1,12 +1,19 @@
 <script lang='ts'>
+  import type { DatabaseFile } from '@/types/datafile'
+
   import { FileLock, Plus } from '@lucide/svelte'
-  import WailsFileSelect from '../components/wails-file-select.svelte'
-  import i18next from '../i18n'
-  import { getDataManagerService } from '../services/data-manager'
-  import { getDatabaseService } from '../services/database'
-  import { userState } from '../stores/user.svelte'
-  import { navigationService, Routes } from '../utils/navigation'
-  import { notifications } from '../utils/notifications'
+
+  import WailsFileSelect from '@/components/wails-file-select.svelte'
+
+  import i18next from '@/i18n'
+  import { getDataManager } from '@/services/data-manager'
+
+  import { database } from '@/stores/database.svelte'
+  import { route, Routes } from '@/stores/route.svelte'
+
+  import { userState } from '@/stores/user.svelte'
+
+  import { notifications } from '@/utils/notifications'
   import PasswordForm from './landing/password-form.svelte'
 
   let showPasswordInput = $state(false)
@@ -16,7 +23,7 @@
   let confirmPassword = $state('')
   let isLoading = $state(false)
 
-  const dataManager = getDataManagerService()
+  const dataManager = getDataManager()
 
   function handleFileSelected(filePath: string) {
     isNewDatabase = false
@@ -57,21 +64,23 @@
 
       if (selectedFilePath) {
         // Load existing file with decryption validation
-        await dataManager.loadFromFile(selectedFilePath, password)
+        const databaseFile = await dataManager.loadFromFile<DatabaseFile>(selectedFilePath, password)
+        database.close()
+        await database.initialize(databaseFile)
         userState.dbPath = selectedFilePath
         userState.password = password
       }
       else if (isNewDatabase) {
         // Create new database by initializing with empty data
-        const database = getDatabaseService()
-        database.initialize() // Initialize with empty data
+        database.close()
+        await database.initialize() // Initialize with empty data
         userState.dbPath = ''
         userState.password = password
       }
 
       // If we reach here, operation was successful
       // Let user choose which interface to use
-      navigationService.navigate(Routes.TABLE)
+      route.navigate(Routes.ITEMS_ALL)
     }
     catch (err) {
       console.error('Failed to process database:', err)

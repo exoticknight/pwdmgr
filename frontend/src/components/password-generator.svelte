@@ -2,7 +2,7 @@
   import type { PasswordGeneratorOptions } from '../utils/password-generator'
   import { Check, Copy, RefreshCcw, X } from '@lucide/svelte'
   import i18next from '../i18n'
-  import { notificationStore } from '../stores/notification.svelte'
+  import { notification } from '../stores/notification.svelte'
   import { PasswordGenerator } from '../utils/password-generator'
 
   interface Props {
@@ -33,7 +33,7 @@
       passwordStrength = PasswordGenerator.checkStrength(generatedPassword)
     }
     catch (error) {
-      notificationStore.error(String(error))
+      notification.error(String(error))
     }
   }
 
@@ -42,13 +42,13 @@
     try {
       await navigator.clipboard.writeText(generatedPassword)
       copied = true
-      notificationStore.success(i18next.t('notifications.copied'))
+      notification.success(i18next.t('notifications.copied'))
       setTimeout(() => {
         copied = false
       }, 2000)
     }
     catch {
-      notificationStore.error(i18next.t('notifications.copyFailed'))
+      notification.error(i18next.t('notifications.copyFailed'))
     }
   }
 

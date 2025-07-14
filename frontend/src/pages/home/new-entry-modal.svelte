@@ -1,19 +1,22 @@
 <script lang='ts'>
-  import type { PasswordEntry } from '../../types/password'
-  import { Key, Plus, Save, X } from '@lucide/svelte'
-  import Modal from '../../components/modal.svelte'
-  import PasswordGenerator from '../../components/password-generator.svelte'
-  import PasswordStrength from '../../components/password-strength.svelte'
-  import i18next from '../../i18n'
+  import type { BasicData, BasicDataKey, OmitBasicDataExcept, PasswordData } from '@/types/datafile'
+
+  import { Key, Plus, X } from '@lucide/svelte'
+
+  import Modal from '@/components/modal.svelte'
+  import PasswordGenerator from '@/components/password-generator.svelte'
+  import PasswordStrength from '@/components/password-strength.svelte'
+
+  import i18next from '@/i18n'
 
   interface Props {
-    entry?: PasswordEntry | null
+    dataType: BasicData[typeof BasicDataKey.TYPE]
     isOpen?: boolean
-    onSave: (entry: PasswordEntry | Omit<PasswordEntry, 'id'>) => void
+    onSave: (entry: OmitBasicDataExcept<PasswordData, 'TYPE'>) => void
     onCancel: () => void
   }
 
-  const { entry = null, isOpen = false, onSave, onCancel }: Props = $props()
+  const { isOpen = false, onSave, onCancel, dataType }: Props = $props()
 
   // Form state
   const form = $state({
@@ -26,22 +29,6 @@
   // UI state
   let showPasswordGenerator = $state(false)
 
-  // Reset form when entry changes
-  $effect(() => {
-    if (entry) {
-      form.title = entry.title
-      form.username = entry.username
-      form.password = entry.password
-      form.notes = entry.notes || ''
-    }
-    else {
-      form.title = ''
-      form.username = ''
-      form.password = ''
-      form.notes = ''
-    }
-  })
-
   // Form validation
   const isValid = $derived(
     form.title.trim() && form.username.trim() && form.password.trim(),
@@ -52,25 +39,13 @@
       return
     }
 
-    if (entry) {
-      // Edit mode
-      onSave({
-        id: entry.id,
-        title: form.title.trim(),
-        username: form.username.trim(),
-        password: form.password.trim(),
-        notes: form.notes.trim(),
-      })
-    }
-    else {
-      // Add mode
-      onSave({
-        title: form.title.trim(),
-        username: form.username.trim(),
-        password: form.password.trim(),
-        notes: form.notes.trim(),
-      })
-    }
+    onSave({
+      _type: dataType,
+      title: form.title.trim(),
+      username: form.username.trim(),
+      password: form.password.trim(),
+      notes: form.notes.trim(),
+    })
   }
 
   function handleFormSubmit(e: Event) {
@@ -98,7 +73,7 @@
 
 <Modal
   {isOpen}
-  title={entry ? i18next.t('forms.editEntry') : i18next.t('forms.addEntry')}
+  title={i18next.t('forms.addEntry')}
   onClose={handleCancel}
   showCloseButton={false}
 >
@@ -182,13 +157,8 @@
       disabled={!isValid}
       onclick={handleSubmit}
     >
-      {#if entry}
-        <Save class='w-4 h-4 mr-2' />
-        {i18next.t('actions.update')}
-      {:else}
-        <Plus class='w-4 h-4 mr-2' />
-        {i18next.t('actions.add')}
-      {/if}
+      <Plus class='w-4 h-4 mr-2' />
+      {i18next.t('actions.add')}
     </button>
   {/snippet}
 </Modal>

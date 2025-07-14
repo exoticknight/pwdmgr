@@ -1,16 +1,16 @@
-import type { Notification, NotificationType } from '../types/notification'
+import type { Notification as NotificationItem, NotificationType } from '@/types/notification'
 
-class NotificationStore {
-  private notifications = $state<Notification[]>([])
+class Notification {
+  private notifications = $state<NotificationItem[]>([])
   private timers = new Map<string, number>()
 
-  get all(): Notification[] {
+  get all(): NotificationItem[] {
     return this.notifications
   }
 
   show(message: string, type: NotificationType = 'info', duration: number = 5000): string {
     const id = crypto.randomUUID()
-    const notification: Notification = {
+    const notification: NotificationItem = {
       id,
       message,
       type,
@@ -23,7 +23,7 @@ class NotificationStore {
     if (duration > 0) {
       const timer = setTimeout(() => {
         this.dismiss(id)
-      }, duration)
+      }, duration) as unknown as number
       this.timers.set(id, timer)
     }
 
@@ -71,4 +71,4 @@ class NotificationStore {
   }
 }
 
-export const notificationStore = new NotificationStore()
+export const notification = new Notification()

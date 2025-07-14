@@ -1,4 +1,4 @@
-import { notificationStore } from '../stores/notification.svelte'
+import { notification } from '@/stores/notification.svelte'
 
 /**
  * Utility functions for showing notifications
@@ -11,7 +11,7 @@ export const notifications = {
    * @param duration - Auto dismiss time in milliseconds (default: 3000)
    */
   success: (message: string, duration?: number) => {
-    return notificationStore.success(message, duration)
+    return notification.success(message, duration)
   },
 
   /**
@@ -20,7 +20,7 @@ export const notifications = {
    * @param duration - Auto dismiss time in milliseconds (default: 5000)
    */
   error: (message: string, duration?: number) => {
-    return notificationStore.error(message, duration)
+    return notification.error(message, duration)
   },
 
   /**
@@ -29,7 +29,7 @@ export const notifications = {
    * @param duration - Auto dismiss time in milliseconds (default: 4000)
    */
   warning: (message: string, duration?: number) => {
-    return notificationStore.warning(message, duration)
+    return notification.warning(message, duration)
   },
 
   /**
@@ -38,7 +38,7 @@ export const notifications = {
    * @param duration - Auto dismiss time in milliseconds (default: 3000)
    */
   info: (message: string, duration?: number) => {
-    return notificationStore.info(message, duration)
+    return notification.info(message, duration)
   },
 
   /**
@@ -46,14 +46,14 @@ export const notifications = {
    * @param id - The notification ID to dismiss
    */
   dismiss: (id: string) => {
-    notificationStore.dismiss(id)
+    notification.dismiss(id)
   },
 
   /**
    * Clear all notifications
    */
   clear: () => {
-    notificationStore.clear()
+    notification.clear()
   },
 }
 

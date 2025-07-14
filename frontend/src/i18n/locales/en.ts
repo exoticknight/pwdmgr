@@ -79,6 +79,10 @@ export const en = {
       showPassword: 'Show password',
       hidePassword: 'Hide password',
 
+      // Favorite actions
+      addToFavorites: 'Add to favorites',
+      removeFromFavorites: 'Remove from favorites',
+
       // File actions
       createNew: 'Create New Password File',
     },

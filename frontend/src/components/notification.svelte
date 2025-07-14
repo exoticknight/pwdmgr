@@ -1,8 +1,8 @@
 <script lang='ts'>
   import type { Notification } from '../types/notification'
-  import { notificationStore } from '../stores/notification.svelte'
+  import { notification } from '../stores/notification.svelte'
 
-  const notifications: Notification[] = $derived(notificationStore.all)
+  const notifications: Notification[] = $derived(notification.all)
 
   function getAlertClass(type: string): string {
     switch (type) {

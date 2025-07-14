@@ -22,7 +22,7 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "mat6maa5",
-		Width:  800,
+		Width:  1000,
 		Height: 600,
 		AssetServer: &assetserver.Options{
 			Assets: assets,

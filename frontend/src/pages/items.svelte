@@ -14,13 +14,11 @@
   import { compareISO8601String } from '@/utils/iso8601-compare'
 
   import { notifications } from '@/utils/notifications'
-  import DetailToolbar from './home/detail-toolbar.svelte'
-  import EntriesList from './home/entries-list.svelte'
-  import EntryDetailPanel from './home/entry-detail-panel.svelte'
-  import NewEntryModal from './home/new-entry-modal.svelte'
-  import SaveFileModal from './home/save-file-modal.svelte'
-  import SearchBox from './home/search-box.svelte'
-  import SidebarToolbar from './home/sidebar-toolbar.svelte'
+  import EntriesList from './items/entries-list.svelte'
+  import EntryDetailPanel from './items/entry-detail-panel.svelte'
+  import NewEntryModal from './items/new-entry-modal.svelte'
+  import SaveFileModal from './items/save-file-modal.svelte'
+  import TopToolbar from './items/top-toolbar.svelte'
 
   const { filter }: { filter: string } = $props()
 
@@ -198,6 +196,14 @@
   .app-layout {
     height: 100vh;
     background-color: var(--color-bg-primary);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-layout {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
   }
 
   .sidebar {
@@ -227,55 +233,50 @@
 </style>
 
 <div class='app-layout'>
-  <SplitPanel
-    initialLeftWidth={leftPanelWidth}
-    onResize={handleResize}
-  >
-    {#snippet left()}
-      <div class='sidebar'>
-        <!-- Toolbar -->
-        <SidebarToolbar
-          {hasUnsavedChanges}
-          onBack={handleBack}
-          onNew={handleNewEntry}
-          onSave={handleSaveAll}
-        />
+  <!-- Top Toolbar -->
+  <TopToolbar
+    {hasUnsavedChanges}
+    {searchTerm}
+    onBack={handleBack}
+    onNew={handleNewEntry}
+    onSave={handleSaveAll}
+    onSearch={handleSearch}
+  />
 
-        <SearchBox
-          {searchTerm}
-          onSearch={handleSearch}
-        />
-
-        <!-- Entries List -->
-        <div class='sidebar-content'>
-          <EntriesList
-            entries={filteredEntries}
-            selectedId={selectedEntry?._id}
-            onSelect={handleEntrySelect}
-          />
+  <!-- Main Layout with Split Panel -->
+  <div class='main-layout'>
+    <SplitPanel
+      initialLeftWidth={leftPanelWidth}
+      onResize={handleResize}
+    >
+      {#snippet left()}
+        <div class='sidebar'>
+          <!-- Entries List -->
+          <div class='sidebar-content'>
+            <EntriesList
+              entries={filteredEntries}
+              selectedId={selectedEntry?._id}
+              onSelect={handleEntrySelect}
+            />
+          </div>
         </div>
-      </div>
-    {/snippet}
+      {/snippet}
 
-    {#snippet right()}
-      <div class='main-content'>
-        <!-- Detail Toolbar -->
-        <DetailToolbar
-          entryTitle={selectedEntry?.title}
-          onDelete={() => selectedEntry && handleEntryDelete({ id: selectedEntry._id })}
-        />
-
-        <!-- Detail Content -->
-        <div class='detail-content'>
-          <EntryDetailPanel
-            entry={selectedEntry}
-            onUpdate={handleEntryUpdate}
-            onMarkDirty={handleMarkDirty}
-          />
+      {#snippet right()}
+        <div class='main-content'>
+          <!-- Detail Content -->
+          <div class='detail-content'>
+            <EntryDetailPanel
+              entry={selectedEntry}
+              onUpdate={handleEntryUpdate}
+              onMarkDirty={handleMarkDirty}
+              onDelete={handleEntryDelete}
+            />
+          </div>
         </div>
-      </div>
-    {/snippet}
-  </SplitPanel>
+      {/snippet}
+    </SplitPanel>
+  </div>
 </div>
 
 <!-- Modals -->

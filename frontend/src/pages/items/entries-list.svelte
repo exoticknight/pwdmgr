@@ -92,7 +92,6 @@
   .list-item-selected {
     background-color: var(--color-primary);
     color: white;
-    border-left: 3px solid var(--color-primary-hover);
   }
 
   .list-item-selected:hover {

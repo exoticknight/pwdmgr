@@ -1,6 +1,6 @@
 <script lang='ts'>
   import type { PasswordData } from '../../types/datafile'
-  import { Copy, Eye, EyeOff, Heart } from '@lucide/svelte'
+  import { Copy, Eye, EyeOff, Heart, Trash2 } from '@lucide/svelte'
   import PasswordStrength from '../../components/password-strength.svelte'
   import i18next from '../../i18n'
   import { notification } from '../../stores/notification.svelte'
@@ -9,9 +9,10 @@
     entry: PasswordData | null
     onUpdate?: (data: { id: string, updates: Partial<PasswordData> }) => void
     onMarkDirty?: () => void
+    onDelete?: (data: { id: string }) => void
   }
 
-  const { entry, onUpdate, onMarkDirty }: Props = $props()
+  const { entry, onUpdate, onMarkDirty, onDelete }: Props = $props()
 
   let formData = $state<Partial<PasswordData>>({})
   let showPassword = $state(false)
@@ -62,6 +63,16 @@
       onMarkDirty?.()
     }
   }
+
+  function handleDelete() {
+    if (entry && onDelete) {
+      // eslint-disable-next-line no-alert
+      const confirmed = window.confirm(i18next.t('dialogs.confirmDelete'))
+      if (confirmed) {
+        onDelete({ id: entry._id })
+      }
+    }
+  }
 </script>
 
 {#if !entry}
@@ -72,22 +83,32 @@
   </div>
 {:else}
   <div class='detail-panel'>
-    <!-- Header with title and favorite button -->
+    <!-- Header with title and action buttons -->
     <div class='detail-header'>
       <h2 class='detail-title'>{entry.title}</h2>
-      <button
-        type='button'
-        class='btn btn-ghost favorite-btn'
-        onclick={toggleFavorite}
-        title={entry._isFavorite
-          ? i18next.t('actions.removeFromFavorites')
-          : i18next.t('actions.addToFavorites')}
-      >
-        <Heart
-          size={20}
-          class={entry._isFavorite ? 'favorite-active' : 'favorite-inactive'}
-        />
-      </button>
+      <div class='header-actions'>
+        <button
+          type='button'
+          class='btn btn-ghost favorite-btn'
+          onclick={toggleFavorite}
+          title={entry._isFavorite
+            ? i18next.t('actions.removeFromFavorites')
+            : i18next.t('actions.addToFavorites')}
+        >
+          <Heart
+            size={20}
+            class={entry._isFavorite ? 'favorite-active' : 'favorite-inactive'}
+          />
+        </button>
+        <button
+          type='button'
+          class='btn btn-ghost delete-btn'
+          onclick={handleDelete}
+          title={i18next.t('actions.delete')}
+        >
+          <Trash2 size={20} />
+        </button>
+      </div>
     </div>
 
     <!-- Content - Scrollable -->
@@ -220,14 +241,31 @@
     white-space: nowrap;
   }
 
-  .favorite-btn {
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .favorite-btn,
+  .delete-btn {
     padding: var(--space-xs);
     min-height: auto;
     border-radius: var(--radius-md);
   }
 
-  .favorite-btn:hover {
-    background-color: var(--color-bg-secondary);
+  .favorite-btn:hover,
+  .delete-btn:hover {
+    background-color: var(--color-bg-hover);
+  }
+
+  .delete-btn {
+    color: var(--color-text-secondary);
+  }
+
+  .delete-btn:hover {
+    color: var(--color-error);
+    background-color: var(--color-error-bg);
   }
 
   :global(.favorite-active) {

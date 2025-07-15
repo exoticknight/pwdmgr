@@ -1,30 +1,30 @@
 <script lang='ts'>
   import { Router } from '@mateothegreat/svelte5-router'
-  import i18next from '../i18n'
-  import { database } from '../stores/database.svelte'
-  import { Routes } from '../stores/route.svelte'
-  import Home from './home.svelte'
+  import i18next from '@/i18n'
+  import { database } from '@/stores/database.svelte'
+  import { Routes } from '@/stores/route.svelte'
+  import Items from './items.svelte'
   import Navigation from './main/navigation.svelte'
 
   // Create reactive routes
   const routes = [
     {
       path: Routes.ITEMS_ALL,
-      component: Home,
+      component: Items,
       props: {
         filter: 'all',
       },
     },
     {
       path: Routes.ITEMS_FAVORITES,
-      component: Home,
+      component: Items,
       props: {
         filter: 'favorites',
       },
     },
     {
       path: Routes.ITEMS_RECENT,
-      component: Home,
+      component: Items,
       props: {
         filter: 'recent',
       },

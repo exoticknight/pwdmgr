@@ -1,9 +1,10 @@
 <script lang='ts'>
-  import type { PasswordData } from '../../types/datafile'
+  import type { PasswordData } from '@/types/datafile'
   import { Copy, Eye, EyeOff, Heart, Trash2 } from '@lucide/svelte'
-  import PasswordStrength from '../../components/password-strength.svelte'
-  import i18next from '../../i18n'
-  import { notification } from '../../stores/notification.svelte'
+  import PasswordStrength from '@/components/password-strength.svelte'
+  import i18next from '@/i18n'
+  import { notification } from '@/stores/notification.svelte'
+  import { formatCompactDateTime } from '@/utils/time-format'
 
   interface Props {
     entry: PasswordData | null
@@ -32,7 +33,13 @@
 
     // Auto-save when field changes
     if (entry && onUpdate) {
-      onUpdate({ id: entry._id, updates: { [field]: value } })
+      onUpdate({
+        id: entry._id,
+        updates: {
+          [field]: value,
+          _updatedAt: new Date().toISOString(),
+        },
+      })
     }
   }
 
@@ -45,6 +52,17 @@
       .writeText(text)
       .then(() => {
         notification.success(i18next.t('notifications.copied'))
+
+        // Update last used time when copying password or username
+        if (entry && onUpdate) {
+          onUpdate({
+            id: entry._id,
+            updates: {
+              _lastUsedAt: new Date().toISOString(),
+            },
+          })
+          onMarkDirty?.()
+        }
       })
       .catch(() => {
         notification.error(i18next.t('notifications.copyFailed'))
@@ -191,6 +209,19 @@
           rows='4'
         ></textarea>
       </fieldset>
+
+      <!-- Time Information -->
+      <div class='time-info'>
+        <div class='time-item'>
+          {i18next.t('forms.lastUsedAt')}: <span class='time-value'>{entry._lastUsedAt !== null ? formatCompactDateTime(entry._lastUsedAt) : i18next.t('forms.neverUsed')}</span>
+        </div>
+        <div class='time-item'>
+          {i18next.t('forms.updatedAt')}: <span class='time-value'>{formatCompactDateTime(entry._updatedAt)}</span>
+        </div>
+        <div class='time-item'>
+          {i18next.t('forms.createdAt')}: <span class='time-value'>{formatCompactDateTime(entry._createdAt)}</span>
+        </div>
+      </div>
     </div>
   </div>
 {/if}
@@ -228,6 +259,21 @@
     padding: var(--space-md);
     border-bottom: 1px solid var(--color-border);
     background-color: var(--color-bg-primary);
+  }
+
+  .time-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+  }
+
+  .time-value {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono, monospace);
+    font-size: var(--font-size-sm);
+    text-align: center;
   }
 
   .detail-title {

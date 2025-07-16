@@ -12,7 +12,7 @@ export interface BasicData {
   _isFavorite: boolean
   _createdAt: string
   _updatedAt: string
-  _lastUsedAt: string
+  _lastUsedAt: string | null
 }
 
 export const BasicDataKey: {

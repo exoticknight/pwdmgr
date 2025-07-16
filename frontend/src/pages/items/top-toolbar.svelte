@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang='ts'>
   import { ArrowLeft, Plus, Save, Search } from '@lucide/svelte'
   import i18next from '../../i18n'
 
@@ -31,11 +31,11 @@
   }
 </script>
 
-<div class="top-toolbar">
+<div class='top-toolbar'>
   <!-- Left side - Navigation -->
-  <div class="toolbar-section">
+  <div class='toolbar-section'>
     <button
-      class="toolbar-btn"
+      class='toolbar-btn'
       onclick={handleBack}
       title={i18next.t('common.back')}
     >
@@ -44,13 +44,13 @@
   </div>
 
   <!-- Center - Search Box -->
-  <div class="toolbar-section toolbar-center">
-    <div class="search-box">
+  <div class='toolbar-section toolbar-center'>
+    <div class='search-box'>
       <Search size={14} />
       <input
-        type="text"
+        type='text'
         placeholder={i18next.t('search.placeholder')}
-        class="search-input"
+        class='search-input'
         value={searchTerm}
         oninput={handleSearchInput}
       />
@@ -58,7 +58,7 @@
   </div>
 
   <!-- Right side - Actions -->
-  <div class="toolbar-section">
+  <div class='toolbar-section'>
     <button
       class="toolbar-btn {hasUnsavedChanges ? 'toolbar-btn-warning' : ''}"
       onclick={handleSave}
@@ -67,12 +67,12 @@
     >
       <Save size={16} />
       {#if hasUnsavedChanges}
-        <span class="unsaved-indicator"></span>
+        <span class='unsaved-indicator'></span>
       {/if}
     </button>
 
     <button
-      class="toolbar-btn"
+      class='toolbar-btn'
       onclick={handleNew}
       title={i18next.t('buttons.newEntry')}
     >

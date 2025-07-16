@@ -49,6 +49,12 @@ export const en = {
       save: 'Save',
       addEntry: 'Add Entry',
       editEntry: 'Edit Entry',
+
+      // Time information
+      createdAt: 'Created',
+      updatedAt: 'Modified',
+      lastUsedAt: 'Last Used',
+      neverUsed: 'Never Used',
     },
 
     // Password dialogs

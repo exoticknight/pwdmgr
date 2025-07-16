@@ -95,7 +95,7 @@ class Database {
       _isFavorite: false,
       _createdAt: new Date().toISOString(),
       _updatedAt: new Date().toISOString(),
-      _lastUsedAt: new Date().toISOString(),
+      _lastUsedAt: null,
     }
 
     this.state.databaseFile.data.push(newEntry)

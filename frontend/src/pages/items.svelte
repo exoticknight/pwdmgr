@@ -26,7 +26,7 @@
   const dataManager = getDataManager()
 
   // UI State
-  let leftPanelWidth = $state(30) // percentage
+  let leftPanelWidth = $state(35) // percentage
   let searchTerm = $state('')
   let selectedEntry = $state<PasswordData | null>(null)
   let hasUnsavedChanges = $state(false)

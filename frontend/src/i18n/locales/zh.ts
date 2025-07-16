@@ -49,6 +49,12 @@ export const zh = {
       save: '保存',
       addEntry: '添加条目',
       editEntry: '编辑条目',
+
+      // 时间信息
+      createdAt: '创建时间',
+      updatedAt: '修改时间',
+      lastUsedAt: '最近使用',
+      neverUsed: '未使用',
     },
 
     // 密码对话框

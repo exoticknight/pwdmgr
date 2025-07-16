@@ -49,6 +49,12 @@ export const ja = {
       save: '保存',
       addEntry: 'エントリを追加',
       editEntry: 'エントリを編集',
+
+      // 時間情報
+      createdAt: '作成日時',
+      updatedAt: '更新日時',
+      lastUsedAt: '最終使用',
+      neverUsed: '未使用',
     },
 
     // パスワードダイアログ

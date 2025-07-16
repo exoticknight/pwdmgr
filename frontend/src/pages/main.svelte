@@ -44,6 +44,7 @@
     <div class='flex-none navigation'>
       <Navigation />
     </div>
+    <div class='main-split-bar'></div>
     <div class='flex-1'><Router {routes} /></div>
   </div>
 {/if}
@@ -72,5 +73,14 @@
 
   .navigation{
     width: 20%;
+  }
+
+  .main-split-bar {
+    width: 1px;
+    background-color: var(--color-border);
+    border: none;
+    padding: 0;
+    transition: background-color 0.2s ease;
+    user-select: none;
   }
 </style>

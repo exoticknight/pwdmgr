@@ -1,3 +1,5 @@
+import i18next from '../i18n'
+
 // 密码生成器工具类
 export interface PasswordGeneratorOptions {
   length: number
@@ -41,7 +43,7 @@ export class PasswordGenerator {
     }
 
     if (charset.length === 0) {
-      throw new Error('No character set selected')
+      throw new Error(i18next.t('passwordGenerator.noCharsetSelected'))
     }
 
     let password = ''
@@ -81,23 +83,23 @@ export class PasswordGenerator {
 
     // 反馈建议
     if (password.length < 8)
-      feedback.push('密码长度至少8位')
+      feedback.push(i18next.t('passwordGenerator.feedback.lengthTooShort'))
     if (!/[a-z]/.test(password))
-      feedback.push('添加小写字母')
+      feedback.push(i18next.t('passwordGenerator.feedback.addLowercase'))
     if (!/[A-Z]/.test(password))
-      feedback.push('添加大写字母')
+      feedback.push(i18next.t('passwordGenerator.feedback.addUppercase'))
     if (!/\d/.test(password))
-      feedback.push('添加数字')
+      feedback.push(i18next.t('passwordGenerator.feedback.addNumbers'))
     if (!/[^A-Z0-9]/i.test(password))
-      feedback.push('添加特殊字符')
+      feedback.push(i18next.t('passwordGenerator.feedback.addSymbols'))
 
     // 常见模式检查
     if (/(.)\1{2,}/.test(password)) {
-      feedback.push('避免连续相同字符')
+      feedback.push(i18next.t('passwordGenerator.feedback.avoidRepeating'))
       score -= 1
     }
     if (/123|abc|qwe/i.test(password)) {
-      feedback.push('避免常见序列')
+      feedback.push(i18next.t('passwordGenerator.feedback.avoidCommonSequences'))
       score -= 1
     }
 

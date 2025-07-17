@@ -1,6 +1,7 @@
 <script lang='ts'>
   import type { Snippet } from 'svelte'
   import { X } from '@lucide/svelte'
+  import i18next from '@/i18n'
 
   interface Props {
     isOpen: boolean
@@ -66,7 +67,7 @@
             type='button'
             class='btn btn-sm btn-ghost btn-circle'
             onclick={onClose}
-            aria-label='Close'
+            aria-label={i18next.t('accessibility.close')}
           >
             <X class='w-4 h-4' />
           </button>

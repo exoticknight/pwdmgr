@@ -14,6 +14,25 @@ export const en = {
       cancel: 'Cancel',
     },
 
+    // Navigation
+    navigation: {
+      allItems: 'All Items',
+      favorites: 'Favorites',
+      recentlyUsed: 'Recently Used',
+      close: 'Close',
+    },
+
+    // Buttons
+    buttons: {
+      newEntry: 'New Entry',
+      save: 'Save',
+    },
+
+    // Accessibility labels
+    accessibility: {
+      close: 'Close',
+    },
+
     // Landing page content
     landing: {
       selectFileDescription: 'Choose an existing password database file or drag & drop here',
@@ -45,7 +64,6 @@ export const en = {
 
       // Entry management
       emptySubtitle: 'Select an entry to view details',
-      confirmDelete: 'Are you sure you want to delete this entry?',
       save: 'Save',
       addEntry: 'Add Entry',
       editEntry: 'Edit Entry',
@@ -97,6 +115,7 @@ export const en = {
     dialogs: {
       savePasswordFile: 'Save Password File',
       saveLocation: 'Choose save location for your password file',
+      confirmDelete: 'Are you sure you want to delete this entry?',
       cancel: 'Cancel',
     },
 
@@ -139,6 +158,16 @@ export const en = {
       excludeSimilar: 'Exclude Similar Characters (il1Lo0O)',
       excludeAmbiguous: 'Exclude Ambiguous Characters ({}[]()/\\\'"`~,;.<>)',
       usePassword: 'Use Password',
+      noCharsetSelected: 'No character set selected',
+      feedback: {
+        lengthTooShort: 'Password should be at least 8 characters long',
+        addLowercase: 'Add lowercase letters',
+        addUppercase: 'Add uppercase letters',
+        addNumbers: 'Add numbers',
+        addSymbols: 'Add special characters',
+        avoidRepeating: 'Avoid consecutive repeated characters',
+        avoidCommonSequences: 'Avoid common sequences',
+      },
       strength: {
         weak: 'Weak',
         fair: 'Fair',

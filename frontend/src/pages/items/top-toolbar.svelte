@@ -1,21 +1,16 @@
 <script lang='ts'>
-  import { ArrowLeft, Plus, Save, Search } from '@lucide/svelte'
+  import { Plus, Save, Search } from '@lucide/svelte'
   import i18next from '../../i18n'
 
   interface Props {
     hasUnsavedChanges: boolean
     searchTerm?: string
-    onBack?: () => void
     onNew?: () => void
     onSave?: () => void
     onSearch?: (data: { term: string }) => void
   }
 
-  const { hasUnsavedChanges, searchTerm = '', onBack, onNew, onSave, onSearch }: Props = $props()
-
-  function handleBack() {
-    onBack?.()
-  }
+  const { hasUnsavedChanges, searchTerm = '', onNew, onSave, onSearch }: Props = $props()
 
   function handleNew() {
     onNew?.()
@@ -32,17 +27,6 @@
 </script>
 
 <div class='top-toolbar'>
-  <!-- Left side - Navigation -->
-  <div class='toolbar-section'>
-    <button
-      class='toolbar-btn'
-      onclick={handleBack}
-      title={i18next.t('common.back')}
-    >
-      <ArrowLeft size={16} />
-    </button>
-  </div>
-
   <!-- Center - Search Box -->
   <div class='toolbar-section toolbar-center'>
     <div class='search-box'>

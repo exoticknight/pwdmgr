@@ -6,8 +6,8 @@
   import i18next from '@/i18n'
   import { getDataManager } from '@/services/data-manager'
 
+  import { appStore } from '@/stores/app.svelte'
   import { database } from '@/stores/database.svelte'
-  import { route, Routes } from '@/stores/route.svelte'
   import { userState } from '@/stores/user.svelte'
   import { DataMetaType } from '@/types/datafile'
 
@@ -29,7 +29,6 @@
   let leftPanelWidth = $state(35) // percentage
   let searchTerm = $state('')
   let selectedEntry = $state<PasswordData | null>(null)
-  let hasUnsavedChanges = $state(false)
 
   // Modal state
   let showModal = $state(false)
@@ -49,18 +48,6 @@
     }
   })
 
-  // Handle navigation back
-  function handleBack() {
-    if (hasUnsavedChanges) {
-      // eslint-disable-next-line no-alert
-      const confirmed = window.confirm(i18next.t('errors.unsavedChanges'))
-      if (!confirmed) {
-        return
-      }
-    }
-    route.navigate(Routes.LANDING)
-  }
-
   // Handle new entry
   function handleNewEntry() {
     showModal = true
@@ -68,7 +55,7 @@
 
   // Handle save all changes
   async function handleSaveAll() {
-    if (!hasUnsavedChanges) {
+    if (!appStore.hasUnsavedChanges) {
       return
     }
 
@@ -82,7 +69,7 @@
       if (userState.dbPath) {
         const databaseData = database.exportJSON()
         await dataManager.saveToFile(userState.dbPath, password, JSON.parse(databaseData))
-        hasUnsavedChanges = false
+        appStore.markAsSaved()
         notifications.success(i18next.t('notifications.saved'))
       }
       else {
@@ -111,7 +98,7 @@
     try {
       const updatedEntry = database.updateEntry(data.id, data.updates)
       selectedEntry = updatedEntry
-      hasUnsavedChanges = true
+      appStore.markAsUnsaved()
     }
     catch {
       notifications.error(i18next.t('errors.updateError'))
@@ -123,7 +110,7 @@
     try {
       database.deleteEntry(data.id)
       selectedEntry = null
-      handleMarkDirty()
+      appStore.markAsUnsaved()
       notifications.success(i18next.t('notifications.entryDeleted'))
     }
     catch {
@@ -138,7 +125,7 @@
 
   // Handle marking dirty state
   function handleMarkDirty() {
-    hasUnsavedChanges = true
+    appStore.markAsUnsaved()
   }
 
   function handleModalSave(entry: OmitBasicDataExcept<PasswordData, 'TYPE'>) {
@@ -147,7 +134,7 @@
       selectedEntry = newEntry
       notifications.success(i18next.t('notifications.entryAdded'))
 
-      hasUnsavedChanges = true
+      appStore.markAsUnsaved()
       showModal = false
     }
     catch {
@@ -177,7 +164,7 @@
     dataManager.saveToFile(filePath, password, JSON.parse(databaseData))
       .then(() => {
         userState.dbPath = filePath
-        hasUnsavedChanges = false
+        appStore.markAsSaved()
         showSaveDialog = false
         notifications.success(i18next.t('notifications.saved'))
       })
@@ -235,9 +222,8 @@
 <div class='app-layout'>
   <!-- Top Toolbar -->
   <TopToolbar
-    {hasUnsavedChanges}
+    hasUnsavedChanges={appStore.hasUnsavedChanges}
     {searchTerm}
-    onBack={handleBack}
     onNew={handleNewEntry}
     onSave={handleSaveAll}
     onSearch={handleSearch}

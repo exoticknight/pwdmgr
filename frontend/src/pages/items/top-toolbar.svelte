@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { Plus, Save, Search } from '@lucide/svelte'
-  import i18next from '../../i18n'
+  import i18next from '@/i18n'
 
   interface Props {
     hasUnsavedChanges: boolean
@@ -47,7 +47,7 @@
       class="toolbar-btn {hasUnsavedChanges ? 'toolbar-btn-warning' : ''}"
       onclick={handleSave}
       disabled={!hasUnsavedChanges}
-      title={i18next.t('forms.save')}
+      title={i18next.t('buttons.save')}
     >
       <Save size={16} />
       {#if hasUnsavedChanges}

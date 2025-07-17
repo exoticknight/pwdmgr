@@ -14,6 +14,25 @@ export const zh = {
       cancel: '取消',
     },
 
+    // 导航
+    navigation: {
+      allItems: '所有条目',
+      favorites: '收藏',
+      recentlyUsed: '最近使用',
+      close: '关闭',
+    },
+
+    // 按钮
+    buttons: {
+      newEntry: '新建条目',
+      save: '保存',
+    },
+
+    // 无障碍标签
+    accessibility: {
+      close: '关闭',
+    },
+
     // 登录页面内容
     landing: {
       selectFileDescription: '选择现有的密码数据库文件或拖放到这里',
@@ -45,7 +64,6 @@ export const zh = {
 
       // 条目管理
       emptySubtitle: '选择一个条目来查看详细信息',
-      confirmDelete: '您确定要删除此条目吗？',
       save: '保存',
       addEntry: '添加条目',
       editEntry: '编辑条目',
@@ -97,6 +115,7 @@ export const zh = {
     dialogs: {
       savePasswordFile: '保存密码文件',
       saveLocation: '选择密码文件的保存位置',
+      confirmDelete: '您确定要删除此条目吗？',
       cancel: '取消',
     },
 
@@ -139,6 +158,16 @@ export const zh = {
       excludeSimilar: '排除相似字符 (il1Lo0O)',
       excludeAmbiguous: '排除模糊字符 ({}[]()/\\\'"`~,;.<>)',
       usePassword: '使用密码',
+      noCharsetSelected: '未选择字符集',
+      feedback: {
+        lengthTooShort: '密码长度至少8位',
+        addLowercase: '添加小写字母',
+        addUppercase: '添加大写字母',
+        addNumbers: '添加数字',
+        addSymbols: '添加特殊字符',
+        avoidRepeating: '避免连续相同字符',
+        avoidCommonSequences: '避免常见序列',
+      },
       strength: {
         weak: '弱',
         fair: '一般',

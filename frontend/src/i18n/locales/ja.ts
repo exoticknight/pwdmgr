@@ -14,6 +14,25 @@ export const ja = {
       cancel: 'キャンセル',
     },
 
+    // ナビゲーション
+    navigation: {
+      allItems: 'すべてのアイテム',
+      favorites: 'お気に入り',
+      recentlyUsed: '最近使用',
+      close: '閉じる',
+    },
+
+    // ボタン
+    buttons: {
+      newEntry: '新しいエントリ',
+      save: '保存',
+    },
+
+    // アクセシビリティラベル
+    accessibility: {
+      close: '閉じる',
+    },
+
     // ランディングページコンテンツ
     landing: {
       selectFileDescription: '既存のパスワードデータベースファイルを選択するか、ここにドラッグ&ドロップ',
@@ -45,7 +64,6 @@ export const ja = {
 
       // エントリ管理
       emptySubtitle: 'エントリを選択して詳細を表示',
-      confirmDelete: 'このエントリを削除してもよろしいですか？',
       save: '保存',
       addEntry: 'エントリを追加',
       editEntry: 'エントリを編集',
@@ -97,6 +115,7 @@ export const ja = {
     dialogs: {
       savePasswordFile: 'パスワードファイルを保存',
       saveLocation: 'パスワードファイルの保存場所を選択',
+      confirmDelete: 'このエントリを削除してもよろしいですか？',
       cancel: 'キャンセル',
     },
 
@@ -139,6 +158,16 @@ export const ja = {
       excludeSimilar: '類似文字を除く (il1Lo0O)',
       excludeAmbiguous: '曖昧な文字を除く ({}[]()/\\\'"`~,;.<>)',
       usePassword: 'パスワードを使用',
+      noCharsetSelected: '文字セットが選択されていません',
+      feedback: {
+        lengthTooShort: 'パスワードは少なくとも8文字である必要があります',
+        addLowercase: '小文字を追加',
+        addUppercase: '大文字を追加',
+        addNumbers: '数字を追加',
+        addSymbols: '特殊文字を追加',
+        avoidRepeating: '連続する同じ文字を避ける',
+        avoidCommonSequences: '一般的なシーケンスを避ける',
+      },
       strength: {
         weak: '弱い',
         fair: '普通',

@@ -117,6 +117,7 @@ export const zh = {
       saveLocation: '选择密码文件的保存位置',
       confirmDelete: '您确定要删除此条目吗？',
       cancel: '取消',
+      ok: '确定',
     },
 
     // 错误消息

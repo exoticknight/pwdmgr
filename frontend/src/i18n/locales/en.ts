@@ -117,6 +117,7 @@ export const en = {
       saveLocation: 'Choose save location for your password file',
       confirmDelete: 'Are you sure you want to delete this entry?',
       cancel: 'Cancel',
+      ok: 'OK',
     },
 
     // Error messages

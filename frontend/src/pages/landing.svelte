@@ -9,11 +9,10 @@
   import { getDataManager } from '@/services/data-manager'
 
   import { database } from '@/stores/database.svelte'
+  import { notification } from '@/stores/notification.svelte'
   import { route, Routes } from '@/stores/route.svelte'
 
   import { userState } from '@/stores/user.svelte'
-
-  import { notifications } from '@/utils/notifications'
   import PasswordForm from './landing/password-form.svelte'
 
   let showPasswordInput = $state(false)
@@ -46,12 +45,12 @@
   async function handlePasswordSubmit(event: SubmitEvent) {
     event.preventDefault()
     if (!password) {
-      notifications.error(i18next.t('errors.passwordRequired'))
+      notification.error(i18next.t('errors.passwordRequired'))
       return
     }
 
     if (isNewDatabase && password !== confirmPassword) {
-      notifications.error(i18next.t('errors.passwordMismatch'))
+      notification.error(i18next.t('errors.passwordMismatch'))
       return
     }
 
@@ -84,7 +83,7 @@
     }
     catch (err) {
       console.error('Failed to process database:', err)
-      notifications.error(String(err) || i18next.t('messages.loadDatabaseFileFailed'))
+      notification.error(String(err) || i18next.t('messages.loadDatabaseFileFailed'))
     }
     finally {
       isLoading = false

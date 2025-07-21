@@ -1,16 +1,21 @@
 <script lang='ts'>
+  import type { DialogControl } from '@/types/dialog'
   import i18next from '@/i18n'
   import { appStore } from '@/stores/app.svelte'
+  import { dialog } from '@/stores/dialog.svelte'
   import { route, Routes } from '@/stores/route.svelte'
 
+  // 这里我们可以类型约束，确保只使用 DialogControl 接口
+  // 这样如果将来换UI框架，这部分代码完全不需要修改
+  const dialogControl: DialogControl = dialog
+
   // Handle close/back functionality
-  function handleClose() {
+  async function handleClose() {
     // Check if there are unsaved changes in the application
     const hasUnsavedChanges = appStore.hasUnsavedChanges
 
     if (hasUnsavedChanges) {
-      // eslint-disable-next-line no-alert
-      const confirmed = window.confirm(i18next.t('errors.unsavedChanges'))
+      const confirmed = await dialogControl.confirm(i18next.t('errors.unsavedChanges'))
       if (!confirmed) {
         return
       }

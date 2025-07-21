@@ -1,8 +1,10 @@
 <script lang='ts'>
   import type { PasswordData } from '@/types/datafile'
+  import type { DialogControl } from '@/types/dialog'
   import { Copy, Eye, EyeOff, Heart, Trash2 } from '@lucide/svelte'
   import PasswordStrength from '@/components/password-strength.svelte'
   import i18next from '@/i18n'
+  import { dialog } from '@/stores/dialog.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { formatCompactDateTime } from '@/utils/time-format'
 
@@ -14,6 +16,9 @@
   }
 
   const { entry, onUpdate, onMarkDirty, onDelete }: Props = $props()
+
+  // 使用接口约束，提高代码的可移植性
+  const dialogControl: DialogControl = dialog
 
   let formData = $state<Partial<PasswordData>>({})
   let showPassword = $state(false)
@@ -82,10 +87,9 @@
     }
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (entry && onDelete) {
-      // eslint-disable-next-line no-alert
-      const confirmed = window.confirm(i18next.t('dialogs.confirmDelete'))
+      const confirmed = await dialogControl.confirm(i18next.t('dialogs.confirmDelete'))
       if (confirmed) {
         onDelete({ id: entry._id })
       }

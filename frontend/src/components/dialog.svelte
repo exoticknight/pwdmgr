@@ -24,17 +24,8 @@
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      handleCancel()
-    }
-    else if (event.key === 'Enter' && dialog.state.options?.type !== 'prompt') {
+    if (event.key === 'Enter' && dialog.state.options?.type !== 'prompt') {
       handleConfirm()
-    }
-  }
-
-  function handleOverlayClick(event: MouseEvent) {
-    if (event.target === event.currentTarget) {
-      handleCancel()
     }
   }
 
@@ -46,7 +37,7 @@
     switch (type) {
       case 'error': return 'text-error'
       case 'warning': return 'text-warning'
-      case 'info': return 'text-info'
+      case 'info': return ''
       default: return ''
     }
   }
@@ -55,7 +46,6 @@
 {#if dialog.state.isOpen && dialog.state.options}
   <div
     class='modal modal-open'
-    onclick={handleOverlayClick}
     onkeydown={handleKeydown}
     role='dialog'
     aria-modal='true'
@@ -63,7 +53,7 @@
   >
     <div class='modal-box'>
       {#if dialog.state.options.title}
-        <h3 class='font-bold text-lg mb-4'>{dialog.state.options.title}</h3>
+        <h3 class='font-bold text-lg'>{dialog.state.options.title}</h3>
       {/if}
 
       <p class='py-4 {getMessageClass(dialog.state.options.type)}'>{dialog.state.options.message}</p>

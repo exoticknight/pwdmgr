@@ -8,12 +8,11 @@
 
   import { appStore } from '@/stores/app.svelte'
   import { database } from '@/stores/database.svelte'
+  import { notification } from '@/stores/notification.svelte'
   import { userState } from '@/stores/user.svelte'
   import { DataMetaType } from '@/types/datafile'
 
   import { compareISO8601String } from '@/utils/iso8601-compare'
-
-  import { notifications } from '@/utils/notifications'
   import EntriesList from './items/entries-list.svelte'
   import EntryDetailPanel from './items/entry-detail-panel.svelte'
   import NewEntryModal from './items/new-entry-modal.svelte'
@@ -70,7 +69,7 @@
         const databaseData = database.exportJSON()
         await dataManager.saveToFile(userState.dbPath, password, JSON.parse(databaseData))
         appStore.markAsSaved()
-        notifications.success(i18next.t('notifications.saved'))
+        notification.success(i18next.t('notifications.saved'))
       }
       else {
         // New file, show save dialog
@@ -79,7 +78,7 @@
     }
     catch (err) {
       console.error('Failed to save database:', err)
-      notifications.error(i18next.t('errors.saveError'))
+      notification.error(i18next.t('errors.saveError'))
     }
   }
 
@@ -101,7 +100,7 @@
       appStore.markAsUnsaved()
     }
     catch {
-      notifications.error(i18next.t('errors.updateError'))
+      notification.error(i18next.t('errors.updateError'))
     }
   }
 
@@ -111,10 +110,10 @@
       database.deleteEntry(data.id)
       selectedEntry = null
       appStore.markAsUnsaved()
-      notifications.success(i18next.t('notifications.entryDeleted'))
+      notification.success(i18next.t('notifications.entryDeleted'))
     }
     catch {
-      notifications.error(i18next.t('errors.deleteError'))
+      notification.error(i18next.t('errors.deleteError'))
     }
   }
 
@@ -132,13 +131,13 @@
     try {
       const newEntry = database.addEntry(entry)
       selectedEntry = newEntry
-      notifications.success(i18next.t('notifications.entryAdded'))
+      notification.success(i18next.t('notifications.entryAdded'))
 
       appStore.markAsUnsaved()
       showModal = false
     }
     catch {
-      notifications.error(i18next.t('errors.saveError'))
+      notification.error(i18next.t('errors.saveError'))
     }
   }
 
@@ -156,7 +155,7 @@
     const filePath = filePaths[0]
     const password = userState.password
     if (!password) {
-      notifications.error(i18next.t('errors.noPasswordAvailable'))
+      notification.error(i18next.t('errors.noPasswordAvailable'))
       return
     }
 
@@ -166,11 +165,11 @@
         userState.dbPath = filePath
         appStore.markAsSaved()
         showSaveDialog = false
-        notifications.success(i18next.t('notifications.saved'))
+        notification.success(i18next.t('notifications.saved'))
       })
       .catch((err) => {
         console.error('Failed to save file:', err)
-        notifications.error(i18next.t('errors.saveError'))
+        notification.error(i18next.t('errors.saveError'))
       })
   }
 

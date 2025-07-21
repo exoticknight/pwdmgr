@@ -117,6 +117,7 @@ export const ja = {
       saveLocation: 'パスワードファイルの保存場所を選択',
       confirmDelete: 'このエントリを削除してもよろしいですか？',
       cancel: 'キャンセル',
+      ok: '確認',
     },
 
     // エラーメッセージ

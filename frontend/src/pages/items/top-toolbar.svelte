@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { Download, Plus, Save, Search } from '@lucide/svelte'
+  import { Plus, Save, Search, Share } from '@lucide/svelte'
   import i18next from '@/i18n'
 
   interface Props {
@@ -65,7 +65,7 @@
       onclick={handleExport}
       title={i18next.t('buttons.export')}
     >
-      <Download size={16} />
+      <Share size={16} />
     </button>
 
     <button

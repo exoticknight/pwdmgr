@@ -1,11 +1,16 @@
 <script lang='ts'>
   import type { PasswordData } from '@/types/datafile'
   import type { DialogControl } from '@/types/dialog'
-  import { Copy, Eye, EyeOff, Heart, Share, Trash2 } from '@lucide/svelte'
+
+  import { Copy, Eye, EyeOff, Heart, Share2, Trash2 } from '@lucide/svelte'
+
   import PasswordStrength from '@/components/password-strength.svelte'
+
   import i18next from '@/i18n'
+
   import { dialog } from '@/stores/dialog.svelte'
   import { notification } from '@/stores/notification.svelte'
+
   import { formatCompactDateTime } from '@/utils/time-format'
 
   interface Props {
@@ -171,7 +176,7 @@
           onclick={shareEntry}
           title={i18next.t('actions.share')}
         >
-          <Share size={20} />
+          <Share2 size={20} />
         </button>
       </div>
     </div>

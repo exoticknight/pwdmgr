@@ -1,7 +1,7 @@
 <script lang='ts'>
   import type { PasswordData } from '@/types/datafile'
   import type { DialogControl } from '@/types/dialog'
-  import { Copy, Eye, EyeOff, Heart, Trash2 } from '@lucide/svelte'
+  import { Copy, Eye, EyeOff, Heart, Share, Trash2 } from '@lucide/svelte'
   import PasswordStrength from '@/components/password-strength.svelte'
   import i18next from '@/i18n'
   import { dialog } from '@/stores/dialog.svelte'
@@ -87,6 +87,41 @@
     }
   }
 
+  async function shareEntry() {
+    if (entry) {
+      // 弹窗确认是否要复制明文数据
+      const confirmed = await dialogControl.confirm(i18next.t('dialogs.confirmShare'))
+      if (!confirmed) {
+        return
+      }
+
+      const data = []
+      if (entry.title) {
+        data.push(`Title:\n${entry.title}`)
+      }
+      if (entry.username) {
+        data.push(`Username:\n${entry.username}`)
+      }
+      if (entry.password) {
+        data.push(`Password:\n${entry.password}`)
+      }
+      if (entry.notes) {
+        data.push(`Notes:\n${entry.notes}`)
+      }
+
+      const shareText = data.join('\n')
+
+      navigator.clipboard
+        .writeText(shareText)
+        .then(() => {
+          notification.success(i18next.t('notifications.shareSuccess'))
+        })
+        .catch(() => {
+          notification.error(i18next.t('notifications.shareFailed'))
+        })
+    }
+  }
+
   async function handleDelete() {
     if (entry && onDelete) {
       const confirmed = await dialogControl.confirm(i18next.t('dialogs.confirmDelete'))
@@ -129,6 +164,14 @@
           title={i18next.t('actions.delete')}
         >
           <Trash2 size={20} />
+        </button>
+        <button
+          type='button'
+          class='btn btn-ghost share-btn'
+          onclick={shareEntry}
+          title={i18next.t('actions.share')}
+        >
+          <Share size={20} />
         </button>
       </div>
     </div>
@@ -298,14 +341,16 @@
   }
 
   .favorite-btn,
-  .delete-btn {
+  .delete-btn,
+  .share-btn {
     padding: var(--space-xs);
     min-height: auto;
     border-radius: var(--radius-md);
   }
 
   .favorite-btn:hover,
-  .delete-btn:hover {
+  .delete-btn:hover,
+  .share-btn:hover {
     background-color: var(--color-bg-hover);
   }
 
@@ -316,6 +361,15 @@
   .delete-btn:hover {
     color: var(--color-error);
     background-color: var(--color-error-bg);
+  }
+
+  .share-btn {
+    color: var(--color-text-secondary);
+  }
+
+  .share-btn:hover {
+    color: var(--color-primary);
+    background-color: var(--color-primary-bg, var(--color-bg-hover));
   }
 
   :global(.favorite-active) {

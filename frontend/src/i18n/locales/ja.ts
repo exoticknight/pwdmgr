@@ -107,6 +107,10 @@ export const ja = {
       addToFavorites: 'お気に入りに追加',
       removeFromFavorites: 'お気に入りから削除',
 
+      // エントリアクション
+      delete: '削除',
+      share: '共有',
+
       // ファイルアクション
       createNew: '新しいパスワードファイルを作成',
     },
@@ -116,6 +120,7 @@ export const ja = {
       savePasswordFile: 'パスワードファイルを保存',
       saveLocation: 'パスワードファイルの保存場所を選択',
       confirmDelete: 'このエントリを削除してもよろしいですか？',
+      confirmShare: 'この操作は平文データをクリップボードにコピーします。情報セキュリティにご注意ください。続行しますか？',
       cancel: 'キャンセル',
       ok: '確認',
     },
@@ -141,6 +146,8 @@ export const ja = {
     notifications: {
       copied: 'クリップボードにコピーしました',
       copyFailed: 'クリップボードへのコピーに失敗しました',
+      shareSuccess: 'データが正常にクリップボードにコピーされました',
+      shareFailed: '共有に失敗しました',
       saved: '変更が正常に保存されました',
       entryAdded: 'エントリが正常に追加されました',
       entryUpdated: 'エントリが正常に更新されました',

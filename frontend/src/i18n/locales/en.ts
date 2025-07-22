@@ -107,6 +107,10 @@ export const en = {
       addToFavorites: 'Add to favorites',
       removeFromFavorites: 'Remove from favorites',
 
+      // Entry actions
+      delete: 'Delete',
+      share: 'Share',
+
       // File actions
       createNew: 'Create New Password File',
     },
@@ -116,6 +120,7 @@ export const en = {
       savePasswordFile: 'Save Password File',
       saveLocation: 'Choose save location for your password file',
       confirmDelete: 'Are you sure you want to delete this entry?',
+      confirmShare: 'This action will copy plain text data to clipboard. Please be aware of information security. Do you want to continue?',
       cancel: 'Cancel',
       ok: 'OK',
     },
@@ -141,6 +146,8 @@ export const en = {
     notifications: {
       copied: 'Copied to clipboard',
       copyFailed: 'Failed to copy to clipboard',
+      shareSuccess: 'Data copied to clipboard successfully',
+      shareFailed: 'Failed to share',
       saved: 'Changes saved successfully',
       entryAdded: 'Entry added successfully',
       entryUpdated: 'Entry updated successfully',

@@ -150,13 +150,13 @@ class Database {
   }
 
   // Export database as JSON
-  exportJSON(): string {
+  exportJSON(): DatabaseFile {
     if (!this.state.initialized) {
       throw new Error('Database not initialized')
     }
 
-    // Return JSON string
-    return JSON.stringify($state.snapshot(this.state.databaseFile))
+    // Return raw database object
+    return $state.snapshot(this.state.databaseFile)
   }
 
   // Close database

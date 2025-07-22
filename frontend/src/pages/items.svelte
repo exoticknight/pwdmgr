@@ -5,6 +5,7 @@
 
   import i18next from '@/i18n'
   import { getDataManager } from '@/services/data-manager'
+  import { getFile } from '@/services/file'
 
   import { appStore } from '@/stores/app.svelte'
   import { database } from '@/stores/database.svelte'
@@ -12,9 +13,11 @@
   import { userState } from '@/stores/user.svelte'
   import { DataMetaType } from '@/types/datafile'
 
+  import { exportToCSV, exportToJSON } from '@/utils/export'
   import { compareISO8601String } from '@/utils/iso8601-compare'
   import EntriesList from './items/entries-list.svelte'
   import EntryDetailPanel from './items/entry-detail-panel.svelte'
+  import ExportModal from './items/export-modal.svelte'
   import NewEntryModal from './items/new-entry-modal.svelte'
   import SaveFileModal from './items/save-file-modal.svelte'
   import TopToolbar from './items/top-toolbar.svelte'
@@ -32,6 +35,7 @@
   // Modal state
   let showModal = $state(false)
   let showSaveDialog = $state(false)
+  let showExportDialog = $state(false)
 
   // Computed filtered entries using the store
   const filteredEntries = $derived.by(() => {
@@ -52,6 +56,11 @@
     showModal = true
   }
 
+  // Handle export
+  function handleExport() {
+    showExportDialog = true
+  }
+
   // Handle save all changes
   async function handleSaveAll() {
     if (!appStore.hasUnsavedChanges) {
@@ -67,7 +76,7 @@
       // If there's a file path, save to file
       if (userState.dbPath) {
         const databaseData = database.exportJSON()
-        await dataManager.saveToFile(userState.dbPath, password, JSON.parse(databaseData))
+        await dataManager.saveToFile(userState.dbPath, password, databaseData)
         appStore.markAsSaved()
         notification.success(i18next.t('notifications.saved'))
       }
@@ -160,7 +169,7 @@
     }
 
     const databaseData = database.exportJSON()
-    dataManager.saveToFile(filePath, password, JSON.parse(databaseData))
+    dataManager.saveToFile(filePath, password, databaseData)
       .then(() => {
         userState.dbPath = filePath
         appStore.markAsSaved()
@@ -175,6 +184,49 @@
 
   function handleSaveDialogCancel() {
     showSaveDialog = false
+  }
+
+  // Handle export modal events
+  async function handleExportData(format: 'csv' | 'json', filePaths: string[]) {
+    if (filePaths.length === 0) {
+      return
+    }
+
+    try {
+      const filePath = filePaths[0]
+      let content: string
+
+      const databaseData = database.exportJSON()
+
+      if (format === 'csv') {
+        content = exportToCSV(databaseData)
+      }
+      else {
+        // Export as JSON
+        content = exportToJSON(databaseData)
+      }
+
+      // Convert string to ArrayBuffer
+      const encoder = new TextEncoder()
+      const uint8Array = encoder.encode(content)
+      const arrayBuffer = new ArrayBuffer(uint8Array.length)
+      new Uint8Array(arrayBuffer).set(uint8Array)
+
+      // Write file using the file service
+      const fileService = getFile()
+      await fileService.saveFile(filePath, arrayBuffer)
+
+      showExportDialog = false
+      notification.success(i18next.t('notifications.exportSuccess'))
+    }
+    catch (err) {
+      console.error('Failed to export data:', err)
+      notification.error(i18next.t('errors.exportError'))
+    }
+  }
+
+  function handleExportCancel() {
+    showExportDialog = false
   }
 </script>
 
@@ -226,6 +278,7 @@
     onNew={handleNewEntry}
     onSave={handleSaveAll}
     onSearch={handleSearch}
+    onExport={handleExport}
   />
 
   <!-- Main Layout with Split Panel -->
@@ -279,5 +332,13 @@
     isOpen={showSaveDialog}
     onSave={handleSaveDialogSave}
     onCancel={handleSaveDialogCancel}
+  />
+{/if}
+
+{#if showExportDialog}
+  <ExportModal
+    isOpen={showExportDialog}
+    onExport={handleExportData}
+    onCancel={handleExportCancel}
   />
 {/if}

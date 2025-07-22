@@ -26,6 +26,7 @@ export const ja = {
     buttons: {
       newEntry: '新しいエントリ',
       save: '保存',
+      export: 'エクスポート',
     },
 
     // アクセシビリティラベル
@@ -121,6 +122,16 @@ export const ja = {
       saveLocation: 'パスワードファイルの保存場所を選択',
       confirmDelete: 'このエントリを削除してもよろしいですか？',
       confirmShare: 'この操作は平文データをクリップボードにコピーします。情報セキュリティにご注意ください。続行しますか？',
+      export: 'データをエクスポート',
+      exportFormat: 'エクスポート形式',
+      exportLocation: '保存場所',
+      exportJsonDesc: '構造化データ形式、完全な情報を含む',
+      exportCsvDesc: 'テーブル形式、Excelで開けます',
+      selectSaveLocation: 'クリックして保存場所を選択',
+      saveAsFormat: '{{format}}形式で保存されます',
+      csvFiles: 'CSVファイル (*.csv)',
+      jsonFiles: 'JSONファイル (*.json)',
+      allFiles: 'すべてのファイル (*.*)',
       cancel: 'キャンセル',
       ok: '確認',
     },
@@ -135,6 +146,7 @@ export const ja = {
       saveError: '変更の保存に失敗しました',
       unsavedChanges: '保存されていない変更があります。保存せずに終了してもよろしいですか？',
       noPasswordAvailable: '利用可能なパスワードがありません',
+      exportError: 'データのエクスポートに失敗しました',
     },
 
     // システムメッセージ
@@ -152,6 +164,7 @@ export const ja = {
       entryAdded: 'エントリが正常に追加されました',
       entryUpdated: 'エントリが正常に更新されました',
       entryDeleted: 'エントリが正常に削除されました',
+      exportSuccess: 'データが正常にエクスポートされました',
     },
 
     // パスワード生成器

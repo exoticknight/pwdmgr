@@ -26,6 +26,7 @@ export const zh = {
     buttons: {
       newEntry: '新建条目',
       save: '保存',
+      export: '导出',
     },
 
     // 无障碍标签
@@ -121,6 +122,16 @@ export const zh = {
       saveLocation: '选择密码文件的保存位置',
       confirmDelete: '您确定要删除此条目吗？',
       confirmShare: '此操作将复制明文数据到剪贴板，请注意信息安全。确定要继续吗？',
+      export: '导出数据',
+      exportFormat: '导出格式',
+      exportLocation: '保存位置',
+      exportJsonDesc: '结构化数据格式，包含完整信息',
+      exportCsvDesc: '表格格式，可在Excel中打开',
+      selectSaveLocation: '点击选择保存位置',
+      saveAsFormat: '将保存为 {{format}} 格式',
+      csvFiles: 'CSV 文件 (*.csv)',
+      jsonFiles: 'JSON 文件 (*.json)',
+      allFiles: '所有文件 (*.*)',
       cancel: '取消',
       ok: '确定',
     },
@@ -135,6 +146,7 @@ export const zh = {
       saveError: '保存更改失败',
       unsavedChanges: '您有未保存的更改。您确定要离开而不保存吗？',
       noPasswordAvailable: '没有可用密码',
+      exportError: '导出数据失败',
     },
 
     // 系统消息
@@ -152,6 +164,7 @@ export const zh = {
       entryAdded: '条目已成功添加',
       entryUpdated: '条目已成功更新',
       entryDeleted: '条目已成功删除',
+      exportSuccess: '数据导出成功',
     },
 
     // 密码生成器

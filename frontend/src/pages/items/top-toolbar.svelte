@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { Plus, Save, Search } from '@lucide/svelte'
+  import { Download, Plus, Save, Search } from '@lucide/svelte'
   import i18next from '@/i18n'
 
   interface Props {
@@ -8,9 +8,10 @@
     onNew?: () => void
     onSave?: () => void
     onSearch?: (data: { term: string }) => void
+    onExport?: () => void
   }
 
-  const { hasUnsavedChanges, searchTerm = '', onNew, onSave, onSearch }: Props = $props()
+  const { hasUnsavedChanges, searchTerm = '', onNew, onSave, onSearch, onExport }: Props = $props()
 
   function handleNew() {
     onNew?.()
@@ -18,6 +19,10 @@
 
   function handleSave() {
     onSave?.()
+  }
+
+  function handleExport() {
+    onExport?.()
   }
 
   function handleSearchInput(event: Event) {
@@ -53,6 +58,14 @@
       {#if hasUnsavedChanges}
         <span class='unsaved-indicator'></span>
       {/if}
+    </button>
+
+    <button
+      class='toolbar-btn'
+      onclick={handleExport}
+      title={i18next.t('buttons.export')}
+    >
+      <Download size={16} />
     </button>
 
     <button

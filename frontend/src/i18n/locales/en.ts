@@ -26,6 +26,7 @@ export const en = {
     buttons: {
       newEntry: 'New Entry',
       save: 'Save',
+      export: 'Export',
     },
 
     // Accessibility labels
@@ -121,6 +122,16 @@ export const en = {
       saveLocation: 'Choose save location for your password file',
       confirmDelete: 'Are you sure you want to delete this entry?',
       confirmShare: 'This action will copy plain text data to clipboard. Please be aware of information security. Do you want to continue?',
+      export: 'Export Data',
+      exportFormat: 'Export Format',
+      exportLocation: 'Save Location',
+      exportJsonDesc: 'Structured data format with complete information',
+      exportCsvDesc: 'Table format that can be opened in Excel',
+      selectSaveLocation: 'Click to select save location',
+      saveAsFormat: 'Will be saved as {{format}} format',
+      csvFiles: 'CSV Files (*.csv)',
+      jsonFiles: 'JSON Files (*.json)',
+      allFiles: 'All Files (*.*)',
       cancel: 'Cancel',
       ok: 'OK',
     },
@@ -135,6 +146,7 @@ export const en = {
       saveError: 'Failed to save changes',
       unsavedChanges: 'You have unsaved changes. Are you sure you want to leave?',
       noPasswordAvailable: 'No password available',
+      exportError: 'Failed to export data',
     },
 
     // System messages
@@ -152,6 +164,7 @@ export const en = {
       entryAdded: 'Entry added successfully',
       entryUpdated: 'Entry updated successfully',
       entryDeleted: 'Entry deleted successfully',
+      exportSuccess: 'Data exported successfully',
     },
 
     // Password generator

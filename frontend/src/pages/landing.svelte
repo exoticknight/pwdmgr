@@ -117,23 +117,17 @@
       <div class='file-section'>
         <WailsFileSelect
           class='file-drop-zone'
-          config={{
-            dialog: {
-              title: i18next.t('landing.dialogTitle'),
-              filters: [
-                { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
-                { displayName: i18next.t('landing.allFiles'), pattern: '*.*' },
-              ],
-            },
-            behavior: {
-              mode: 'open',
-              multiple: false,
-              enableDrop: true,
-              dropFilter: paths => paths.filter(path =>
-                path.toLowerCase().endsWith('.pwd'),
-              ),
-            },
-          }}
+          title={i18next.t('landing.dialogTitle')}
+          filters={[
+            { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
+            { displayName: i18next.t('landing.allFiles'), pattern: '*.*' },
+          ]}
+          mode='open'
+          multiple={false}
+          enableDrop={true}
+          dropFilter={paths => paths.filter(path =>
+            path.toLowerCase().endsWith('.pwd'),
+          )}
           onSelect={handleFilesSelected}
         >
           {#snippet children()}

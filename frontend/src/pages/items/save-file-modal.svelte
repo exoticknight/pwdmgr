@@ -22,20 +22,14 @@
   {#snippet children()}
     <WailsFileSelect
       class='border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:border-blue-500'
-      config={{
-        dialog: {
-          title: i18next.t('dialogs.savePasswordFile'),
-          defaultFilename: 'passwords.pwd',
-          filters: [
-            { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
-          ],
-          canCreateDirs: true,
-        },
-        behavior: {
-          mode: 'save',
-          enableDrop: false,
-        },
-      }}
+      title={i18next.t('dialogs.savePasswordFile')}
+      defaultFilename='passwords.pwd'
+      filters={[
+        { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
+      ]}
+      canCreateDirs={true}
+      mode='save'
+      enableDrop={false}
       onSelect={onSave}
     >
       {#snippet children({ mode: _mode })}

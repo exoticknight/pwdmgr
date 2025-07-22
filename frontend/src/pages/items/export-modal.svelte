@@ -86,18 +86,12 @@
         <h3 class='section-title'>{i18next.t('dialogs.exportLocation')}</h3>
         <WailsFileSelect
           class='border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:border-blue-500'
-          config={{
-            dialog: {
-              title: i18next.t('dialogs.export'),
-              defaultFilename: getDefaultFilename(),
-              filters: getFileFilters(),
-              canCreateDirs: true,
-            },
-            behavior: {
-              mode: 'save',
-              enableDrop: false,
-            },
-          }}
+          title={i18next.t('dialogs.export')}
+          defaultFilename={getDefaultFilename()}
+          filters={getFileFilters()}
+          canCreateDirs={true}
+          mode='save'
+          enableDrop={false}
           onSelect={handleFileSave}
         >
           {#snippet children({ mode: _mode })}

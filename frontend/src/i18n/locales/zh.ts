@@ -107,6 +107,10 @@ export const zh = {
       addToFavorites: '添加到收藏',
       removeFromFavorites: '从收藏中移除',
 
+      // 条目操作
+      delete: '删除',
+      share: '分享',
+
       // 文件操作
       createNew: '创建新的密码文件',
     },
@@ -116,6 +120,7 @@ export const zh = {
       savePasswordFile: '保存密码文件',
       saveLocation: '选择密码文件的保存位置',
       confirmDelete: '您确定要删除此条目吗？',
+      confirmShare: '此操作将复制明文数据到剪贴板，请注意信息安全。确定要继续吗？',
       cancel: '取消',
       ok: '确定',
     },
@@ -141,6 +146,8 @@ export const zh = {
     notifications: {
       copied: '已复制到剪贴板',
       copyFailed: '复制到剪贴板失败',
+      shareSuccess: '数据已成功复制到剪贴板',
+      shareFailed: '分享失败',
       saved: '更改已成功保存',
       entryAdded: '条目已成功添加',
       entryUpdated: '条目已成功更新',

@@ -11,7 +11,6 @@ export const en = {
       loading: 'Loading...',
       back: 'Back',
       file: 'File',
-      cancel: 'Cancel',
     },
 
     // Navigation
@@ -67,7 +66,6 @@ export const en = {
       emptySubtitle: 'Select an entry to view details',
       save: 'Save',
       addEntry: 'Add Entry',
-      editEntry: 'Edit Entry',
 
       // Time information
       createdAt: 'Created',

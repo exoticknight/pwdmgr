@@ -45,11 +45,11 @@
 </script>
 
 <Modal
-  maxWidth='xl'
   {isOpen}
   title={i18next.t('dialogs.export')}
   onClose={onCancel}
   showCloseButton={true}
+  boxClass='max-w-xl'
 >
   {#snippet children()}
     <div class='export-modal-content'>

@@ -11,7 +11,6 @@ export const ja = {
       loading: '読み込み中...',
       back: '戻る',
       file: 'ファイル',
-      cancel: 'キャンセル',
     },
 
     // ナビゲーション
@@ -67,7 +66,6 @@ export const ja = {
       emptySubtitle: 'エントリを選択して詳細を表示',
       save: '保存',
       addEntry: 'エントリを追加',
-      editEntry: 'エントリを編集',
 
       // 時間情報
       createdAt: '作成日時',

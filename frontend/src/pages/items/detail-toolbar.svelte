@@ -28,7 +28,7 @@
       <button
         class='toolbar-btn toolbar-btn-danger'
         onclick={handleDelete}
-        title={i18next.t('forms.confirmDelete')}
+        title={i18next.t('actions.delete')}
       >
         <Trash2 size={16} />
       </button>

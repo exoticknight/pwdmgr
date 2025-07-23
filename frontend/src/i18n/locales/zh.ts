@@ -11,7 +11,6 @@ export const zh = {
       loading: '加载中...',
       back: '返回',
       file: '文件',
-      cancel: '取消',
     },
 
     // 导航
@@ -67,7 +66,6 @@ export const zh = {
       emptySubtitle: '选择一个条目来查看详细信息',
       save: '保存',
       addEntry: '添加条目',
-      editEntry: '编辑条目',
 
       // 时间信息
       createdAt: '创建时间',

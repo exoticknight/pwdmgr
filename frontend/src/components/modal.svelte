@@ -8,7 +8,7 @@
     title: string
     onClose?: () => void
     showCloseButton?: boolean
-    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | string
     children: Snippet
     actions?: Snippet
   }
@@ -56,7 +56,7 @@
     aria-labelledby='modal-title'
     tabindex='-1'
   >
-    <div class='modal-box {maxWidthClasses[maxWidth]}'>
+    <div class='modal-box {maxWidthClasses[maxWidth] ?? maxWidth}'>
       <!-- Header -->
       <div class='flex justify-between items-center mb-4'>
         <h3 id='modal-title' class='font-bold text-lg'>

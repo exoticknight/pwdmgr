@@ -8,7 +8,7 @@
     title: string
     onClose?: () => void
     showCloseButton?: boolean
-    maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | string
+    boxClass?: string
     children: Snippet
     actions?: Snippet
   }
@@ -18,18 +18,10 @@
     title,
     onClose,
     showCloseButton = true,
-    maxWidth = 'md',
+    boxClass = '',
     children,
     actions,
   }: Props = $props()
-
-  const maxWidthClasses = {
-    'sm': 'max-w-sm',
-    'md': 'max-w-md',
-    'lg': 'max-w-lg',
-    'xl': 'max-w-xl',
-    '2xl': 'max-w-2xl',
-  }
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && onClose) {
@@ -56,7 +48,7 @@
     aria-labelledby='modal-title'
     tabindex='-1'
   >
-    <div class='modal-box {maxWidthClasses[maxWidth] ?? maxWidth}'>
+    <div class='modal-box {boxClass}'>
       <!-- Header -->
       <div class='flex justify-between items-center mb-4'>
         <h3 id='modal-title' class='font-bold text-lg'>

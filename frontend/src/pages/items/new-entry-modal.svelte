@@ -1,7 +1,7 @@
 <script lang='ts'>
   import type { BasicData, BasicDataKey, OmitBasicDataExcept, PasswordData } from '@/types/datafile'
 
-  import { Key, Plus, X } from '@lucide/svelte'
+  import { WandSparkles } from '@lucide/svelte'
 
   import Modal from '@/components/modal.svelte'
   import PasswordGenerator from '@/components/password-generator.svelte'
@@ -71,8 +71,7 @@
   {isOpen}
   title={i18next.t('forms.addEntry')}
   onClose={handleCancel}
-  showCloseButton={false}
-  maxWidth='max-w-fit'
+  boxClass='max-w-fit'
 >
   {#snippet children()}
     <div class='flex new-entry-panel'>
@@ -124,7 +123,7 @@
                 onclick={handleOpenPasswordGenerator}
                 title={i18next.t('passwordGenerator.title')}
               >
-                <Key size={16} />
+                <WandSparkles size={16} />
               </button>
             </div>
             <!-- Password strength indicator -->
@@ -160,17 +159,12 @@
   {/snippet}
 
   {#snippet actions()}
-    <button type='button' class='btn btn-ghost' onclick={handleCancel}>
-      <X class='w-4 h-4 mr-2' />
-      {i18next.t('actions.cancel')}
-    </button>
     <button
       type='submit'
       class='btn btn-primary'
       disabled={!isValid}
       onclick={handleSubmit}
     >
-      <Plus class='w-4 h-4 mr-2' />
       {i18next.t('actions.add')}
     </button>
   {/snippet}

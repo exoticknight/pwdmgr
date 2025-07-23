@@ -2,16 +2,15 @@
   import type { PasswordData } from '@/types/datafile'
   import type { DialogControl } from '@/types/dialog'
 
-  import { Copy, Eye, EyeOff, Heart, Share2, Trash2 } from '@lucide/svelte'
+  import { Copy, Eye, EyeOff, Heart, Share2, Trash2, WandSparkles } from '@lucide/svelte'
 
   import PasswordStrength from '@/components/password-strength.svelte'
-
   import i18next from '@/i18n'
-
   import { dialog } from '@/stores/dialog.svelte'
   import { notification } from '@/stores/notification.svelte'
-
   import { formatCompactDateTime } from '@/utils/time-format'
+
+  import PasswordGeneratorModal from './password-generator-modal.svelte'
 
   interface Props {
     entry: PasswordData | null
@@ -27,6 +26,7 @@
 
   let formData = $state<Partial<PasswordData>>({})
   let showPassword = $state(false)
+  let showPasswordGenerator = $state(false)
 
   // Update form data when entry changes
   $effect(() => {
@@ -55,6 +55,18 @@
 
   function togglePasswordVisibility() {
     showPassword = !showPassword
+  }
+
+  function openPasswordGenerator() {
+    showPasswordGenerator = true
+  }
+
+  function closePasswordGenerator() {
+    showPasswordGenerator = false
+  }
+
+  function handlePasswordGenerated(password: string) {
+    handleFieldChange('password', password)
   }
 
   function copyToClipboard(text: string) {
@@ -239,6 +251,14 @@
           <button
             type='button'
             class='btn join-item'
+            onclick={openPasswordGenerator}
+            title={i18next.t('passwordGenerator.title')}
+          >
+            <WandSparkles size={16} />
+          </button>
+          <button
+            type='button'
+            class='btn join-item'
             onclick={() => copyToClipboard(entry.password)}
             title={i18next.t('actions.copy')}
           >
@@ -277,6 +297,13 @@
     </div>
   </div>
 {/if}
+
+<!-- Password Generator Modal -->
+<PasswordGeneratorModal
+  isOpen={showPasswordGenerator}
+  onClose={closePasswordGenerator}
+  onSelect={handlePasswordGenerated}
+/>
 
 <style>
   .detail-empty {

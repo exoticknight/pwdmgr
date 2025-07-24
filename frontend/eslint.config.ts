@@ -9,6 +9,12 @@ export default antfu(
   {
     ignores: [
       'cspell.config.yaml',
+      'wailsjs/**',
+      'dist/**',
+      'build/**',
+      'node_modules/**',
+      '**/*.d.ts',
+      '**/*.md',
     ],
   },
 )

@@ -1,46 +1,36 @@
 <script lang='ts'>
   import type { RouteConfig, RouteResult, RouterInstanceConfig } from '@mateothegreat/svelte5-router'
   import { Router } from '@mateothegreat/svelte5-router'
-  import { onMount } from 'svelte'
-  import GlobalNotifications from './components/global-notifications.svelte'
-  import Landing from './pages/landing.svelte'
-  import Table from './pages/table.svelte'
-  import { navigationService } from './utils/navigation'
+  import GlobalDialog from '@/components/dialog.svelte'
+  import Notification from '@/components/notification.svelte'
+  import Landing from '@/pages/landing.svelte'
+  import Main from '@/pages/main.svelte'
+  import { route } from '@/stores/route.svelte'
 
   const routes: RouteConfig[] = [
     {
       component: Landing,
     },
     {
-      path: 'table',
-      component: Table,
+      path: '/home/*',
+      component: Main,
     },
   ]
 
   const hooks: RouterInstanceConfig['hooks'] = {
     pre: (_route: RouteResult) => {
-      return navigationService.canNavigate()
+      return route.canNavigate()
     },
   }
-
-  onMount(() => {
-    // Simple browser navigation blocking
-    const handlePopstate = (event: PopStateEvent) => {
-      event.preventDefault()
-    }
-
-    window.addEventListener('popstate', handlePopstate, true)
-
-    return () => {
-      window.removeEventListener('popstate', handlePopstate, true)
-    }
-  })
 </script>
 
 <Router {routes} {hooks} />
 
 <!-- Global Notifications -->
-<GlobalNotifications />
+<Notification />
+
+<!-- Global Dialog -->
+<GlobalDialog />
 
 <style>
 </style>

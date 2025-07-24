@@ -1,29 +1,63 @@
-import type { Notification, NotificationType } from '../types/notification'
+import type {
+  NotificationControl,
+  Notification as NotificationItem,
+  NotificationOptions,
+  NotificationState,
+  NotificationType,
+} from '@/types/notification'
 
-class NotificationStore {
-  private notifications = $state<Notification[]>([])
+class Notification implements NotificationControl {
+  private notificationState = $state<NotificationState>({
+    notifications: [],
+  })
+
   private timers = new Map<string, number>()
 
-  get all(): Notification[] {
-    return this.notifications
+  // 使用 getter 暴露只读状态
+  get state(): Readonly<NotificationState> {
+    return this.notificationState
   }
 
-  show(message: string, type: NotificationType = 'info', duration: number = 5000): string {
-    const id = crypto.randomUUID()
-    const notification: Notification = {
-      id,
-      message,
-      type,
-      duration,
+  // 兼容性getter（保持向后兼容）
+  get all(): NotificationItem[] {
+    return this.notificationState.notifications
+  }
+
+  show(options: NotificationOptions): string
+  show(message: string, type?: NotificationType, duration?: number): string
+  show(
+    optionsOrMessage: NotificationOptions | string,
+    type: NotificationType = 'info',
+    duration: number = 5000,
+  ): string {
+    // 处理重载参数
+    let options: NotificationOptions
+    if (typeof optionsOrMessage === 'string') {
+      options = {
+        message: optionsOrMessage,
+        type,
+        duration,
+      }
+    }
+    else {
+      options = optionsOrMessage
     }
 
-    this.notifications.push(notification)
+    const id = crypto.randomUUID()
+    const notification: NotificationItem = {
+      id,
+      message: options.message,
+      type: options.type ?? 'info',
+      duration: options.duration ?? 5000,
+    }
+
+    this.notificationState.notifications.push(notification)
 
     // Auto dismiss if duration is set
-    if (duration > 0) {
+    if (notification.duration > 0) {
       const timer = setTimeout(() => {
         this.dismiss(id)
-      }, duration)
+      }, notification.duration) as unknown as number
       this.timers.set(id, timer)
     }
 
@@ -31,19 +65,19 @@ class NotificationStore {
   }
 
   success(message: string, duration: number = 3000): string {
-    return this.show(message, 'success', duration)
+    return this.show({ message, type: 'success', duration })
   }
 
   error(message: string, duration: number = 5000): string {
-    return this.show(message, 'error', duration)
+    return this.show({ message, type: 'error', duration })
   }
 
   warning(message: string, duration: number = 4000): string {
-    return this.show(message, 'warning', duration)
+    return this.show({ message, type: 'warning', duration })
   }
 
   info(message: string, duration: number = 3000): string {
-    return this.show(message, 'info', duration)
+    return this.show({ message, type: 'info', duration })
   }
 
   dismiss(id: string): void {
@@ -55,9 +89,9 @@ class NotificationStore {
     }
 
     // Remove notification
-    const index = this.notifications.findIndex(n => n.id === id)
+    const index = this.notificationState.notifications.findIndex(n => n.id === id)
     if (index >= 0) {
-      this.notifications.splice(index, 1)
+      this.notificationState.notifications.splice(index, 1)
     }
   }
 
@@ -67,8 +101,8 @@ class NotificationStore {
     this.timers.clear()
 
     // Clear all notifications
-    this.notifications.splice(0)
+    this.notificationState.notifications.splice(0)
   }
 }
 
-export const notificationStore = new NotificationStore()
+export const notification = new Notification()

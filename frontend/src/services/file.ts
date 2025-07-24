@@ -1,7 +1,7 @@
-// File operation service - only handles file read/write operations
+// File operations - only handles file read/write operations
 import { ReadFile, SaveFile } from '../../wailsjs/go/main/FileService'
 
-export interface FileService {
+export interface File {
   // Read file content
   readFile: (filePath: string) => Promise<ArrayBuffer>
 
@@ -9,7 +9,7 @@ export interface FileService {
   saveFile: (filePath: string, data: ArrayBuffer) => Promise<void>
 }
 
-class WailsFileService implements FileService {
+class WailsFileImpl implements File {
   async readFile(filePath: string): Promise<ArrayBuffer> {
     try {
       const data = await ReadFile(filePath)
@@ -41,15 +41,15 @@ class WailsFileService implements FileService {
 }
 
 // Singleton instance
-let fileServiceInstance: FileService | null = null
+let fileInstance: WailsFileImpl | null = null
 
-export function getFileService(): FileService {
-  if (!fileServiceInstance) {
-    fileServiceInstance = new WailsFileService()
+export function getFile(): File {
+  if (!fileInstance) {
+    fileInstance = new WailsFileImpl()
   }
-  return fileServiceInstance
+  return fileInstance
 }
 
-export function resetFileService(): void {
-  fileServiceInstance = null
+export function resetFile(): void {
+  fileInstance = null
 }

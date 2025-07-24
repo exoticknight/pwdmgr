@@ -11,35 +11,36 @@
     pattern: string
   }
 
-  // Simplified configuration interface
-  interface WailsFileSelectConfig {
-    // === Dialog settings ===
-    dialog?: {
-      title?: string
-      defaultDir?: string
-      defaultFilename?: string
-      filters?: FileFilter[]
-      canCreateDirs?: boolean
-      showHidden?: boolean
-    }
-
-    // === Behavior settings ===
-    behavior?: {
-      mode?: 'open' | 'save'
-      multiple?: boolean
-      enableDrop?: boolean
-      dropFilter?: (paths: string[]) => string[]
-      disabled?: boolean
-    }
-  }
-
   interface Props {
+    /** CSS class name for the container element */
     class?: string
-    config?: WailsFileSelectConfig
+    /** Dialog title displayed in the file picker */
+    title?: string
+    /** Default directory to open when dialog is shown */
+    defaultDir?: string
+    /** Default filename for save dialogs */
+    defaultFilename?: string
+    /** File filters to restrict selectable file types */
+    filters?: FileFilter[]
+    /** Whether users can create new directories in the dialog */
+    canCreateDirs?: boolean
+    /** Whether to show hidden files in the dialog */
+    showHidden?: boolean
+    /** Dialog mode: 'open' for file selection, 'save' for file saving */
+    mode?: 'open' | 'save'
+    /** Whether to allow multiple file selection (only for 'open' mode) */
+    multiple?: boolean
+    /** Whether to enable drag and drop functionality */
+    enableDrop?: boolean
+    /** Function to filter dropped file paths before processing */
+    dropFilter?: (paths: string[]) => string[]
+    /** Whether the component is disabled */
+    disabled?: boolean
+    /** Callback function called when files are selected */
     onSelect: (filePaths: string[]) => void
+    /** Optional child content with access to component state */
     children?: Snippet<[{
       isDragOver: boolean
-      config: WailsFileSelectConfig
       isDisabled: boolean
       mode: 'open' | 'save'
       enableDrop: boolean
@@ -47,54 +48,44 @@
     }]>
   }
 
-  const { class: containerClass, config = {}, onSelect, children }: Props = $props()
-
-  // Default configuration
-  const defaults = {
-    dialog: {
-      title: 'Select Files',
-      defaultDir: '',
-      defaultFilename: '',
-      filters: [{ displayName: 'All Files (*.*)', pattern: '*.*' }],
-      canCreateDirs: false,
-      showHidden: false,
-    },
-    behavior: {
-      mode: 'open' as const,
-      multiple: false,
-      enableDrop: true,
-      dropFilter: (paths: string[]) => paths,
-      disabled: false,
-    },
-  }
-
-  // Merge configuration
-  const cfg = {
-    dialog: { ...defaults.dialog, ...config.dialog },
-    behavior: { ...defaults.behavior, ...config.behavior },
-  }
+  const {
+    class: containerClass,
+    title = 'Select Files',
+    defaultDir = '',
+    defaultFilename = '',
+    filters = [{ displayName: 'All Files (*.*)', pattern: '*.*' }],
+    canCreateDirs = false,
+    showHidden = false,
+    mode = 'open',
+    multiple = false,
+    enableDrop = true,
+    dropFilter = (paths: string[]) => paths,
+    disabled = false,
+    onSelect,
+    children,
+  }: Props = $props()
 
   let isDragOver = $state(false)
 
   onMount(() => {
-    if (cfg.behavior.enableDrop && !cfg.behavior.disabled) {
+    if (enableDrop && !disabled) {
       setupFileDrop()
     }
   })
 
   onDestroy(() => {
-    if (cfg.behavior.enableDrop) {
+    if (enableDrop) {
       OnFileDropOff()
     }
   })
 
   function setupFileDrop() {
     OnFileDrop((x: number, y: number, paths: string[]) => {
-      if (cfg.behavior.disabled || cfg.behavior.mode === 'save') {
+      if (disabled || mode === 'save') {
         return
       }
 
-      const filteredPaths = cfg.behavior.dropFilter!(paths)
+      const filteredPaths = dropFilter!(paths)
       if (filteredPaths.length > 0) {
         onSelect(filteredPaths)
       }
@@ -102,37 +93,37 @@
   }
 
   async function handleSelectFiles() {
-    if (cfg.behavior.disabled) {
+    if (disabled) {
       return
     }
 
     try {
       const dialogOptions: main.OpenDialogOptions = new main.OpenDialogOptions({
-        title: cfg.dialog.title,
-        filters: cfg.dialog.filters!.map(f => new main.FileFilter({
+        title,
+        filters: filters!.map((f: FileFilter) => new main.FileFilter({
           displayName: f.displayName,
           pattern: f.pattern,
         })),
-        defaultDirectory: cfg.dialog.defaultDir,
-        defaultFilename: cfg.dialog.defaultFilename,
-        canCreateDirectories: cfg.dialog.canCreateDirs,
+        defaultDirectory: defaultDir,
+        defaultFilename,
+        canCreateDirectories: canCreateDirs,
         resolvesAliases: false, // Simplified configuration, remove uncommon options
         treatPackagesAsDirectories: false,
       })
 
       let filePaths: string[] = []
 
-      if (cfg.behavior.mode === 'save') {
+      if (mode === 'save') {
         const saveOptions: main.SaveDialogOptions = new main.SaveDialogOptions({
-          title: cfg.dialog.title,
-          filters: cfg.dialog.filters!.map(f => new main.FileFilter({
+          title,
+          filters: filters!.map((f: FileFilter) => new main.FileFilter({
             displayName: f.displayName,
             pattern: f.pattern,
           })),
-          defaultDirectory: cfg.dialog.defaultDir,
-          defaultFilename: cfg.dialog.defaultFilename,
-          canCreateDirectories: cfg.dialog.canCreateDirs,
-          showHiddenFiles: cfg.dialog.showHidden,
+          defaultDirectory: defaultDir,
+          defaultFilename,
+          canCreateDirectories: canCreateDirs,
+          showHiddenFiles: showHidden,
           treatPackagesAsDirectories: false,
         })
 
@@ -141,7 +132,7 @@
           filePaths = [filePath]
         }
       }
-      else if (cfg.behavior.multiple) {
+      else if (multiple) {
         filePaths = await OpenMultipleFilesDialog(dialogOptions)
       }
       else {
@@ -162,7 +153,7 @@
 
   // Drag and drop event handling
   function handleDragEnter(event: DragEvent) {
-    if (cfg.behavior.disabled || !cfg.behavior.enableDrop || cfg.behavior.mode === 'save') {
+    if (disabled || !enableDrop || mode === 'save') {
       return
     }
     event.preventDefault()
@@ -170,7 +161,7 @@
   }
 
   function handleDragLeave(event: DragEvent) {
-    if (cfg.behavior.disabled || !cfg.behavior.enableDrop || cfg.behavior.mode === 'save') {
+    if (disabled || !enableDrop || mode === 'save') {
       return
     }
     event.preventDefault()
@@ -184,14 +175,14 @@
   }
 
   function handleDragOver(event: DragEvent) {
-    if (cfg.behavior.disabled || !cfg.behavior.enableDrop || cfg.behavior.mode === 'save') {
+    if (disabled || !enableDrop || mode === 'save') {
       return
     }
     event.preventDefault()
   }
 
   function handleDrop(event: DragEvent) {
-    if (cfg.behavior.disabled || !cfg.behavior.enableDrop || cfg.behavior.mode === 'save') {
+    if (disabled || !enableDrop || mode === 'save') {
       return
     }
     event.preventDefault()
@@ -199,7 +190,7 @@
   }
 
   function handleKeyDown(event: KeyboardEvent) {
-    if (cfg.behavior.disabled) {
+    if (disabled) {
       return
     }
     if (event.key === 'Enter' || event.key === ' ') {
@@ -212,23 +203,22 @@
 <div
   role='button'
   style='--wails-drop-target: drop'
-  tabindex={cfg.behavior.disabled ? -1 : 0}
+  tabindex={disabled ? -1 : 0}
   class={containerClass}
   ondragenter={handleDragEnter}
   ondragleave={handleDragLeave}
   ondragover={handleDragOver}
   ondrop={handleDrop}
-  onclick={cfg.behavior.disabled ? undefined : handleSelectFiles}
+  onclick={disabled ? undefined : handleSelectFiles}
   onkeydown={handleKeyDown}
 >
   {#if children}
     {@render children({
       isDragOver,
-      config: cfg,
-      isDisabled: cfg.behavior.disabled,
-      mode: cfg.behavior.mode,
-      enableDrop: cfg.behavior.enableDrop,
-      multiple: cfg.behavior.multiple,
+      isDisabled: disabled,
+      mode,
+      enableDrop,
+      multiple,
     })}
   {/if}
 </div>

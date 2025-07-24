@@ -1,5 +1,5 @@
 {
-  "name": "vite-project",
+  "name": "mat6maa5",
   "type": "module",
   "version": "0.0.0",
   "private": true,
@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "ts-patch install"
   },
   "dependencies": {
     "@lucide/svelte": "^0.523.0",
@@ -16,17 +19,22 @@
     "fuse.js": "^7.1.0",
     "i18next": "^25.2.1",
     "svelte-i18next": "^2.2.2",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.10",
+    "typia": "^9.4.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.1",
+    "@ryoppippi/unplugin-typia": "^2.6.5",
     "@sveltejs/vite-plugin-svelte": "^5.1.0",
     "@tailwindcss/vite": "^4.1.10",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/node": "^24.0.12",
     "eslint": "^9.29.0",
     "eslint-plugin-svelte": "^3.9.3",
     "svelte": "^5.34.8",
     "svelte-check": "^4.2.2",
+    "ts-patch": "^3.3.0",
+    "type-fest": "^4.41.0",
     "typescript": "~5.8.3",
     "vite": "^7.0.0"
   }

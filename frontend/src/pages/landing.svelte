@@ -1,13 +1,19 @@
 <script lang='ts'>
+  import type { DatabaseFile } from '@/types/datafile'
+
   import { FileLock, Plus } from '@lucide/svelte'
-  import PasswordForm from '../components/password-form.svelte'
-  import WailsFileSelect from '../components/wails-file-select.svelte'
-  import i18next from '../i18n'
-  import { getDataManagerService } from '../services/data-manager'
-  import { getDatabaseService } from '../services/database'
-  import { userState } from '../stores/user.svelte'
-  import { navigationService, Routes } from '../utils/navigation'
-  import { notifications } from '../utils/notifications'
+
+  import WailsFileSelect from '@/components/wails-file-select.svelte'
+
+  import i18next from '@/i18n'
+  import { getDataManager } from '@/services/data-manager'
+
+  import { database } from '@/stores/database.svelte'
+  import { notification } from '@/stores/notification.svelte'
+  import { route, Routes } from '@/stores/route.svelte'
+
+  import { userState } from '@/stores/user.svelte'
+  import PasswordForm from './landing/password-form.svelte'
 
   let showPasswordInput = $state(false)
   let selectedFilePath = $state<string | null>(null)
@@ -16,7 +22,7 @@
   let confirmPassword = $state('')
   let isLoading = $state(false)
 
-  const dataManager = getDataManagerService()
+  const dataManager = getDataManager()
 
   function handleFileSelected(filePath: string) {
     isNewDatabase = false
@@ -39,12 +45,12 @@
   async function handlePasswordSubmit(event: SubmitEvent) {
     event.preventDefault()
     if (!password) {
-      notifications.error(i18next.t('errors.passwordRequired'))
+      notification.error(i18next.t('errors.passwordRequired'))
       return
     }
 
     if (isNewDatabase && password !== confirmPassword) {
-      notifications.error(i18next.t('errors.passwordMismatch'))
+      notification.error(i18next.t('errors.passwordMismatch'))
       return
     }
 
@@ -57,24 +63,27 @@
 
       if (selectedFilePath) {
         // Load existing file with decryption validation
-        await dataManager.loadFromFile(selectedFilePath, password)
+        const databaseFile = await dataManager.loadFromFile<DatabaseFile>(selectedFilePath, password)
+        database.close()
+        await database.initialize(databaseFile)
         userState.dbPath = selectedFilePath
         userState.password = password
       }
       else if (isNewDatabase) {
         // Create new database by initializing with empty data
-        const database = getDatabaseService()
-        database.initialize() // Initialize with empty data
+        database.close()
+        await database.initialize() // Initialize with empty data
         userState.dbPath = ''
         userState.password = password
       }
 
       // If we reach here, operation was successful
-      navigationService.navigate(Routes.TABLE)
+      // Let user choose which interface to use
+      route.navigate(Routes.ITEMS_ALL)
     }
     catch (err) {
       console.error('Failed to process database:', err)
-      notifications.error(String(err) || i18next.t('messages.loadDatabaseFileFailed'))
+      notification.error(String(err) || i18next.t('messages.loadDatabaseFileFailed'))
     }
     finally {
       isLoading = false
@@ -92,54 +101,56 @@
   const displayFileName = $derived(selectedFilePath ? selectedFilePath.split(/[/\\]/).pop() || '' : '')
 </script>
 
-<div class='min-h-screen bg-base-100 flex items-center justify-center p-8'>
-  <div class='w-full max-w-lg'>
+<div class='landing-container'>
+  <div class='landing-content'>
     {#if !showPasswordInput}
-      <WailsFileSelect
-        class='border-2 border-dashed border-base-300 rounded-lg p-8 text-center cursor-pointer transition-colors hover:border-primary hover:bg-base-200'
-        config={{
-          dialog: {
-            title: i18next.t('landing.dialogTitle'),
-            filters: [
-              { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
-              { displayName: i18next.t('landing.allFiles'), pattern: '*.*' },
-            ],
-          },
-          behavior: {
-            mode: 'open',
-            multiple: false,
-            enableDrop: true,
-            dropFilter: paths => paths.filter(path =>
-              path.toLowerCase().endsWith('.pwd'),
-            ),
-          },
-        }}
-        onSelect={handleFilesSelected}
-      >
-        {#snippet children()}
-          <div class='w-12 h-12 mx-auto mb-4 text-base-content/50'>
-            <FileLock class='w-full h-full' />
-          </div>
+      <!-- Header Section -->
+      <div class='landing-header'>
+        <div class='app-icon'>
+          <FileLock size={32} />
+        </div>
+        <h1 class='app-title'>{i18next.t('app.title')}</h1>
+        <p class='app-subtitle'>{i18next.t('app.slogan')}</p>
+      </div>
 
-          <p class='text-base-content/70 mb-4'>
-            {i18next.t('landing.selectFileDescription')}
-          </p>
+      <!-- File Selection -->
+      <div class='file-section'>
+        <WailsFileSelect
+          class='file-drop-zone'
+          title={i18next.t('landing.dialogTitle')}
+          filters={[
+            { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
+            { displayName: i18next.t('landing.allFiles'), pattern: '*.*' },
+          ]}
+          mode='open'
+          multiple={false}
+          enableDrop={true}
+          dropFilter={paths => paths.filter(path =>
+            path.toLowerCase().endsWith('.pwd'),
+          )}
+          onSelect={handleFilesSelected}
+        >
+          {#snippet children()}
+            <div class='file-drop-content'>
+              <FileLock size={24} />
+              <p class='file-drop-text'>{i18next.t('landing.selectFileDescription')}</p>
+              <span class='file-drop-hint'>{i18next.t('landing.selectFileFormats')}</span>
+            </div>
+          {/snippet}
+        </WailsFileSelect>
 
-          <div class='text-sm text-base-content/50 space-y-1'>
-            <p>{i18next.t('landing.selectFileFormats')}</p>
-          </div>
-        {/snippet}
-      </WailsFileSelect>
+        <div class='divider-section'>
+          <span class='divider-text'>{i18next.t('actions.or')}</span>
+        </div>
 
-      <div class='divider my-6'>{i18next.t('actions.or')}</div>
-
-      <button
-        class='btn btn-primary w-full'
-        onclick={createNewDatabase}
-      >
-        <Plus class='w-5 h-5 mr-2' />
-        {i18next.t('actions.createNew')}
-      </button>
+        <button
+          class='btn-new-database'
+          onclick={createNewDatabase}
+        >
+          <Plus size={16} />
+          {i18next.t('actions.createNew')}
+        </button>
+      </div>
     {:else}
       <PasswordForm
         {isNewDatabase}
@@ -153,3 +164,136 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .landing-container {
+    min-height: 100vh;
+    background-color: var(--color-bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+  }
+
+  .landing-content {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .landing-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+
+  .app-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-sm);
+  }
+
+  .app-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-sm) 0;
+  }
+
+  .app-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .file-section {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+  }
+
+  :global(.file-drop-zone) {
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    background-color: transparent;
+  }
+
+  :global(.file-drop-zone:hover) {
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-tertiary);
+  }
+
+  .file-drop-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .file-drop-text {
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .file-drop-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .divider-section {
+    display: flex;
+    align-items: center;
+    margin: var(--space-md) 0;
+  }
+
+  .divider-section::before,
+  .divider-section::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-border);
+  }
+
+  .divider-text {
+    padding: 0 var(--space-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    background-color: var(--color-bg-secondary);
+  }
+
+  .btn-new-database {
+    width: 100%;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-new-database:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-new-database:active {
+    transform: translateY(1px);
+  }
+</style>

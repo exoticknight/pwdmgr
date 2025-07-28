@@ -18,6 +18,7 @@ export const ja = {
       allItems: 'すべてのアイテム',
       favorites: 'お気に入り',
       recentlyUsed: '最近使用',
+      settings: '設定',
       close: '閉じる',
     },
 
@@ -192,6 +193,44 @@ export const ja = {
         fair: '普通',
         good: '良い',
         strong: '強い',
+      },
+    },
+
+    // 設定ページ
+    setting: {
+      title: '設定',
+
+      // セキュリティ設定
+      security: {
+        title: 'セキュリティ設定',
+        autoLock: '自動ロック',
+        autoLockDescription: '指定時間後にアプリケーションを自動ロック',
+        autoLockTime: '自動ロック時間',
+        autoLockTimeDescription: '自動ロックする時間間隔を設定',
+      },
+
+      // インターフェース設定
+      interface: {
+        title: 'インターフェース設定',
+        language: '言語',
+        languageDescription: 'アプリケーションの表示言語を変更',
+        theme: 'テーマ',
+        themeDescription: 'アプリケーションの外観テーマを選択',
+        themeAuto: 'システムに従う',
+        themeLight: 'ライト',
+        themeDark: 'ダーク',
+      },
+
+      // 時間単位
+      time: {
+        minutes: '分',
+        hour: '時間',
+      },
+
+      // アプリについて
+      about: {
+        title: 'アプリについて',
+        version: 'バージョン',
       },
     },
   },

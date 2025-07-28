@@ -18,6 +18,7 @@ export const en = {
       allItems: 'All Items',
       favorites: 'Favorites',
       recentlyUsed: 'Recently Used',
+      settings: 'Settings',
       close: 'Close',
     },
 
@@ -192,6 +193,44 @@ export const en = {
         fair: 'Fair',
         good: 'Good',
         strong: 'Strong',
+      },
+    },
+
+    // Settings page
+    setting: {
+      title: 'Settings',
+
+      // Security settings
+      security: {
+        title: 'Security Settings',
+        autoLock: 'Auto Lock',
+        autoLockDescription: 'Automatically lock the application after specified time',
+        autoLockTime: 'Auto Lock Time',
+        autoLockTimeDescription: 'Set the time interval for auto lock',
+      },
+
+      // Interface settings
+      interface: {
+        title: 'Interface Settings',
+        language: 'Language',
+        languageDescription: 'Change the display language of the application',
+        theme: 'Theme',
+        themeDescription: 'Choose the appearance theme of the application',
+        themeAuto: 'Follow System',
+        themeLight: 'Light',
+        themeDark: 'Dark',
+      },
+
+      // Time units
+      time: {
+        minutes: 'minutes',
+        hour: 'hour',
+      },
+
+      // About
+      about: {
+        title: 'About',
+        version: 'Version',
       },
     },
   },

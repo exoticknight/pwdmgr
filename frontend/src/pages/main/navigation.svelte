@@ -1,8 +1,8 @@
 <script lang='ts'>
   import type { DialogControl } from '@/types/dialog'
-  import i18next from '@/i18n'
   import { appStore } from '@/stores/app.svelte'
   import { dialog } from '@/stores/dialog.svelte'
+  import i18n from '@/stores/i18n.svelte'
   import { route, Routes } from '@/stores/route.svelte'
 
   // 这里我们可以类型约束，确保只使用 DialogControl 接口
@@ -15,7 +15,7 @@
     const hasUnsavedChanges = appStore.hasUnsavedChanges
 
     if (hasUnsavedChanges) {
-      const confirmed = await dialogControl.confirm(i18next.t('errors.unsavedChanges'))
+      const confirmed = await dialogControl.confirm(i18n.t('errors.unsavedChanges'))
       if (!confirmed) {
         return
       }
@@ -29,12 +29,13 @@
 
 <nav class='w-full h-full flex flex-col justify-between navigation'>
   <div class='flex flex-col'>
-    <button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_ALL} onclick={() => route.navigate(Routes.ITEMS_ALL)}>{i18next.t('navigation.allItems')}</button>
-    <button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_FAVORITES} onclick={() => route.navigate(Routes.ITEMS_FAVORITES)}>{i18next.t('navigation.favorites')}</button>
-    <button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_RECENT} onclick={() => route.navigate(Routes.ITEMS_RECENT)}>{i18next.t('navigation.recentlyUsed')}</button>
+    <button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_ALL} onclick={() => route.navigate(Routes.ITEMS_ALL)}>{i18n.t('navigation.allItems')}</button>
+    <button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_FAVORITES} onclick={() => route.navigate(Routes.ITEMS_FAVORITES)}>{i18n.t('navigation.favorites')}</button>
+    <button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_RECENT} onclick={() => route.navigate(Routes.ITEMS_RECENT)}>{i18n.t('navigation.recentlyUsed')}</button>
   </div>
   <div class='flex flex-col'>
-    <button class='btn btn-ghost' onclick={handleClose}>{i18next.t('navigation.close')}</button>
+    <button class='btn btn-ghost' class:btn-active={route.route === Routes.SETTING} onclick={() => route.navigate(Routes.SETTING)}>{i18n.t('navigation.settings')}</button>
+    <button class='btn btn-ghost' onclick={handleClose}>{i18n.t('navigation.close')}</button>
   </div>
 </nav>
 

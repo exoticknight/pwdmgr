@@ -5,6 +5,7 @@
   import { Routes } from '@/stores/route.svelte'
   import Items from './items.svelte'
   import Navigation from './main/navigation.svelte'
+  import Setting from './setting.svelte'
 
   // Create reactive routes
   const routes = [
@@ -29,6 +30,10 @@
         filter: 'recent',
       },
     },
+    {
+      path: Routes.SETTING,
+      component: Setting,
+    },
   ]
 </script>
 
@@ -45,7 +50,7 @@
       <Navigation />
     </div>
     <div class='main-split-bar'></div>
-    <div class='flex-1'><Router {routes} /></div>
+    <div class='flex-1 h-full overflow-hidden'><Router {routes} /></div>
   </div>
 {/if}
 

@@ -1,17 +1,18 @@
 <script lang='ts'>
-  import type { OmitBasicDataExcept, PasswordData } from '@/types/datafile'
+  import type { OmitBasicDataExcept, PasswordData } from '@/types/data'
 
   import SplitPanel from '@/components/split-panel.svelte'
 
-  import i18next from '@/i18n'
   import { getDataManager } from '@/services/data-manager'
   import { getFile } from '@/services/file'
-
   import { appStore } from '@/stores/app.svelte'
+
   import { database } from '@/stores/database.svelte'
+  import i18n from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { userState } from '@/stores/user.svelte'
-  import { DataMetaType } from '@/types/datafile'
+
+  import { DataMetaType } from '@/types/data'
 
   import { exportToCSV, exportToJSON } from '@/utils/export'
   import { compareISO8601String } from '@/utils/iso8601-compare'
@@ -70,7 +71,7 @@
     try {
       const password = userState.password
       if (!password) {
-        throw new Error(i18next.t('errors.noPasswordAvailable'))
+        throw new Error(i18n.t('errors.noPasswordAvailable'))
       }
 
       // If there's a file path, save to file
@@ -78,7 +79,7 @@
         const databaseData = database.exportJSON()
         await dataManager.saveToFile(userState.dbPath, password, databaseData)
         appStore.markAsSaved()
-        notification.success(i18next.t('notifications.saved'))
+        notification.success(i18n.t('notifications.saved'))
       }
       else {
         // New file, show save dialog
@@ -87,7 +88,7 @@
     }
     catch (err) {
       console.error('Failed to save database:', err)
-      notification.error(i18next.t('errors.saveError'))
+      notification.error(i18n.t('errors.saveError'))
     }
   }
 
@@ -109,7 +110,7 @@
       appStore.markAsUnsaved()
     }
     catch {
-      notification.error(i18next.t('errors.updateError'))
+      notification.error(i18n.t('errors.updateError'))
     }
   }
 
@@ -119,10 +120,10 @@
       database.deleteEntry(data.id)
       selectedEntry = null
       appStore.markAsUnsaved()
-      notification.success(i18next.t('notifications.entryDeleted'))
+      notification.success(i18n.t('notifications.entryDeleted'))
     }
     catch {
-      notification.error(i18next.t('errors.deleteError'))
+      notification.error(i18n.t('errors.deleteError'))
     }
   }
 
@@ -140,13 +141,13 @@
     try {
       const newEntry = database.addEntry(entry)
       selectedEntry = newEntry
-      notification.success(i18next.t('notifications.entryAdded'))
+      notification.success(i18n.t('notifications.entryAdded'))
 
       appStore.markAsUnsaved()
       showModal = false
     }
     catch {
-      notification.error(i18next.t('errors.saveError'))
+      notification.error(i18n.t('errors.saveError'))
     }
   }
 
@@ -164,7 +165,7 @@
     const filePath = filePaths[0]
     const password = userState.password
     if (!password) {
-      notification.error(i18next.t('errors.noPasswordAvailable'))
+      notification.error(i18n.t('errors.noPasswordAvailable'))
       return
     }
 
@@ -174,11 +175,11 @@
         userState.dbPath = filePath
         appStore.markAsSaved()
         showSaveDialog = false
-        notification.success(i18next.t('notifications.saved'))
+        notification.success(i18n.t('notifications.saved'))
       })
       .catch((err) => {
         console.error('Failed to save file:', err)
-        notification.error(i18next.t('errors.saveError'))
+        notification.error(i18n.t('errors.saveError'))
       })
   }
 
@@ -217,11 +218,11 @@
       await fileService.saveFile(filePath, arrayBuffer)
 
       showExportDialog = false
-      notification.success(i18next.t('notifications.exportSuccess'))
+      notification.success(i18n.t('notifications.exportSuccess'))
     }
     catch (err) {
       console.error('Failed to export data:', err)
-      notification.error(i18next.t('errors.exportError'))
+      notification.error(i18n.t('errors.exportError'))
     }
   }
 

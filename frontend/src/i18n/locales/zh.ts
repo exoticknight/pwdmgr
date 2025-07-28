@@ -18,6 +18,7 @@ export const zh = {
       allItems: '所有条目',
       favorites: '收藏',
       recentlyUsed: '最近使用',
+      settings: '设置',
       close: '关闭',
     },
 
@@ -192,6 +193,44 @@ export const zh = {
         fair: '一般',
         good: '良好',
         strong: '强',
+      },
+    },
+
+    // 设置页面
+    setting: {
+      title: '设置',
+
+      // 安全设置
+      security: {
+        title: '安全设置',
+        autoLock: '自动锁定',
+        autoLockDescription: '在指定时间后自动锁定应用程序',
+        autoLockTime: '自动锁定时间',
+        autoLockTimeDescription: '设置自动锁定的时间间隔',
+      },
+
+      // 界面设置
+      interface: {
+        title: '界面设置',
+        language: '语言',
+        languageDescription: '更改应用程序的显示语言',
+        theme: '主题',
+        themeDescription: '选择应用程序的外观主题',
+        themeAuto: '跟随系统',
+        themeLight: '浅色',
+        themeDark: '深色',
+      },
+
+      // 时间单位
+      time: {
+        minutes: '分钟',
+        hour: '小时',
+      },
+
+      // 关于
+      about: {
+        title: '关于',
+        version: '版本',
       },
     },
   },

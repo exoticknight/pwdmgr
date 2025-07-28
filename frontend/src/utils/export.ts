@@ -1,9 +1,9 @@
-import type { DatabaseFile } from '@/types/datafile'
+import type { DataFile } from '@/types/datafile'
 
 /**
  * Convert database to CSV format
  */
-export function exportToCSV(databaseData: DatabaseFile): string {
+export function exportToCSV(databaseData: DataFile): string {
   const entries = databaseData.data
 
   if (entries.length === 0) {
@@ -45,7 +45,7 @@ export function exportToCSV(databaseData: DatabaseFile): string {
 /**
  * Convert database to formatted JSON string
  */
-export function exportToJSON(databaseData: DatabaseFile): string {
+export function exportToJSON(databaseData: DataFile): string {
   // Create a clean data structure with only necessary fields and readable keys
   const cleanData = databaseData.data.map(entry => ({
     title: entry.title,

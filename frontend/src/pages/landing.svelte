@@ -1,14 +1,14 @@
 <script lang='ts'>
-  import type { DatabaseFile } from '@/types/datafile'
+  import type { DataFile } from '@/types/datafile'
 
   import { FileLock, Plus } from '@lucide/svelte'
 
   import WailsFileSelect from '@/components/wails-file-select.svelte'
 
-  import i18next from '@/i18n'
   import { getDataManager } from '@/services/data-manager'
 
   import { database } from '@/stores/database.svelte'
+  import i18n from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { route, Routes } from '@/stores/route.svelte'
 
@@ -45,12 +45,12 @@
   async function handlePasswordSubmit(event: SubmitEvent) {
     event.preventDefault()
     if (!password) {
-      notification.error(i18next.t('errors.passwordRequired'))
+      notification.error(i18n.t('errors.passwordRequired'))
       return
     }
 
     if (isNewDatabase && password !== confirmPassword) {
-      notification.error(i18next.t('errors.passwordMismatch'))
+      notification.error(i18n.t('errors.passwordMismatch'))
       return
     }
 
@@ -63,7 +63,7 @@
 
       if (selectedFilePath) {
         // Load existing file with decryption validation
-        const databaseFile = await dataManager.loadFromFile<DatabaseFile>(selectedFilePath, password)
+        const databaseFile = await dataManager.loadFromFile<DataFile>(selectedFilePath, password)
         database.close()
         await database.initialize(databaseFile)
         userState.dbPath = selectedFilePath
@@ -83,7 +83,7 @@
     }
     catch (err) {
       console.error('Failed to process database:', err)
-      notification.error(String(err) || i18next.t('messages.loadDatabaseFileFailed'))
+      notification.error(String(err) || i18n.t('messages.loadDatabaseFileFailed'))
     }
     finally {
       isLoading = false
@@ -109,18 +109,18 @@
         <div class='app-icon'>
           <FileLock size={32} />
         </div>
-        <h1 class='app-title'>{i18next.t('app.title')}</h1>
-        <p class='app-subtitle'>{i18next.t('app.slogan')}</p>
+        <h1 class='app-title'>{i18n.t('app.title')}</h1>
+        <p class='app-subtitle'>{i18n.t('app.slogan')}</p>
       </div>
 
       <!-- File Selection -->
       <div class='file-section'>
         <WailsFileSelect
           class='file-drop-zone'
-          title={i18next.t('landing.dialogTitle')}
+          title={i18n.t('landing.dialogTitle')}
           filters={[
-            { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
-            { displayName: i18next.t('landing.allFiles'), pattern: '*.*' },
+            { displayName: i18n.t('landing.passwordFiles'), pattern: '*.pwd' },
+            { displayName: i18n.t('landing.allFiles'), pattern: '*.*' },
           ]}
           mode='open'
           multiple={false}
@@ -133,14 +133,14 @@
           {#snippet children()}
             <div class='file-drop-content'>
               <FileLock size={24} />
-              <p class='file-drop-text'>{i18next.t('landing.selectFileDescription')}</p>
-              <span class='file-drop-hint'>{i18next.t('landing.selectFileFormats')}</span>
+              <p class='file-drop-text'>{i18n.t('landing.selectFileDescription')}</p>
+              <span class='file-drop-hint'>{i18n.t('landing.selectFileFormats')}</span>
             </div>
           {/snippet}
         </WailsFileSelect>
 
         <div class='divider-section'>
-          <span class='divider-text'>{i18next.t('actions.or')}</span>
+          <span class='divider-text'>{i18n.t('actions.or')}</span>
         </div>
 
         <button
@@ -148,7 +148,7 @@
           onclick={createNewDatabase}
         >
           <Plus size={16} />
-          {i18next.t('actions.createNew')}
+          {i18n.t('actions.createNew')}
         </button>
       </div>
     {:else}

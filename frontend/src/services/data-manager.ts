@@ -5,14 +5,8 @@ export interface DataManager {
   // Load database from file and return parsed data
   loadFromFile: <T>(filePath: string, password: string) => Promise<T>
 
-  // Load database from encrypted data and return parsed data
-  loadFromEncryptedData: <T>(encryptedData: ArrayBuffer, password: string) => Promise<T>
-
   // Save structured data to file
   saveToFile: <T>(filePath: string, password: string, data: T) => Promise<void>
-
-  // Get encrypted data from structured data
-  getEncryptedData: <T>(password: string, data: T) => Promise<ArrayBuffer>
 }
 
 class DataManagerImpl implements DataManager {
@@ -35,20 +29,6 @@ class DataManagerImpl implements DataManager {
     }
   }
 
-  async loadFromEncryptedData<T>(encryptedData: ArrayBuffer, password: string): Promise<T> {
-    try {
-      // Decrypt data
-      const jsonData = await decryptData(encryptedData, password)
-
-      // Parse and return structured data
-      return JSON.parse(jsonData) as T
-    }
-    catch (error) {
-      console.error('Failed to load from encrypted data:', error)
-      throw new Error(`Failed to load database from encrypted data: ${String(error)}`)
-    }
-  }
-
   async saveToFile<T>(filePath: string, password: string, data: T): Promise<void> {
     try {
       // Convert data to JSON string
@@ -63,20 +43,6 @@ class DataManagerImpl implements DataManager {
     catch (error) {
       console.error('Failed to save to file:', error)
       throw new Error(`Failed to save database to file: ${String(error)}`)
-    }
-  }
-
-  async getEncryptedData<T>(password: string, data: T): Promise<ArrayBuffer> {
-    try {
-      // Convert data to JSON string
-      const jsonData = JSON.stringify(data, null, 2)
-
-      // Encrypt data
-      return await encryptData(jsonData, password)
-    }
-    catch (error) {
-      console.error('Failed to get encrypted data:', error)
-      throw new Error(`Failed to get encrypted data: ${String(error)}`)
     }
   }
 }

@@ -1,10 +1,40 @@
 <script lang='ts'>
+  import { onMount } from 'svelte'
   import i18n from '@/stores/i18n.svelte'
+  import { setting } from '@/stores/setting.svelte'
+
+  // 确保setting store已初始化
+  onMount(() => {
+    if (!setting.initialized) {
+      setting.initialize()
+    }
+  })
 
   function handleLanguageChange(event: Event) {
     const select = event.target as HTMLSelectElement
-    const selectedLanguage = select.value
+    const selectedLanguage = select.value as 'en' | 'zh' | 'ja'
+
+    // 更新设置中的语言
+    setting.updateSetting('language.code', selectedLanguage)
+    // 同时更新i18n
     i18n.changeLanguage(selectedLanguage)
+  }
+
+  function handleThemeChange(event: Event) {
+    const select = event.target as HTMLSelectElement
+    const selectedTheme = select.value as 'light' | 'dark' | 'system'
+    setting.updateSetting('interface.theme', selectedTheme)
+  }
+
+  function handleAutoLockChange(event: Event) {
+    const checkbox = event.target as HTMLInputElement
+    setting.updateSetting('security.autoLock', checkbox.checked)
+  }
+
+  function handleAutoLockTimeChange(event: Event) {
+    const select = event.target as HTMLSelectElement
+    const selectedTime = Number(select.value)
+    setting.updateSetting('security.autoLockTime', selectedTime)
   }
 </script>
 
@@ -44,6 +74,11 @@
   opacity: 0.7;
   margin-top: 0.25rem;
 }
+
+.select-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 </style>
 
 <div class='overflow-y-auto h-full'>
@@ -59,7 +94,12 @@
             <div class='setting-title text-base-content'>{i18n.t('setting.security.autoLock')}</div>
             <div class='setting-description text-base-content'>{i18n.t('setting.security.autoLockDescription')}</div>
           </div>
-          <input type='checkbox' class='toggle' />
+          <input
+            type='checkbox'
+            class='toggle'
+            checked={setting.data.security.autoLock}
+            onchange={handleAutoLockChange}
+          />
         </div>
 
         <div class='setting-item'>
@@ -67,7 +107,14 @@
             <div class='setting-title text-base-content'>{i18n.t('setting.security.autoLockTime')}</div>
             <div class='setting-description text-base-content'>{i18n.t('setting.security.autoLockTimeDescription')}</div>
           </div>
-          <select id='auto-lock-time' class='select max-w-fit'>
+          <select
+            id='auto-lock-time'
+            class='select max-w-fit'
+            class:select-disabled={!setting.data.security.autoLock}
+            value={setting.data.security.autoLockTime}
+            disabled={!setting.data.security.autoLock}
+            onchange={handleAutoLockTimeChange}
+          >
             <option value='5'>5 {i18n.t('setting.time.minutes')}</option>
             <option value='10'>10 {i18n.t('setting.time.minutes')}</option>
             <option value='15'>15 {i18n.t('setting.time.minutes')}</option>
@@ -89,7 +136,12 @@
             <div class='setting-title text-base-content'>{i18n.t('setting.interface.language')}</div>
             <div class='setting-description text-base-content'>{i18n.t('setting.interface.languageDescription')}</div>
           </div>
-          <select id='language-select' class='select max-w-fit' onchange={handleLanguageChange}>
+          <select
+            id='language-select'
+            class='select max-w-fit'
+            value={setting.data.language.code}
+            onchange={handleLanguageChange}
+          >
             <option value='zh'>中文</option>
             <option value='en'>English</option>
             <option value='ja'>日本語</option>
@@ -101,8 +153,13 @@
             <div class='setting-title text-base-content'>{i18n.t('setting.interface.theme')}</div>
             <div class='setting-description text-base-content'>{i18n.t('setting.interface.themeDescription')}</div>
           </div>
-          <select id='theme-select' class='select max-w-fit'>
-            <option value='auto'>{i18n.t('setting.interface.themeAuto')}</option>
+          <select
+            id='theme-select'
+            class='select max-w-fit'
+            value={setting.data.interface.theme}
+            onchange={handleThemeChange}
+          >
+            <option value='system'>{i18n.t('setting.interface.themeAuto')}</option>
             <option value='light'>{i18n.t('setting.interface.themeLight')}</option>
             <option value='dark'>{i18n.t('setting.interface.themeDark')}</option>
           </select>

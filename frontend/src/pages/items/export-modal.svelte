@@ -1,8 +1,8 @@
 <script lang='ts'>
   import { Braces, Download, FileText } from '@lucide/svelte'
-  import Modal from '../../components/modal.svelte'
-  import WailsFileSelect from '../../components/wails-file-select.svelte'
-  import i18next from '../../i18n'
+  import Modal from '@/components/modal.svelte'
+  import WailsFileSelect from '@/components/wails-file-select.svelte'
+  import i18next from '@/i18n'
 
   interface Props {
     isOpen: boolean

@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { PasswordData } from '@/types/datafile'
+  import type { PasswordData } from '@/types/data'
   import type { DialogControl } from '@/types/dialog'
 
   import { Copy, Eye, EyeOff, Heart, Share2, Trash2, WandSparkles } from '@lucide/svelte'

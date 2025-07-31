@@ -1,18 +1,16 @@
-import type { Datum, OmitBasicDataExcept } from '@/types/data'
+import type { Datum } from '@/types/data'
 import type { DataFile } from '@/types/datafile'
 import type { Setting } from '@/types/setting'
 
-import Fuse from 'fuse.js'
 import typia from 'typia'
 
-import { DEFAULT_FUSE_CONFIG } from '@/consts/fuse'
 import { DEFAULT_SETTINGS } from '@/consts/setting'
 import { VERSION } from '@/consts/version'
+import { data } from './data.svelte'
+import { setting } from './setting.svelte'
 
 // Database state interface
-interface DataState {
-  data: Datum[]
-  setting: Setting
+interface DatabaseState {
   initialized: boolean
   error: string | null
 }
@@ -20,29 +18,19 @@ interface DataState {
 // Database store implementation using Svelte 5 state
 class Database {
   #rawDataFile: DataFile | null = null
+  #rawData: Datum[] | null = null
+  #rawSettings: Partial<Setting> | null = null
 
-  #state = $state<DataState>({
-    data: [],
-    setting: DEFAULT_SETTINGS,
+  #state = $state<DatabaseState>({
     initialized: false,
     error: null,
   })
-
-  #fuse: Fuse<Datum> | null = null
-
-  get entries() {
-    return this.#state.data
-  }
 
   get initialized() {
     return this.#state.initialized
   }
 
-  get error() {
-    return this.#state.error
-  }
-
-  async initialize(dataFile?: DataFile): Promise<void> {
+  initialize(dataFile?: DataFile) {
     if (this.#state.initialized) {
       this.close()
       this.#state.initialized = false
@@ -54,113 +42,49 @@ class Database {
       if (dataFile != null) {
         this.#rawDataFile = dataFile
 
-        const data = typia.assert<Datum[]>(dataFile.data)
+        const rawData = typia.assert<Datum[]>(dataFile.data)
         const settings = typia.assert<Partial<Setting>>(dataFile.setting ?? {})
 
-        this.#state.data = data
-        this.#state.setting = Object.assign({}, DEFAULT_SETTINGS, settings)
+        this.#rawData = rawData
+        this.#rawSettings = settings
+
+        data.initialize(rawData)
+        setting.initialize(settings)
       }
       else {
         // Create new empty database
-        this.#state.data = []
-        this.#state.setting = DEFAULT_SETTINGS
+        data.initialize([])
+        setting.initialize(DEFAULT_SETTINGS)
       }
 
-      this.#updateSearchIndex()
       this.#state.initialized = true
     }
     catch (error) {
       this.#state.initialized = false
-      console.error('Failed to parse database:', error)
       this.#state.error = 'Failed to parse database. Data format is invalid.'
+
+      console.error('Failed to parse database:', error)
       throw new Error('Failed to parse database. Data format is invalid.')
     }
   }
 
-  #updateSearchIndex() {
-    this.#fuse = new Fuse(this.#state.data, DEFAULT_FUSE_CONFIG)
-  }
-
-  addEntry(entry: OmitBasicDataExcept<Datum, 'TYPE'>): Datum {
-    if (!this.#state.initialized) {
-      throw new Error('Database not initialized')
-    }
-
-    const newEntry: Datum = {
-      ...entry,
-      _id: crypto.randomUUID(),
-      _isFavorite: false,
-      _createdAt: new Date().toISOString(),
-      _updatedAt: new Date().toISOString(),
-      _lastUsedAt: undefined,
-    }
-
-    this.#state.data.push(newEntry)
-    this.#updateSearchIndex()
-    return newEntry
-  }
-
-  updateEntry(id: string, updates: Partial<Omit<Datum, 'id'>>): Datum {
-    if (!this.#state.initialized) {
-      throw new Error('Database not initialized')
-    }
-
-    const index = this.#state.data.findIndex(entry => entry._id === id)
-    if (index === -1) {
-      throw new Error('Entry not found')
-    }
-
-    const updatedEntry = { ...this.#state.data[index], ...updates }
-    this.#state.data[index] = updatedEntry
-    this.#updateSearchIndex()
-    return updatedEntry
-  }
-
-  deleteEntry(id: string): void {
-    if (!this.#state.initialized) {
-      throw new Error('Database not initialized')
-    }
-
-    const index = this.#state.data.findIndex(entry => entry._id === id)
-    if (index === -1) {
-      throw new Error('Entry not found')
-    }
-
-    this.#state.data.splice(index, 1)
-    this.#updateSearchIndex()
-  }
-
-  searchEntries(searchTerm: string): Datum[] {
-    if (!this.#state.initialized) {
-      return []
-    }
-
-    if (!searchTerm.trim() || !this.#fuse) {
-      return this.entries
-    }
-
-    const results = this.#fuse.search(searchTerm)
-    return results.map(result => result.item)
-  }
-
-  exportJSON(): DataFile {
-    if (!this.#state.initialized) {
+  export(): DataFile {
+    if (!this.initialized) {
       throw new Error('Database not initialized')
     }
 
     return this.#rawDataFile = {
       version: VERSION,
-      setting: $state.snapshot(this.#state.setting),
-      data: $state.snapshot(this.#state.data),
+      setting: setting.export(),
+      data: data.export(),
     }
   }
 
   close(): void {
-    this.#state.data = []
-    this.#state.setting = DEFAULT_SETTINGS
+    data.reset()
+    setting.reset()
     this.#state.initialized = false
     this.#state.error = null
-    this.#fuse = null
   }
 
   clearError(): void {

@@ -7,6 +7,8 @@ export interface DataManager {
 
   // Save structured data to file
   saveToFile: <T>(filePath: string, password: string, data: T) => Promise<void>
+
+  saveToFileWithoutPassword: (filePath: string, data: string) => Promise<void>
 }
 
 class DataManagerImpl implements DataManager {
@@ -44,6 +46,14 @@ class DataManagerImpl implements DataManager {
       console.error('Failed to save to file:', error)
       throw new Error(`Failed to save database to file: ${String(error)}`)
     }
+  }
+
+  async saveToFileWithoutPassword(filePath: string, data: string) {
+    const encoder = new TextEncoder()
+    const uint8Array = encoder.encode(data)
+    const arrayBuffer = new ArrayBuffer(uint8Array.length)
+    new Uint8Array(arrayBuffer).set(uint8Array)
+    return this.file.saveFile(filePath, arrayBuffer)
   }
 }
 

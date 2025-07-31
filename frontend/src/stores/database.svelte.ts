@@ -54,11 +54,10 @@ class Database {
       if (dataFile != null) {
         this.#rawDataFile = dataFile
 
-        // Validate the data structure
-        // const data = typia.assert<Datum[]>(dataFile.data)
+        const data = typia.assert<Datum[]>(dataFile.data)
         const settings = typia.assert<Partial<Setting>>(dataFile.setting ?? {})
 
-        this.#state.data = dataFile.data
+        this.#state.data = data
         this.#state.setting = Object.assign({}, DEFAULT_SETTINGS, settings)
       }
       else {
@@ -149,7 +148,7 @@ class Database {
       throw new Error('Database not initialized')
     }
 
-    return {
+    return this.#rawDataFile = {
       version: VERSION,
       setting: $state.snapshot(this.#state.setting),
       data: $state.snapshot(this.#state.data),

@@ -21,7 +21,7 @@
 
   const { entry, onUpdate, onMarkDirty, onDelete }: Props = $props()
 
-  // 使用接口约束，提高代码的可移植性
+  // Use interface constraints to improve code portability
   const dialogControl: DialogControl = dialog
 
   let formData = $state<Partial<PasswordData>>({})
@@ -106,7 +106,7 @@
 
   async function shareEntry() {
     if (entry) {
-      // 弹窗确认是否要复制明文数据
+      // Popup confirmation to copy plaintext data
       const confirmed = await dialogControl.confirm(i18next.t('dialogs.confirmShare'))
       if (!confirmed) {
         return

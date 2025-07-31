@@ -1,19 +1,19 @@
 export const zh = {
   translation: {
-    // 应用程序品牌
+    // Application branding
     app: {
       title: 'mat6maa5',
       slogan: '安全 • 简单 • 本地',
     },
 
-    // 通用界面元素
+    // Common UI elements
     common: {
       loading: '加载中...',
       back: '返回',
       file: '文件',
     },
 
-    // 导航
+    // Navigation
     navigation: {
       allItems: '所有条目',
       favorites: '收藏',
@@ -22,19 +22,19 @@ export const zh = {
       close: '关闭',
     },
 
-    // 按钮
+    // Buttons
     buttons: {
       newEntry: '新建条目',
       save: '保存',
       export: '导出',
     },
 
-    // 无障碍标签
+    // Accessibility labels
     accessibility: {
       close: '关闭',
     },
 
-    // 登录页面内容
+    // Landing page content
     landing: {
       selectFileDescription: '选择现有的密码数据库文件或拖放到这里',
       selectFileFormats: '支持格式: *.pwd',
@@ -43,39 +43,39 @@ export const zh = {
       allFiles: '所有文件 (*.*)',
     },
 
-    // 搜索功能
+    // Search functionality
     search: {
       placeholder: '搜索标题，用户名，备注',
       noResults: '没有找到匹配的条目',
     },
 
-    // 表单字段和条目管理
+    // Form fields and entry management
     forms: {
-      // 字段标签
+      // Field labels
       username: '用户名',
       password: '密码',
       notes: '备注',
       title: '标题',
 
-      // 字段占位符
+      // Field placeholders
       usernamePlaceholder: '请输入用户名',
       passwordPlaceholder: '请输入密码',
       notesPlaceholder: '可选备注...',
       titlePlaceholder: '请输入标题',
 
-      // 条目管理
+      // Entry management
       emptySubtitle: '选择一个条目来查看详细信息',
       save: '保存',
       addEntry: '添加条目',
 
-      // 时间信息
+      // Time information
       createdAt: '创建时间',
       updatedAt: '修改时间',
       lastUsedAt: '最近使用',
       neverUsed: '未使用',
     },
 
-    // 密码对话框
+    // Password dialog
     password: {
       setTitle: '设置密码',
       enterTitle: '输入密码',
@@ -86,9 +86,9 @@ export const zh = {
       confirmPlaceholder: '请确认密码',
     },
 
-    // 操作按钮
+    // Action buttons
     actions: {
-      // 通用操作
+      // General actions
       back: '返回',
       cancel: '取消',
       create: '创建',
@@ -98,20 +98,20 @@ export const zh = {
       update: '更新',
       or: '或者',
 
-      // 密码特定操作
+      // Password specific actions
       copy: '复制',
       showPassword: '显示密码',
       hidePassword: '隐藏密码',
 
-      // 收藏操作
+      // Favorite actions
       addToFavorites: '添加到收藏',
       removeFromFavorites: '从收藏中移除',
 
-      // 条目操作
+      // Entry actions
       delete: '删除',
       share: '分享',
 
-      // 文件操作
+      // File actions
       createNew: '创建新的密码文件',
     },
 

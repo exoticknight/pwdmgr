@@ -7,12 +7,12 @@ class Dialog implements DialogControl {
     resolve: null,
   })
 
-  // 使用 getter 暴露只读状态
+  // Use getter to expose readonly state
   get state(): Readonly<DialogState> {
     return this.dialogState
   }
 
-  // 显示信息对话框
+  // Show info dialog
   async alert(message: string, title?: string): Promise<void> {
     await this.show({
       type: 'info',
@@ -21,7 +21,7 @@ class Dialog implements DialogControl {
     })
   }
 
-  // 显示确认对话框
+  // Show confirm dialog
   async confirm(message: string, title?: string): Promise<boolean> {
     const result = await this.show({
       type: 'confirm',
@@ -31,7 +31,7 @@ class Dialog implements DialogControl {
     return result.confirmed
   }
 
-  // 显示输入对话框
+  // Show input dialog
   async prompt(message: string, defaultValue?: string, title?: string): Promise<string | null> {
     const result = await this.show({
       type: 'prompt',
@@ -42,10 +42,10 @@ class Dialog implements DialogControl {
     return result.confirmed ? (result.value ?? '') : null
   }
 
-  // 通用显示方法
+  // Generic show method
   async show(options: DialogOptions): Promise<DialogResult> {
     return new Promise((resolve) => {
-      // 使用批量更新以提高性能
+      // Use batch update for better performance
       $effect.root(() => {
         this.dialogState.isOpen = true
         this.dialogState.options = options
@@ -54,16 +54,16 @@ class Dialog implements DialogControl {
     })
   }
 
-  // 关闭对话框
+  // Close dialog
   close(result: DialogResult): void {
     const currentResolve = this.dialogState.resolve
 
-    // 先重置状态
+    // Reset state first
     this.dialogState.isOpen = false
     this.dialogState.options = null
     this.dialogState.resolve = null
 
-    // 然后调用 resolve
+    // Then call resolve
     if (currentResolve) {
       currentResolve(result)
     }

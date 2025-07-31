@@ -13,12 +13,12 @@ class Notification implements NotificationControl {
 
   private timers = new Map<string, number>()
 
-  // 使用 getter 暴露只读状态
+  // Use getter to expose readonly state
   get state(): Readonly<NotificationState> {
     return this.notificationState
   }
 
-  // 兼容性getter（保持向后兼容）
+  // Compatibility getter (maintain backward compatibility)
   get all(): NotificationItem[] {
     return this.notificationState.notifications
   }
@@ -30,7 +30,7 @@ class Notification implements NotificationControl {
     type: NotificationType = 'info',
     duration: number = 5000,
   ): string {
-    // 处理重载参数
+    // Handle overload parameters
     let options: NotificationOptions
     if (typeof optionsOrMessage === 'string') {
       options = {

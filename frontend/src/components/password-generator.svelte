@@ -29,7 +29,7 @@
     excludeAmbiguous = false,
   }: Props = $props()
 
-  // 拆开成独立的状态
+  // Split into independent states
   let passwordLength = $state(length)
   let includeUppercaseState = $state(includeUppercase)
   let includeLowercaseState = $state(includeLowercase)
@@ -38,7 +38,7 @@
   let excludeSimilarState = $state(excludeSimilar)
   let excludeAmbiguousState = $state(excludeAmbiguous)
 
-  // 派生的options对象，会自动跟踪所有状态变化
+  // Derived options object that automatically tracks all state changes
   const options = $derived<PasswordGeneratorOptions>({
     length: passwordLength,
     includeUppercase: includeUppercaseState,
@@ -49,34 +49,34 @@
     excludeAmbiguous: excludeAmbiguousState,
   })
 
-  // 检查是否只有一个字符类型被选中
+  // Check if only one character type is selected
   const hasOnlyOneCharType = $derived(
     [includeUppercaseState, includeLowercaseState, includeNumbersState, includeSymbolsState].filter(Boolean).length === 1,
   )
 
-  // 派生的密码，会在options变化时自动重新生成
+  // Derived password that automatically regenerates when options change
   const generatedPassword = $derived(PasswordGenerator.generate(options))
 
-  // 生成密码（手动刷新）
+  // Generate password (manual refresh)
   function regeneratePassword() {
-    // 通过稍微修改然后恢复一个值来强制重新生成
+    // Force regeneration by slightly modifying then restoring a value
     const temp = passwordLength
     passwordLength = temp + 1
     passwordLength = temp
   }
 
-  // 处理字符类型复选框点击，阻止取消最后一个选项
+  // Handle character type checkbox click, prevent unchecking the last option
   function handleCharTypeClick(type: 'uppercase' | 'lowercase' | 'numbers' | 'symbols', event: Event) {
     const target = event.currentTarget as HTMLInputElement
     const newValue = target.checked
 
-    // 如果是要取消勾选，且只剩一个选项，则强制设置回选中状态
+    // If trying to uncheck and only one option remains, force it back to checked
     if (!newValue && hasOnlyOneCharType) {
       target.checked = true
       return
     }
 
-    // 否则更新对应的状态
+    // Otherwise update the corresponding state
     switch (type) {
       case 'uppercase':
         includeUppercaseState = newValue
@@ -93,21 +93,19 @@
     }
   }
 
-  // 复制密码
   function copyPassword() {
     if (generatedPassword) {
       onCopy?.(generatedPassword)
     }
   }
 
-  // 选择密码
   function selectPassword() {
     if (generatedPassword) {
       onSelect?.(generatedPassword)
     }
   }
 
-  // 当外部 props 变化时同步内部状态
+  // Sync internal state when external props change
   $effect(() => {
     passwordLength = length
     includeUppercaseState = includeUppercase
@@ -120,7 +118,7 @@
 </script>
 
 <div class='space-y-4'>
-  <!-- 密码输出区域 -->
+  <!-- Password output area -->
   <div class='form-control'>
     <div class='join w-full'>
       <input
@@ -159,9 +157,9 @@
 
   <PasswordStrength alwaysShow={true} password={generatedPassword} />
 
-  <!-- 生成选项 -->
+  <!-- Generation options -->
   <div class='form-control flex flex-col gap-2'>
-    <!-- 长度设置 -->
+    <!-- Length settings -->
     <div class='label'>
       <span class='label-text font-medium'>{i18next.t('passwordGenerator.length')}</span>
       <span class='label-text-alt badge badge-neutral'>{passwordLength}</span>
@@ -176,7 +174,7 @@
     />
   </div>
 
-  <!-- 字符类型选择 -->
+  <!-- Character type selection -->
   <div class='form-control'>
     <div class='flex flex-col gap-2'>
       <label class='label cursor-pointer'>
@@ -218,7 +216,7 @@
     </div>
   </div>
 
-  <!-- 排除选项 -->
+  <!-- Exclusion options -->
   <div class='form-control'>
     <div class='flex flex-col gap-2'>
       <label class='label cursor-pointer'>

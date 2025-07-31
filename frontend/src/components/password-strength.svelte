@@ -12,22 +12,21 @@
 
   const strength = $derived(PasswordGenerator.checkStrength(password))
 
-  // 根据强度分数确定激活的长条数量
+  // Determine number of active bars based on strength score
   const activeBars = $derived(() => {
     const score = strength.score
     if (score <= 2) {
-      return 1 // 危险：只有第一条（红色）
+      return 1 // Danger: only first bar (red)
     }
     if (score <= 4) {
-      return 2 // 警告：前两条（红色 + 橙色）
+      return 2 // Warning: first two bars (red + orange)
     }
     if (score <= 6) {
-      return 3 // 良好：前三条（红色 + 橙色 + 蓝色）
+      return 3 // Good: first three bars (red + orange + blue)
     }
-    return 4 // 安全：全部四条（红色 + 橙色 + 蓝色 + 绿色）
+    return 4 // Safe: all four bars (red + orange + blue + green)
   })
 
-  // 获取每个长条的样式类
   function getBarClass(barIndex: number): string {
     const isActive = barIndex < activeBars()
 
@@ -35,12 +34,12 @@
       return 'bar-inactive'
     }
 
-    // 根据长条位置返回对应的颜色
+    // Return corresponding color based on bar position
     switch (barIndex) {
-      case 0: return 'bar-danger' // 第一条：红色（危险）
-      case 1: return 'bar-warning' // 第二条：橙色（警告）
-      case 2: return 'bar-good' // 第三条：蓝色（良好）
-      case 3: return 'bar-success' // 第四条：绿色（安全）
+      case 0: return 'bar-danger' // First bar: red (danger)
+      case 1: return 'bar-warning' // Second bar: orange (warning)
+      case 2: return 'bar-good' // Third bar: blue (good)
+      case 3: return 'bar-success' // Fourth bar: green (safe)
       default: return 'bar-inactive'
     }
   }

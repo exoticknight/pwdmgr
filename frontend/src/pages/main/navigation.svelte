@@ -5,8 +5,8 @@
   import i18n from '@/stores/i18n.svelte'
   import { route, Routes } from '@/stores/route.svelte'
 
-  // 这里我们可以类型约束，确保只使用 DialogControl 接口
-  // 这样如果将来换UI框架，这部分代码完全不需要修改
+  // Here we can use type constraints to ensure only DialogControl interface is used
+  // This way if we change UI framework in the future, this part of code doesn't need modification
   const dialogControl: DialogControl = dialog
 
   // Handle close/back functionality

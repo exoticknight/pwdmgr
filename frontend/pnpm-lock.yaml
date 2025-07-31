@@ -30,15 +30,15 @@ importers:
         specifier: ^4.1.10
         version: 4.1.10
       typia:
-        specifier: ^9.4.0
-        version: 9.4.0(@samchon/openapi@4.4.1)(typescript@5.8.3)
+        specifier: ^9.6.0
+        version: 9.6.0(typescript@5.8.3)
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^4.16.1
         version: 4.16.1(@vue/compiler-sfc@3.5.17)(eslint-plugin-svelte@3.9.3(eslint@9.29.0(jiti@2.4.2))(svelte@5.34.8))(eslint@9.29.0(jiti@2.4.2))(svelte-eslint-parser@1.2.0(svelte@5.34.8))(typescript@5.8.3)
       '@ryoppippi/unplugin-typia':
         specifier: ^2.6.5
-        version: 2.6.5(rollup@4.44.1)(svelte@5.34.8)(typescript@5.8.3)(typia@9.4.0(@samchon/openapi@4.4.1)(typescript@5.8.3))(vite@7.0.0(@types/node@24.0.12)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))
+        version: 2.6.5(rollup@4.44.1)(svelte@5.34.8)(typescript@5.8.3)(typia@9.6.0(typescript@5.8.3))(vite@7.0.0(@types/node@24.0.12)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.1.0
         version: 5.1.0(svelte@5.34.8)(vite@7.0.0(@types/node@24.0.12)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))
@@ -70,7 +70,7 @@ importers:
         specifier: ^4.41.0
         version: 4.41.0
       typescript:
-        specifier: ~5.8.3
+        specifier: ^5.8.3
         version: 5.8.3
       vite:
         specifier: ^7.0.0
@@ -579,8 +579,8 @@ packages:
       vite:
         optional: true
 
-  '@samchon/openapi@4.4.1':
-    resolution: {integrity: sha512-RMcHrR1Atw9XUhgMh1EAt81ZBnMXiOIEET7aGpW3c4PVUqJyCm8F5yFjWIp81yicGn5IgzkrOz68F4sSeAitew==}
+  '@samchon/openapi@4.6.0':
+    resolution: {integrity: sha512-h6NunOljbRJ1qiPIJCIckF0k3n3jBJZSSCFy/AjbmHSrAFwMeewHkWtTwQrZztVzcD0LsSQgTGRvPX1bclnVuA==}
 
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
@@ -2257,11 +2257,10 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typia@9.4.0:
-    resolution: {integrity: sha512-LfnK5xYvTJxBzAK40uU4TlE/1hRZAqGWWTivSYraGIDZAu4BJbPxNjtfzUIV71P30Le8ZpXMyYWbzHoBbApghQ==}
+  typia@9.6.0:
+    resolution: {integrity: sha512-ETTJRMlKbgY37P/pRLFx94pKVkVrbn0t7xvpLmNfL31P4fKOH3YX/wz5u2nicqsDo5kQLjy891c3hpV37MbJWQ==}
     hasBin: true
     peerDependencies:
-      '@samchon/openapi': '>=4.4.1 <5.0.0'
       typescript: '>=4.8.0 <5.9.0'
 
   ufo@1.6.1:
@@ -2793,7 +2792,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.44.1':
     optional: true
 
-  '@ryoppippi/unplugin-typia@2.6.5(rollup@4.44.1)(svelte@5.34.8)(typescript@5.8.3)(typia@9.4.0(@samchon/openapi@4.4.1)(typescript@5.8.3))(vite@7.0.0(@types/node@24.0.12)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))':
+  '@ryoppippi/unplugin-typia@2.6.5(rollup@4.44.1)(svelte@5.34.8)(typescript@5.8.3)(typia@9.6.0(typescript@5.8.3))(vite@7.0.0(@types/node@24.0.12)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))':
     dependencies:
       '@rollup/pluginutils': 5.2.0(rollup@4.44.1)
       bun-only: 0.0.1
@@ -2806,7 +2805,7 @@ snapshots:
       pkg-types: 2.1.0
       type-fest: 4.41.0
       typescript: 5.8.3
-      typia: 9.4.0(@samchon/openapi@4.4.1)(typescript@5.8.3)
+      typia: 9.6.0(typescript@5.8.3)
       unplugin: 2.3.5
     optionalDependencies:
       svelte: 5.34.8
@@ -2814,7 +2813,7 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@samchon/openapi@4.4.1': {}
+  '@samchon/openapi@4.6.0': {}
 
   '@standard-schema/spec@1.0.0': {}
 
@@ -4696,9 +4695,9 @@ snapshots:
 
   typescript@5.8.3: {}
 
-  typia@9.4.0(@samchon/openapi@4.4.1)(typescript@5.8.3):
+  typia@9.6.0(typescript@5.8.3):
     dependencies:
-      '@samchon/openapi': 4.4.1
+      '@samchon/openapi': 4.6.0
       '@standard-schema/spec': 1.0.0
       commander: 10.0.1
       comment-json: 4.2.5

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --force",
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
@@ -20,7 +20,7 @@
     "i18next": "^25.2.1",
     "svelte-i18next": "^2.2.2",
     "tailwindcss": "^4.1.10",
-    "typia": "^9.4.0"
+    "typia": "^9.6.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.1",
@@ -35,7 +35,7 @@
     "svelte-check": "^4.2.2",
     "ts-patch": "^3.3.0",
     "type-fest": "^4.41.0",
-    "typescript": "~5.8.3",
+    "typescript": "^5.8.3",
     "vite": "^7.0.0"
   }
 }

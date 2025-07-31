@@ -285,7 +285,7 @@
       <!-- Time Information -->
       <div class='time-info'>
         <div class='time-item'>
-          {i18next.t('forms.lastUsedAt')}: <span class='time-value'>{entry._lastUsedAt !== null ? formatCompactDateTime(entry._lastUsedAt) : i18next.t('forms.neverUsed')}</span>
+          {i18next.t('forms.lastUsedAt')}: <span class='time-value'>{entry._lastUsedAt !== undefined ? formatCompactDateTime(entry._lastUsedAt) : i18next.t('forms.neverUsed')}</span>
         </div>
         <div class='time-item'>
           {i18next.t('forms.updatedAt')}: <span class='time-value'>{formatCompactDateTime(entry._updatedAt)}</span>

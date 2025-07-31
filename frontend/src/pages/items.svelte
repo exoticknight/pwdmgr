@@ -8,7 +8,7 @@
 
   import { data } from '@/stores/data.svelte'
   import { database } from '@/stores/database.svelte'
-  import i18n from '@/stores/i18n.svelte'
+  import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { userState } from '@/stores/user.svelte'
 

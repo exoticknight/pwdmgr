@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { Settings } from '@lucide/svelte'
-  import i18n from '@/stores/i18n.svelte'
+  import { i18n } from '@/stores/i18n.svelte'
   import { setting } from '@/stores/setting.svelte'
   import { userState } from '@/stores/user.svelte'
 

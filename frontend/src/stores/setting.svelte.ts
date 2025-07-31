@@ -10,50 +10,50 @@ interface SettingState {
 
 // Setting store class - direct implementation, no dependency on generic base class
 class SettingStore {
-  private state = $state<SettingState>({
+  #state = $state<SettingState>({
     data: DEFAULT_SETTINGS,
     initialized: false,
   })
 
   // Reactive getter - returns current data
   get data(): Setting {
-    return this.state.data
+    return this.#state.data
   }
 
   // Check if initialized
   get initialized(): boolean {
-    return this.state.initialized
+    return this.#state.initialized
   }
 
   // Initialize settings - supports passing partial settings for merging
   initialize(settings?: Partial<Setting>): void {
     if (settings) {
       // Deep merge settings, ensure all default values exist
-      this.state.data = this.deepMerge(DEFAULT_SETTINGS, settings)
+      this.#state.data = this.#deepMerge($state.snapshot(this.#state.data), settings)
     }
     else {
       // Use default settings
-      this.state.data = DEFAULT_SETTINGS
+      this.#state.data = DEFAULT_SETTINGS
     }
-    this.state.initialized = true
+    this.#state.initialized = true
   }
 
   getSetting<K extends keyof Setting>(key: K): Setting[K]
   getSetting<P extends DeepPaths<Setting>>(path: P): DeepValue<Setting, P>
   getSetting<R>(path: string, defaultValue: R): R
   getSetting(keyOrPath: unknown, defaultValue?: unknown): unknown {
-    if (!this.state.initialized) {
+    if (!this.#state.initialized) {
       return defaultValue
     }
 
     const pathStr = String(keyOrPath)
     if (pathStr.includes('.')) {
       // Handle nested path
-      return this.getNestedValue(this.state.data, pathStr, defaultValue)
+      return this.#getNestedValue(this.#state.data, pathStr, defaultValue)
     }
     else {
       // Handle top-level property
-      const typedData = this.state.data as unknown as Record<string, unknown>
+      const typedData = this.#state.data as unknown as Record<string, unknown>
       const value = typedData[pathStr]
       return value !== undefined ? value : defaultValue
     }
@@ -62,48 +62,48 @@ class SettingStore {
   updateSetting<K extends keyof Setting>(key: K, value: Setting[K]): void
   updateSetting<P extends DeepPaths<Setting>>(path: P, value: DeepValue<Setting, P>): void
   updateSetting(keyOrPath: unknown, value: unknown): void {
-    if (!this.state.initialized) {
+    if (!this.#state.initialized) {
       throw new Error('Setting store not initialized')
     }
 
     const pathStr = String(keyOrPath)
     if (pathStr.includes('.')) {
       // Handle nested path
-      this.setNestedValue(this.state.data, pathStr, value)
+      this.#setNestedValue(this.#state.data, pathStr, value)
     }
     else {
       // Handle top-level property
-      const typedData = this.state.data as unknown as Record<string, unknown>
+      const typedData = this.#state.data as unknown as Record<string, unknown>
       typedData[pathStr] = value
     }
   }
 
   // Batch update settings
   updateSettings(updates: Partial<Setting>): void {
-    if (!this.state.initialized) {
+    if (!this.#state.initialized) {
       throw new Error('Setting store not initialized')
     }
 
-    this.state.data = this.deepMerge(this.state.data, updates)
+    this.#state.data = this.#deepMerge(this.#state.data, updates)
   }
 
   // Reset settings
   reset(): void {
-    this.state.data = DEFAULT_SETTINGS
-    this.state.initialized = false
+    this.#state.data = DEFAULT_SETTINGS
+    this.#state.initialized = false
   }
 
   // Export settings (for persistence)
   export(): Readonly<Setting> {
-    if (!this.state.initialized) {
+    if (!this.#state.initialized) {
       throw new Error('Setting store not initialized')
     }
 
-    return $state.snapshot(this.state.data) as Readonly<Setting>
+    return $state.snapshot(this.#state.data) as Readonly<Setting>
   }
 
   // Private method: deep merge objects
-  private deepMerge<A, B>(target: A, source: B): A & B {
+  #deepMerge<A, B>(target: A, source: B): A & B {
     const result = { ...target } as Record<string, unknown>
 
     for (const key in source) {
@@ -120,7 +120,7 @@ class SettingStore {
           && !Array.isArray(targetValue)
         ) {
           // Recursively merge nested objects
-          result[key] = this.deepMerge(targetValue, sourceValue)
+          result[key] = this.#deepMerge(targetValue, sourceValue)
         }
         else {
           // Direct assignment
@@ -133,7 +133,7 @@ class SettingStore {
   }
 
   // Private method: set nested value
-  private setNestedValue(obj: unknown, path: string, value: unknown): void {
+  #setNestedValue(obj: unknown, path: string, value: unknown): void {
     const keys = path.split('.')
     let current = obj as Record<string, unknown>
 
@@ -154,7 +154,7 @@ class SettingStore {
   }
 
   // Private method: get nested value
-  private getNestedValue(obj: unknown, path: string, defaultValue?: unknown): unknown {
+  #getNestedValue(obj: unknown, path: string, defaultValue?: unknown): unknown {
     const keys = path.split('.')
     let current = obj
 
@@ -173,5 +173,4 @@ class SettingStore {
 const setting = new SettingStore()
 
 // Export instance and types
-export { setting, SettingStore }
-export type { SettingState }
+export { setting }

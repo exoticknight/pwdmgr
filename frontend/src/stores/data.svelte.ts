@@ -1,7 +1,6 @@
 import type { Datum, OmitBasicDataExcept } from '@/types/data'
 
 import Fuse from 'fuse.js'
-import typia from 'typia'
 
 import { DEFAULT_FUSE_CONFIG } from '@/consts/fuse'
 

@@ -6,6 +6,8 @@ import typia from 'typia'
 
 import { DEFAULT_SETTINGS } from '@/consts/setting'
 import { VERSION } from '@/consts/version'
+
+import { i18n } from '@/stores/i18n.svelte'
 import { data } from './data.svelte'
 import { setting } from './setting.svelte'
 
@@ -16,7 +18,7 @@ interface DatabaseState {
 }
 
 // Database store implementation using Svelte 5 state
-class Database {
+class DatabaseStore {
   #rawDataFile: DataFile | null = null
   #rawData: Datum[] | null = null
   #rawSettings: Partial<Setting> | null = null
@@ -50,6 +52,8 @@ class Database {
 
         data.initialize(rawData)
         setting.initialize(settings)
+
+        i18n.changeLanguage(setting.getSetting('language.code'))
       }
       else {
         // Create new empty database
@@ -92,6 +96,6 @@ class Database {
   }
 }
 
-const database = new Database()
+const database = new DatabaseStore()
 
 export { database }

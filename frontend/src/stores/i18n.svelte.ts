@@ -8,7 +8,7 @@ i18next.on('languageChanged', () => {
   state.lng = i18next.language
 })
 
-export default new class {
+const i18n = new class {
   t(key: string) {
     void state.lng
     return i18next.t(key)
@@ -18,3 +18,5 @@ export default new class {
     void i18next.changeLanguage(lang)
   }
 }()
+
+export { i18n }

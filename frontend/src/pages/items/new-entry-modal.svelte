@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { BasicData, BasicDataKey, OmitBasicDataExcept, PasswordData } from '@/types/datafile'
+  import type { BasicData, BasicDataKey, OmitBasicDataExcept, PasswordData } from '@/types/data'
 
   import { WandSparkles } from '@lucide/svelte'
 

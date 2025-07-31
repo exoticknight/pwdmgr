@@ -1,6 +1,6 @@
 <script lang='ts'>
-  import type { Notification } from '../types/notification'
-  import { notification } from '../stores/notification.svelte'
+  import type { Notification } from '@/types/notification'
+  import { notification } from '@/stores/notification.svelte'
 
   const notifications: Notification[] = $derived(notification.all)
 

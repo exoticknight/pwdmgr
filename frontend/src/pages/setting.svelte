@@ -1,16 +1,8 @@
 <script lang='ts'>
   import { Settings } from '@lucide/svelte'
-  import { onMount } from 'svelte'
   import i18n from '@/stores/i18n.svelte'
   import { setting } from '@/stores/setting.svelte'
   import { userState } from '@/stores/user.svelte'
-
-  // 确保setting store已初始化
-  onMount(() => {
-    if (!setting.initialized) {
-      setting.initialize()
-    }
-  })
 
   // 检查是否已保存过数据库文件
   const hasDataFile = $derived(!!userState.dbPath)

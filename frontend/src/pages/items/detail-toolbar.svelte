@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { Trash2 } from '@lucide/svelte'
-  import i18next from '../../i18n'
+  import i18next from '@/i18n'
 
   interface Props {
     entryTitle?: string

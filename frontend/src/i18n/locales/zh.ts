@@ -178,16 +178,6 @@ export const zh = {
       excludeSimilar: '排除相似字符 (il1Lo0O)',
       excludeAmbiguous: '排除模糊字符 ({}[]()/\\\'"`~,;.<>)',
       usePassword: '使用密码',
-      noCharsetSelected: '未选择字符集',
-      feedback: {
-        lengthTooShort: '密码长度至少8位',
-        addLowercase: '添加小写字母',
-        addUppercase: '添加大写字母',
-        addNumbers: '添加数字',
-        addSymbols: '添加特殊字符',
-        avoidRepeating: '避免连续相同字符',
-        avoidCommonSequences: '避免常见序列',
-      },
       strength: {
         weak: '弱',
         fair: '一般',

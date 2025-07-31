@@ -1,5 +1,3 @@
-import i18next from '../i18n'
-
 // Password generator utility class
 export interface PasswordGeneratorOptions {
   length: number
@@ -43,7 +41,7 @@ export class PasswordGenerator {
     }
 
     if (charset.length === 0) {
-      throw new Error(i18next.t('passwordGenerator.noCharsetSelected'))
+      throw new Error('No character set selected')
     }
 
     let password = ''
@@ -83,23 +81,23 @@ export class PasswordGenerator {
 
     // Feedback suggestions
     if (password.length < 8)
-      feedback.push(i18next.t('passwordGenerator.feedback.lengthTooShort'))
+      feedback.push('Password is too short')
     if (!/[a-z]/.test(password))
-      feedback.push(i18next.t('passwordGenerator.feedback.addLowercase'))
+      feedback.push('Add lowercase letters')
     if (!/[A-Z]/.test(password))
-      feedback.push(i18next.t('passwordGenerator.feedback.addUppercase'))
+      feedback.push('Add uppercase letters')
     if (!/\d/.test(password))
-      feedback.push(i18next.t('passwordGenerator.feedback.addNumbers'))
+      feedback.push('Add numbers')
     if (!/[^A-Z0-9]/i.test(password))
-      feedback.push(i18next.t('passwordGenerator.feedback.addSymbols'))
+      feedback.push('Add symbols')
 
     // Common pattern check
     if (/(.)\1{2,}/.test(password)) {
-      feedback.push(i18next.t('passwordGenerator.feedback.avoidRepeating'))
+      feedback.push('Avoid repeating characters')
       score -= 1
     }
     if (/123|abc|qwe/i.test(password)) {
-      feedback.push(i18next.t('passwordGenerator.feedback.avoidCommonSequences'))
+      feedback.push('Avoid common sequences')
       score -= 1
     }
 

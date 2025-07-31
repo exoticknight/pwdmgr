@@ -178,16 +178,6 @@ export const en = {
       excludeSimilar: 'Exclude Similar Characters (il1Lo0O)',
       excludeAmbiguous: 'Exclude Ambiguous Characters ({}[]()/\\\'"`~,;.<>)',
       usePassword: 'Use Password',
-      noCharsetSelected: 'No character set selected',
-      feedback: {
-        lengthTooShort: 'Password should be at least 8 characters long',
-        addLowercase: 'Add lowercase letters',
-        addUppercase: 'Add uppercase letters',
-        addNumbers: 'Add numbers',
-        addSymbols: 'Add special characters',
-        avoidRepeating: 'Avoid consecutive repeated characters',
-        avoidCommonSequences: 'Avoid common sequences',
-      },
       strength: {
         weak: 'Weak',
         fair: 'Fair',

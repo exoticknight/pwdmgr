@@ -4,9 +4,9 @@
   import SplitPanel from '@/components/split-panel.svelte'
 
   import { getDataManager } from '@/services/data-manager'
-  import { getFile } from '@/services/file'
   import { appStore } from '@/stores/app.svelte'
 
+  import { data } from '@/stores/data.svelte'
   import { database } from '@/stores/database.svelte'
   import i18n from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
@@ -42,13 +42,13 @@
   const filteredEntries = $derived.by(() => {
     switch (filter) {
       case 'favorites':
-        return database.searchEntries(searchTerm).filter(entry => entry._isFavorite)
+        return data.searchEntries(searchTerm).filter(entry => entry._isFavorite)
       case 'recent':
-        return database.searchEntries(searchTerm).toSorted((a, b) => {
+        return data.searchEntries(searchTerm).toSorted((a, b) => {
           return compareISO8601String(b._lastUsedAt, a._lastUsedAt)
         })
       default:
-        return database.searchEntries(searchTerm)
+        return data.searchEntries(searchTerm)
     }
   })
 
@@ -76,7 +76,7 @@
 
       // If there's a file path, save to file
       if (userState.dbPath) {
-        const databaseData = database.exportJSON()
+        const databaseData = database.export()
         await dataManager.saveToFile(userState.dbPath, password, databaseData)
         appStore.markAsSaved()
         notification.success(i18n.t('notifications.saved'))
@@ -103,9 +103,9 @@
   }
 
   // Handle entry updates
-  function handleEntryUpdate(data: { id: string, updates: Partial<PasswordData> }) {
+  function handleEntryUpdate(entry: { id: string, updates: Partial<PasswordData> }) {
     try {
-      const updatedEntry = database.updateEntry(data.id, data.updates)
+      const updatedEntry = data.updateEntry(entry.id, entry.updates)
       selectedEntry = updatedEntry
       appStore.markAsUnsaved()
     }
@@ -115,9 +115,9 @@
   }
 
   // Handle entry deletion
-  function handleEntryDelete(data: { id: string }) {
+  function handleEntryDelete(entry: { id: string }) {
     try {
-      database.deleteEntry(data.id)
+      data.deleteEntry(entry.id)
       selectedEntry = null
       appStore.markAsUnsaved()
       notification.success(i18n.t('notifications.entryDeleted'))
@@ -139,7 +139,7 @@
 
   function handleModalSave(entry: OmitBasicDataExcept<PasswordData, 'TYPE'>) {
     try {
-      const newEntry = database.addEntry(entry)
+      const newEntry = data.addEntry(entry)
       selectedEntry = newEntry
       notification.success(i18n.t('notifications.entryAdded'))
 
@@ -157,7 +157,7 @@
   }
 
   // Handle save dialog
-  function handleSaveDialogSave(filePaths: string[]) {
+  async function handleSaveDialogSave(filePaths: string[]) {
     if (filePaths.length === 0) {
       return
     }
@@ -169,18 +169,18 @@
       return
     }
 
-    const databaseData = database.exportJSON()
-    dataManager.saveToFile(filePath, password, databaseData)
-      .then(() => {
-        userState.dbPath = filePath
-        appStore.markAsSaved()
-        showSaveDialog = false
-        notification.success(i18n.t('notifications.saved'))
-      })
-      .catch((err) => {
-        console.error('Failed to save file:', err)
-        notification.error(i18n.t('errors.saveError'))
-      })
+    try {
+      const databaseData = database.export()
+      await dataManager.saveToFile(filePath, password, databaseData)
+      userState.dbPath = filePath
+      appStore.markAsSaved()
+      showSaveDialog = false
+      notification.success(i18n.t('notifications.saved'))
+    }
+    catch (error) {
+      console.error('Failed to save database:', error)
+      notification.error(i18n.t('errors.saveError'))
+    }
   }
 
   function handleSaveDialogCancel() {
@@ -197,25 +197,16 @@
       const filePath = filePaths[0]
       let content: string
 
-      const databaseData = database.exportJSON()
+      const databaseData = database.export()
 
       if (format === 'csv') {
         content = exportToCSV(databaseData)
       }
       else {
-        // Export as JSON
         content = exportToJSON(databaseData)
       }
 
-      // Convert string to ArrayBuffer
-      const encoder = new TextEncoder()
-      const uint8Array = encoder.encode(content)
-      const arrayBuffer = new ArrayBuffer(uint8Array.length)
-      new Uint8Array(arrayBuffer).set(uint8Array)
-
-      // Write file using the file service
-      const fileService = getFile()
-      await fileService.saveFile(filePath, arrayBuffer)
+      await dataManager.saveToFileWithoutPassword(filePath, content)
 
       showExportDialog = false
       notification.success(i18n.t('notifications.exportSuccess'))

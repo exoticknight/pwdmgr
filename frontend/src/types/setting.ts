@@ -1,9 +1,12 @@
+export type Theme = 'light' | 'dark' | 'system'
+export type LanguageCode = 'en' | 'zh' | 'ja'
+
 export interface Setting {
   interface: {
-    theme: 'light' | 'dark' | 'system'
+    theme: Theme
   }
   language: {
-    code: 'en' | 'zh' | 'ja'
+    code: LanguageCode
   }
   security: {
     autoLock: boolean

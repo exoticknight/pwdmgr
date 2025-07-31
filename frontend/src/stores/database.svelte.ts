@@ -21,7 +21,7 @@ interface DatabaseState {
 class DatabaseStore {
   #rawDataFile: DataFile | null = null
   #rawData: Datum[] | null = null
-  #rawSettings: Partial<Setting> | null = null
+  #rawSetting: Partial<Setting> | null = null
 
   #state = $state<DatabaseState>({
     initialized: false,
@@ -48,7 +48,7 @@ class DatabaseStore {
         const settings = typia.assert<Partial<Setting>>(dataFile.setting ?? {})
 
         this.#rawData = rawData
-        this.#rawSettings = settings
+        this.#rawSetting = settings
 
         data.initialize(rawData)
         setting.initialize(settings)

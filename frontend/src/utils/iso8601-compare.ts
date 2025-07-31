@@ -1,9 +1,9 @@
-export function compareISO8601String(a: string | null, b: string | null): number {
-  if (a === null && b === null)
+export function compareISO8601String(a?: string, b?: string): number {
+  if (a === undefined && b === undefined)
     return 0
-  if (a === null)
+  if (a === undefined)
     return -1
-  if (b === null)
+  if (b === undefined)
     return 1
   if (a < b)
     return -1

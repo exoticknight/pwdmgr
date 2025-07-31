@@ -55,10 +55,10 @@ class Database {
         this.#rawDataFile = dataFile
 
         // Validate the data structure
-        const data = typia.assert<Datum[]>(dataFile.data)
+        // const data = typia.assert<Datum[]>(dataFile.data)
         const settings = typia.assert<Partial<Setting>>(dataFile.setting ?? {})
 
-        this.#state.data = data
+        this.#state.data = dataFile.data
         this.#state.setting = Object.assign({}, DEFAULT_SETTINGS, settings)
       }
       else {
@@ -93,7 +93,7 @@ class Database {
       _isFavorite: false,
       _createdAt: new Date().toISOString(),
       _updatedAt: new Date().toISOString(),
-      _lastUsedAt: null,
+      _lastUsedAt: undefined,
     }
 
     this.#state.data.push(newEntry)

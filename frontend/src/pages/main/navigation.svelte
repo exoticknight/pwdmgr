@@ -2,7 +2,7 @@
   import type { DialogControl } from '@/types/dialog'
   import { appStore } from '@/stores/app.svelte'
   import { dialog } from '@/stores/dialog.svelte'
-  import i18n from '@/stores/i18n.svelte'
+  import { i18n } from '@/stores/i18n.svelte'
   import { route, Routes } from '@/stores/route.svelte'
 
   // Here we can use type constraints to ensure only DialogControl interface is used

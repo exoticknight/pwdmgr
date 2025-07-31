@@ -8,7 +8,7 @@
   import { getDataManager } from '@/services/data-manager'
 
   import { database } from '@/stores/database.svelte'
-  import i18n from '@/stores/i18n.svelte'
+  import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { route, Routes } from '@/stores/route.svelte'
 

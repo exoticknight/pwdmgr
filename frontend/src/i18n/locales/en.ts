@@ -232,6 +232,12 @@ export const en = {
         title: 'About',
         version: 'Version',
       },
+
+      // Save required
+      saveRequired: {
+        title: 'Please Save Database First',
+        description: 'Settings are stored in the database file. Please create or open a database file and save it at least once before modifying settings.',
+      },
     },
   },
 }

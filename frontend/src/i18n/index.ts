@@ -11,7 +11,7 @@ const resources = {
 }
 
 void i18next.init({
-  lng: DEFAULT_SETTINGS.language.code,
+  lng: new Intl.Locale(navigator.language).language,
   fallbackLng: DEFAULT_SETTINGS.language.code,
   resources,
   interpolation: {

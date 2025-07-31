@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { Trash2 } from '@lucide/svelte'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     entryTitle?: string
@@ -28,7 +28,7 @@
       <button
         class='toolbar-btn toolbar-btn-danger'
         onclick={handleDelete}
-        title={i18next.t('actions.delete')}
+        title={i18n.t('actions.delete')}
       >
         <Trash2 size={16} />
       </button>

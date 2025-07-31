@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { ArrowLeft, Plus, Save } from '@lucide/svelte'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     hasUnsavedChanges: boolean
@@ -30,7 +30,7 @@
     <button
       class='toolbar-btn'
       onclick={handleBack}
-      title={i18next.t('common.back')}
+      title={i18n.t('common.back')}
     >
       <ArrowLeft size={16} />
     </button>
@@ -41,7 +41,7 @@
       class='toolbar-btn {hasUnsavedChanges ? 'toolbar-btn-warning' : ''}'
       onclick={handleSave}
       disabled={!hasUnsavedChanges}
-      title={i18next.t('forms.save')}
+      title={i18n.t('forms.save')}
     >
       <Save size={16} />
       {#if hasUnsavedChanges}
@@ -55,7 +55,7 @@
     <button
       class='toolbar-btn toolbar-btn-primary'
       onclick={handleNew}
-      title={i18next.t('forms.addEntry')}
+      title={i18n.t('forms.addEntry')}
     >
       <Plus size={16} />
     </button>

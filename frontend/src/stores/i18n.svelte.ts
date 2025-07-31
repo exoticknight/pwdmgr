@@ -11,9 +11,9 @@ i18next.on('languageChanged', () => {
 })
 
 const i18n = new class {
-  t(key: string) {
+  t(key: string, options?: Record<string, any>): string {
     void state.lng
-    return i18next.t(key)
+    return i18next.t(key, options)
   }
 
   changeLanguage(lang: string) {

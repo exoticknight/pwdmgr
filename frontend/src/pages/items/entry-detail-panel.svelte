@@ -5,8 +5,8 @@
   import { Copy, Eye, EyeOff, Heart, Share2, Trash2, WandSparkles } from '@lucide/svelte'
 
   import PasswordStrength from '@/components/password-strength.svelte'
-  import i18next from '@/i18n'
   import { dialog } from '@/stores/dialog.svelte'
+  import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { formatCompactDateTime } from '@/utils/time-format'
 
@@ -73,7 +73,7 @@
     navigator.clipboard
       .writeText(text)
       .then(() => {
-        notification.success(i18next.t('notifications.copied'))
+        notification.success(i18n.t('notifications.copied'))
 
         // Update last used time when copying password or username
         if (entry && onUpdate) {
@@ -87,7 +87,7 @@
         }
       })
       .catch(() => {
-        notification.error(i18next.t('notifications.copyFailed'))
+        notification.error(i18n.t('notifications.copyFailed'))
       })
   }
 
@@ -107,7 +107,7 @@
   async function shareEntry() {
     if (entry) {
       // Popup confirmation to copy plaintext data
-      const confirmed = await dialogControl.confirm(i18next.t('dialogs.confirmShare'))
+      const confirmed = await dialogControl.confirm(i18n.t('dialogs.confirmShare'))
       if (!confirmed) {
         return
       }
@@ -131,17 +131,17 @@
       navigator.clipboard
         .writeText(shareText)
         .then(() => {
-          notification.success(i18next.t('notifications.shareSuccess'))
+          notification.success(i18n.t('notifications.shareSuccess'))
         })
         .catch(() => {
-          notification.error(i18next.t('notifications.shareFailed'))
+          notification.error(i18n.t('notifications.shareFailed'))
         })
     }
   }
 
   async function handleDelete() {
     if (entry && onDelete) {
-      const confirmed = await dialogControl.confirm(i18next.t('dialogs.confirmDelete'))
+      const confirmed = await dialogControl.confirm(i18n.t('dialogs.confirmDelete'))
       if (confirmed) {
         onDelete({ id: entry._id })
       }
@@ -152,7 +152,7 @@
 {#if !entry}
   <div class='detail-empty'>
     <div class='empty-content'>
-      <p class='empty-subtitle'>{i18next.t('forms.emptySubtitle')}</p>
+      <p class='empty-subtitle'>{i18n.t('forms.emptySubtitle')}</p>
     </div>
   </div>
 {:else}
@@ -166,8 +166,8 @@
           class='btn btn-ghost favorite-btn'
           onclick={toggleFavorite}
           title={entry._isFavorite
-            ? i18next.t('actions.removeFromFavorites')
-            : i18next.t('actions.addToFavorites')}
+            ? i18n.t('actions.removeFromFavorites')
+            : i18n.t('actions.addToFavorites')}
         >
           <Heart
             size={20}
@@ -178,7 +178,7 @@
           type='button'
           class='btn btn-ghost delete-btn'
           onclick={handleDelete}
-          title={i18next.t('actions.delete')}
+          title={i18n.t('actions.delete')}
         >
           <Trash2 size={20} />
         </button>
@@ -186,7 +186,7 @@
           type='button'
           class='btn btn-ghost share-btn'
           onclick={shareEntry}
-          title={i18next.t('actions.share')}
+          title={i18n.t('actions.share')}
         >
           <Share2 size={20} />
         </button>
@@ -198,7 +198,7 @@
       <fieldset class='fieldset w-full'>
         <!-- Username Field -->
         <label class='label' for='username-input'>
-          {i18next.t('forms.username')}
+          {i18n.t('forms.username')}
         </label>
         <div class='join w-full'>
           <input
@@ -208,13 +208,13 @@
             value={formData.username || ''}
             oninput={e =>
               handleFieldChange('username', e.currentTarget.value)}
-            placeholder={i18next.t('forms.usernamePlaceholder')}
+            placeholder={i18n.t('forms.usernamePlaceholder')}
           />
           <button
             type='button'
             class='btn join-item'
             onclick={() => copyToClipboard(entry.username)}
-            title={i18next.t('actions.copy')}
+            title={i18n.t('actions.copy')}
           >
             <Copy size={16} />
           </button>
@@ -222,7 +222,7 @@
 
         <!-- Password Field -->
         <label class='label' for='password-input'>
-          {i18next.t('forms.password')}
+          {i18n.t('forms.password')}
         </label>
         <div class='join w-full'>
           <input
@@ -232,15 +232,15 @@
             value={formData.password || ''}
             oninput={e =>
               handleFieldChange('password', e.currentTarget.value)}
-            placeholder={i18next.t('forms.passwordPlaceholder')}
+            placeholder={i18n.t('forms.passwordPlaceholder')}
           />
           <button
             type='button'
             class='btn join-item'
             onclick={togglePasswordVisibility}
             title={showPassword
-              ? i18next.t('actions.hidePassword')
-              : i18next.t('actions.showPassword')}
+              ? i18n.t('actions.hidePassword')
+              : i18n.t('actions.showPassword')}
           >
             {#if showPassword}
               <EyeOff size={16} />
@@ -252,7 +252,7 @@
             type='button'
             class='btn join-item'
             onclick={openPasswordGenerator}
-            title={i18next.t('passwordGenerator.title')}
+            title={i18n.t('passwordGenerator.title')}
           >
             <WandSparkles size={16} />
           </button>
@@ -260,7 +260,7 @@
             type='button'
             class='btn join-item'
             onclick={() => copyToClipboard(entry.password)}
-            title={i18next.t('actions.copy')}
+            title={i18n.t('actions.copy')}
           >
             <Copy size={16} />
           </button>
@@ -270,14 +270,14 @@
 
         <!-- Notes Field -->
         <label class='label' for='notes-input'>
-          {i18next.t('forms.notes')}
+          {i18n.t('forms.notes')}
         </label>
         <textarea
           id='notes-input'
           class='textarea w-full'
           value={formData.notes || ''}
           oninput={e => handleFieldChange('notes', e.currentTarget.value)}
-          placeholder={i18next.t('forms.notesPlaceholder')}
+          placeholder={i18n.t('forms.notesPlaceholder')}
           rows='4'
         ></textarea>
       </fieldset>
@@ -285,13 +285,13 @@
       <!-- Time Information -->
       <div class='time-info'>
         <div class='time-item'>
-          {i18next.t('forms.lastUsedAt')}: <span class='time-value'>{entry._lastUsedAt !== undefined ? formatCompactDateTime(entry._lastUsedAt) : i18next.t('forms.neverUsed')}</span>
+          {i18n.t('forms.lastUsedAt')}: <span class='time-value'>{entry._lastUsedAt !== undefined ? formatCompactDateTime(entry._lastUsedAt) : i18n.t('forms.neverUsed')}</span>
         </div>
         <div class='time-item'>
-          {i18next.t('forms.updatedAt')}: <span class='time-value'>{formatCompactDateTime(entry._updatedAt)}</span>
+          {i18n.t('forms.updatedAt')}: <span class='time-value'>{formatCompactDateTime(entry._updatedAt)}</span>
         </div>
         <div class='time-item'>
-          {i18next.t('forms.createdAt')}: <span class='time-value'>{formatCompactDateTime(entry._createdAt)}</span>
+          {i18n.t('forms.createdAt')}: <span class='time-value'>{formatCompactDateTime(entry._createdAt)}</span>
         </div>
       </div>
     </div>

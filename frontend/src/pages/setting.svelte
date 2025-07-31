@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import type { LanguageCode } from '@/types/setting'
   import { Settings } from '@lucide/svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { setting } from '@/stores/setting.svelte'
@@ -9,12 +10,8 @@
 
   function handleLanguageChange(event: Event) {
     const select = event.target as HTMLSelectElement
-    const selectedLanguage = select.value as 'en' | 'zh' | 'ja'
-
-    // Update language in settings
+    const selectedLanguage = select.value as LanguageCode
     setting.updateSetting('language.code', selectedLanguage)
-    // Also update i18n
-    i18n.changeLanguage(selectedLanguage)
   }
 
   function handleThemeChange(event: Event) {

@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { Plus, Save, Search, Share } from '@lucide/svelte'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     hasUnsavedChanges: boolean
@@ -38,7 +38,7 @@
       <Search size={14} />
       <input
         type='text'
-        placeholder={i18next.t('search.placeholder')}
+        placeholder={i18n.t('search.placeholder')}
         class='search-input'
         value={searchTerm}
         oninput={handleSearchInput}
@@ -52,7 +52,7 @@
       class="toolbar-btn {hasUnsavedChanges ? 'toolbar-btn-warning' : ''}"
       onclick={handleSave}
       disabled={!hasUnsavedChanges}
-      title={i18next.t('buttons.save')}
+      title={i18n.t('buttons.save')}
     >
       <Save size={16} />
       {#if hasUnsavedChanges}
@@ -63,7 +63,7 @@
     <button
       class='toolbar-btn'
       onclick={handleExport}
-      title={i18next.t('buttons.export')}
+      title={i18n.t('buttons.export')}
     >
       <Share size={16} />
     </button>
@@ -71,7 +71,7 @@
     <button
       class='toolbar-btn'
       onclick={handleNew}
-      title={i18next.t('buttons.newEntry')}
+      title={i18n.t('buttons.newEntry')}
     >
       <Plus size={16} />
     </button>

@@ -1,7 +1,7 @@
 <script lang='ts'>
   import Modal from '@/components/modal.svelte'
   import PasswordGenerator from '@/components/password-generator.svelte'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     isOpen: boolean
@@ -19,7 +19,7 @@
 
 <Modal
   {isOpen}
-  title={i18next.t('passwordGenerator.title')}
+  title={i18n.t('passwordGenerator.title')}
   {onClose}
   boxClass='max-w-lg'
 >

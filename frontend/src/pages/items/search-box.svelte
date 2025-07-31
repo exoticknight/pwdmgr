@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { Search } from '@lucide/svelte'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     searchTerm?: string
@@ -20,7 +20,7 @@
     <Search size={14} />
     <input
       type='text'
-      placeholder={i18next.t('search.placeholder')}
+      placeholder={i18n.t('search.placeholder')}
       class='search-input'
       value={searchTerm}
       oninput={handleSearchInput}

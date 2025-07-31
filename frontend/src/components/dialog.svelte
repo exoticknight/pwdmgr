@@ -1,7 +1,7 @@
 <script lang='ts'>
   import type { DialogResult } from '@/types/dialog'
-  import i18next from '@/i18n'
   import { dialog } from '@/stores/dialog.svelte'
+  import { i18n } from '@/stores/i18n.svelte'
 
   let inputValue = $state('')
 
@@ -72,14 +72,14 @@
       <div class='modal-action'>
         {#if showCancelButton}
           <button class='btn' onclick={handleCancel}>
-            {dialog.state.options.cancelText || i18next.t('dialogs.cancel')}
+            {dialog.state.options.cancelText || i18n.t('dialogs.cancel')}
           </button>
         {/if}
         <button
           class='btn btn-primary'
           onclick={handleConfirm}
         >
-          {dialog.state.options.confirmText || i18next.t('dialogs.ok')}
+          {dialog.state.options.confirmText || i18n.t('dialogs.ok')}
         </button>
       </div>
     </div>

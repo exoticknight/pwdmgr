@@ -1,6 +1,6 @@
 import i18next from '../i18n'
 
-// 密码生成器工具类
+// Password generator utility class
 export interface PasswordGeneratorOptions {
   length: number
   includeUppercase: boolean
@@ -63,7 +63,7 @@ export class PasswordGenerator {
     const feedback: string[] = []
     let score = 0
 
-    // 长度检查
+    // Length check
     if (password.length >= 8)
       score += 1
     if (password.length >= 12)
@@ -71,7 +71,7 @@ export class PasswordGenerator {
     if (password.length >= 16)
       score += 1
 
-    // 字符种类检查
+    // Character type check
     if (/[a-z]/.test(password))
       score += 1
     if (/[A-Z]/.test(password))
@@ -81,7 +81,7 @@ export class PasswordGenerator {
     if (/[^A-Z0-9]/i.test(password))
       score += 1
 
-    // 反馈建议
+    // Feedback suggestions
     if (password.length < 8)
       feedback.push(i18next.t('passwordGenerator.feedback.lengthTooShort'))
     if (!/[a-z]/.test(password))
@@ -93,7 +93,7 @@ export class PasswordGenerator {
     if (!/[^A-Z0-9]/i.test(password))
       feedback.push(i18next.t('passwordGenerator.feedback.addSymbols'))
 
-    // 常见模式检查
+    // Common pattern check
     if (/(.)\1{2,}/.test(password)) {
       feedback.push(i18next.t('passwordGenerator.feedback.avoidRepeating'))
       score -= 1
@@ -103,7 +103,7 @@ export class PasswordGenerator {
       score -= 1
     }
 
-    // 强度分级
+    // Strength classification
     let strength: 'weak' | 'fair' | 'good' | 'strong'
     if (score <= 2)
       strength = 'weak'

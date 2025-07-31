@@ -1,9 +1,9 @@
-// 时间格式化工具
+// Time formatting utilities
 
 /**
- * 格式化日期时间为本地格式
- * @param isoString ISO 8601 格式的时间字符串
- * @returns 格式化后的本地时间字符串
+ * Format date time to local format
+ * @param isoString ISO 8601 format time string
+ * @returns Formatted local time string
  */
 export function formatDateTime(isoString: string): string {
   const date = new Date(isoString)
@@ -11,9 +11,9 @@ export function formatDateTime(isoString: string): string {
 }
 
 /**
- * 格式化为相对时间（如：2天前、1小时前）
- * @param isoString ISO 8601 格式的时间字符串
- * @returns 相对时间字符串
+ * Format as relative time (e.g.: 2 days ago, 1 hour ago)
+ * @param isoString ISO 8601 format time string
+ * @returns Relative time string
  */
 export function formatRelativeTime(isoString: string): string {
   const date = new Date(isoString)
@@ -48,9 +48,9 @@ export function formatRelativeTime(isoString: string): string {
 }
 
 /**
- * 格式化为简洁的日期时间
- * @param isoString ISO 8601 格式的时间字符串
- * @returns 简洁格式的日期时间字符串
+ * Format as compact date time
+ * @param isoString ISO 8601 format time string
+ * @returns Compact format date time string
  */
 export function formatCompactDateTime(isoString: string): string {
   const date = new Date(isoString)

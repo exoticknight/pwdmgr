@@ -1,7 +1,7 @@
-// 通用深度对象访问类型定义
-// 这些类型可以在任何需要深度对象访问的场景中使用，不限于状态管理
+// Generic deep object access type definitions
+// These types can be used in any scenario requiring deep object access, not limited to state management
 
-// 递归类型：生成所有可能的嵌套路径（只包含字符串键）
+// Recursive type: generate all possible nested paths (string keys only)
 export type DeepPaths<T> = T extends object
   ? {
       [K in keyof T]: K extends string
@@ -12,7 +12,7 @@ export type DeepPaths<T> = T extends object
     }[keyof T]
   : never
 
-// 根据路径字符串获取对应的值类型
+// Get value type based on path string
 export type DeepValue<T, P extends string> = P extends keyof T
   ? T[P]
   : P extends `${infer K}.${infer Rest}`

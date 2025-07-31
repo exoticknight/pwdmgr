@@ -13,13 +13,9 @@ import (
 var assets embed.FS
 
 func main() {
-	// Create an instance of the app structure
 	app := NewApp()
-
-	// Create an instance of the file service
 	fileService := NewFileService()
 
-	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "mat6maa5",
 		Width:  1000,

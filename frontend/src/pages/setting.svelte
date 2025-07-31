@@ -4,16 +4,16 @@
   import { setting } from '@/stores/setting.svelte'
   import { userState } from '@/stores/user.svelte'
 
-  // 检查是否已保存过数据库文件
+  // Check if database file has been saved
   const hasDataFile = $derived(!!userState.dbPath)
 
   function handleLanguageChange(event: Event) {
     const select = event.target as HTMLSelectElement
     const selectedLanguage = select.value as 'en' | 'zh' | 'ja'
 
-    // 更新设置中的语言
+    // Update language in settings
     setting.updateSetting('language.code', selectedLanguage)
-    // 同时更新i18n
+    // Also update i18n
     i18n.changeLanguage(selectedLanguage)
   }
 
@@ -81,7 +81,7 @@
 <div class='overflow-y-auto h-full'>
   {#if hasDataFile}
     <div class='setting-container gap-8 m-4'>
-      <!-- 安全设置 -->
+      <!-- Security Settings -->
       <div class='setting-section'>
         <h1 class='text-xl font-semibold text-base-content'>{i18n.t('setting.security.title')}</h1>
         <div class='divider'></div>
@@ -123,7 +123,7 @@
         </div>
       </div>
 
-      <!-- 界面设置 -->
+      <!-- Interface Settings -->
       <div class='setting-section'>
         <h1 class='text-xl font-semibold text-base-content'>{i18n.t('setting.interface.title')}</h1>
         <div class='divider'></div>
@@ -165,7 +165,7 @@
         </div>
       </div>
 
-      <!-- 关于 -->
+      <!-- About -->
       <div class='setting-section'>
         <h1 class='text-xl font-semibold text-base-content'>{i18n.t('setting.about.title')}</h1>
         <div class='divider'></div>
@@ -181,7 +181,7 @@
       </div>
     </div>
   {:else}
-    <!-- 使用DaisyUI的hero组件和Lucide图标的空面板 -->
+    <!-- Empty panel using DaisyUI hero component and Lucide icons -->
     <div class='hero h-full'>
       <div class='hero-content text-center'>
         <div class='max-w-md'>

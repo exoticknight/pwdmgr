@@ -1,6 +1,6 @@
 <script lang='ts'>
-  import i18next from '../i18n'
-  import { PasswordGenerator } from '../utils/password-generator'
+  import { i18n } from '@/stores/i18n.svelte'
+  import { PasswordGenerator } from '@/utils/password-generator'
 
   interface Props {
     password: string
@@ -48,14 +48,14 @@
 {#if alwaysShow || password}
   <div class='password-strength'>
     <div class='strength-bars'>
-      <div class='strength-bar {getBarClass(0)}' title={i18next.t('passwordGenerator.strength.weak')}></div>
-      <div class='strength-bar {getBarClass(1)}' title={i18next.t('passwordGenerator.strength.fair')}></div>
-      <div class='strength-bar {getBarClass(2)}' title={i18next.t('passwordGenerator.strength.good')}></div>
-      <div class='strength-bar {getBarClass(3)}' title={i18next.t('passwordGenerator.strength.strong')}></div>
+      <div class='strength-bar {getBarClass(0)}' title={i18n.t('passwordGenerator.strength.weak')}></div>
+      <div class='strength-bar {getBarClass(1)}' title={i18n.t('passwordGenerator.strength.fair')}></div>
+      <div class='strength-bar {getBarClass(2)}' title={i18n.t('passwordGenerator.strength.good')}></div>
+      <div class='strength-bar {getBarClass(3)}' title={i18n.t('passwordGenerator.strength.strong')}></div>
     </div>
     <div class='strength-info'>
       <span class='strength-text strength-{strength.strength}'>
-        {i18next.t(`passwordGenerator.strength.${strength.strength}`)}
+        {i18n.t(`passwordGenerator.strength.${strength.strength}`)}
       </span>
       <span class='strength-score'>
         {strength.score}/7

@@ -2,7 +2,7 @@
   import { Save, X } from '@lucide/svelte'
   import Modal from '@/components/modal.svelte'
   import WailsFileSelect from '@/components/wails-file-select.svelte'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     isOpen: boolean
@@ -15,17 +15,17 @@
 
 <Modal
   {isOpen}
-  title={i18next.t('dialogs.savePasswordFile')}
+  title={i18n.t('dialogs.savePasswordFile')}
   onClose={onCancel}
   showCloseButton={false}
 >
   {#snippet children()}
     <WailsFileSelect
       class='border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:border-blue-500'
-      title={i18next.t('dialogs.savePasswordFile')}
+      title={i18n.t('dialogs.savePasswordFile')}
       defaultFilename='passwords.pwd'
       filters={[
-        { displayName: i18next.t('landing.passwordFiles'), pattern: '*.pwd' },
+        { displayName: i18n.t('landing.passwordFiles'), pattern: '*.pwd' },
       ]}
       canCreateDirs={true}
       mode='save'
@@ -37,7 +37,7 @@
           <Save class='w-8 h-8 text-base-content/50' />
         </div>
         <p class='text-center text-gray-600'>
-          {i18next.t('dialogs.saveLocation')}
+          {i18n.t('dialogs.saveLocation')}
         </p>
       {/snippet}
     </WailsFileSelect>
@@ -49,7 +49,7 @@
       onclick={onCancel}
     >
       <X class='w-4 h-4 mr-2' />
-      {i18next.t('dialogs.cancel')}
+      {i18n.t('dialogs.cancel')}
     </button>
   {/snippet}
 </Modal>

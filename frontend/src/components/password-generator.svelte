@@ -1,7 +1,7 @@
 <script lang='ts'>
   import type { PasswordGeneratorOptions } from '@/utils/password-generator'
   import { Check, Copy, RefreshCcw } from '@lucide/svelte'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
   import { PasswordGenerator } from '@/utils/password-generator'
   import PasswordStrength from './password-strength.svelte'
 
@@ -130,7 +130,7 @@
       <button
         class='btn join-item'
         onclick={regeneratePassword}
-        title={i18next.t('passwordGenerator.regenerate')}
+        title={i18n.t('passwordGenerator.regenerate')}
       >
         <RefreshCcw size={16} />
       </button>
@@ -138,7 +138,7 @@
         <button
           class='btn join-item'
           onclick={selectPassword}
-          title={i18next.t('passwordGenerator.usePassword')}
+          title={i18n.t('passwordGenerator.usePassword')}
         >
           <Check size={16} />
         </button>
@@ -147,7 +147,7 @@
         <button
           class='btn btn-outline join-item'
           onclick={copyPassword}
-          title={i18next.t('actions.copy')}
+          title={i18n.t('actions.copy')}
         >
           <Copy size={16} />
         </button>
@@ -161,7 +161,7 @@
   <div class='form-control flex flex-col gap-2'>
     <!-- Length settings -->
     <div class='label'>
-      <span class='label-text font-medium'>{i18next.t('passwordGenerator.length')}</span>
+      <span class='label-text font-medium'>{i18n.t('passwordGenerator.length')}</span>
       <span class='label-text-alt badge badge-neutral'>{passwordLength}</span>
     </div>
     <input
@@ -184,7 +184,7 @@
           checked={includeUppercaseState}
           onclick={e => handleCharTypeClick('uppercase', e)}
         />
-        <span class='label-text'>{i18next.t('passwordGenerator.includeUppercase')}</span>
+        <span class='label-text'>{i18n.t('passwordGenerator.includeUppercase')}</span>
       </label>
       <label class='label cursor-pointer'>
         <input
@@ -193,7 +193,7 @@
           checked={includeLowercaseState}
           onclick={e => handleCharTypeClick('lowercase', e)}
         />
-        <span class='label-text'>{i18next.t('passwordGenerator.includeLowercase')}</span>
+        <span class='label-text'>{i18n.t('passwordGenerator.includeLowercase')}</span>
       </label>
       <label class='label cursor-pointer'>
         <input
@@ -202,7 +202,7 @@
           checked={includeNumbersState}
           onclick={e => handleCharTypeClick('numbers', e)}
         />
-        <span class='label-text'>{i18next.t('passwordGenerator.includeNumbers')}</span>
+        <span class='label-text'>{i18n.t('passwordGenerator.includeNumbers')}</span>
       </label>
       <label class='label cursor-pointer'>
         <input
@@ -211,7 +211,7 @@
           checked={includeSymbolsState}
           onclick={e => handleCharTypeClick('symbols', e)}
         />
-        <span class='label-text'>{i18next.t('passwordGenerator.includeSymbols')}</span>
+        <span class='label-text'>{i18n.t('passwordGenerator.includeSymbols')}</span>
       </label>
     </div>
   </div>
@@ -221,11 +221,11 @@
     <div class='flex flex-col gap-2'>
       <label class='label cursor-pointer'>
         <input type='checkbox' class='checkbox' bind:checked={excludeSimilarState} />
-        <span class='label-text'>{i18next.t('passwordGenerator.excludeSimilar')}</span>
+        <span class='label-text'>{i18n.t('passwordGenerator.excludeSimilar')}</span>
       </label>
       <label class='label cursor-pointer'>
         <input type='checkbox' class='checkbox' bind:checked={excludeAmbiguousState} />
-        <span class='label-text'>{i18next.t('passwordGenerator.excludeAmbiguous')}</span>
+        <span class='label-text'>{i18n.t('passwordGenerator.excludeAmbiguous')}</span>
       </label>
     </div>
   </div>

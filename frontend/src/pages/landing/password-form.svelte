@@ -1,6 +1,6 @@
 <script lang='ts'>
   import { ArrowLeft, CheckCircle, FolderOpen, Plus } from '@lucide/svelte'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     isNewDatabase: boolean
@@ -29,23 +29,23 @@
       <CheckCircle size={24} />
     </div>
     <h2 class='form-title'>
-      {isNewDatabase ? i18next.t('password.setTitle') : i18next.t('password.enterTitle')}
+      {isNewDatabase ? i18n.t('password.setTitle') : i18n.t('password.enterTitle')}
     </h2>
     <p class='form-subtitle'>
-      {selectedFile ? `${i18next.t('common.file')}: ${selectedFile.name}` : i18next.t('password.newFile')}
+      {selectedFile ? `${i18n.t('common.file')}: ${selectedFile.name}` : i18n.t('password.newFile')}
     </p>
   </div>
 
   <form onsubmit={onSubmit} class='form-content'>
     <div class='form-field'>
       <label class='field-label' for='password'>
-        {i18next.t('password.label')}
+        {i18n.t('password.label')}
       </label>
       <input
         id='password'
         type='password'
         class='field-input'
-        placeholder={i18next.t('password.placeholder')}
+        placeholder={i18n.t('password.placeholder')}
         bind:value={password}
         required
       />
@@ -54,13 +54,13 @@
     {#if isNewDatabase}
       <div class='form-field'>
         <label class='field-label' for='confirmPassword'>
-          {i18next.t('password.confirmLabel')}
+          {i18n.t('password.confirmLabel')}
         </label>
         <input
           id='confirmPassword'
           type='password'
           class='field-input'
-          placeholder={i18next.t('password.confirmPlaceholder')}
+          placeholder={i18n.t('password.confirmPlaceholder')}
           bind:value={confirmPassword}
           required
         />
@@ -75,7 +75,7 @@
         disabled={isLoading}
       >
         <ArrowLeft size={16} />
-        {i18next.t('actions.back')}
+        {i18n.t('actions.back')}
       </button>
       <button
         type='submit'
@@ -84,13 +84,13 @@
       >
         {#if isLoading}
           <span class='loading-spinner'></span>
-          {i18next.t('common.loading')}
+          {i18n.t('common.loading')}
         {:else if isNewDatabase}
           <Plus size={16} />
-          {i18next.t('actions.create')}
+          {i18n.t('actions.create')}
         {:else}
           <FolderOpen size={16} />
-          {i18next.t('actions.open')}
+          {i18n.t('actions.open')}
         {/if}
       </button>
     </div>

@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { Router } from '@mateothegreat/svelte5-router'
-  import i18next from '@/i18n'
   import { database } from '@/stores/database.svelte'
+  import { i18n } from '@/stores/i18n.svelte'
   import { Routes } from '@/stores/route.svelte'
   import Items from './items.svelte'
   import Navigation from './main/navigation.svelte'
@@ -41,7 +41,7 @@
   <div class='loading-screen'>
     <div class='loading-content'>
       <span class='loading loading-spinner loading-xl'></span>
-      <p class='loading-text'>{i18next.t('common.loading')}</p>
+      <p class='loading-text'>{i18n.t('common.loading')}</p>
     </div>
   </div>
 {:else}

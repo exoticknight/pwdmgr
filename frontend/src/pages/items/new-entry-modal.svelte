@@ -7,7 +7,7 @@
   import PasswordGenerator from '@/components/password-generator.svelte'
   import PasswordStrength from '@/components/password-strength.svelte'
 
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     dataType: BasicData[typeof BasicDataKey.TYPE]
@@ -69,7 +69,7 @@
 
 <Modal
   {isOpen}
-  title={i18next.t('forms.addEntry')}
+  title={i18n.t('forms.addEntry')}
   onClose={handleCancel}
   boxClass='max-w-fit'
 >
@@ -80,40 +80,40 @@
           <fieldset class='fieldset w-full'>
             <!-- Title -->
             <label class='label' for='title'>
-              {i18next.t('forms.title')} *
+              {i18n.t('forms.title')} *
             </label>
             <input
               id='title'
               type='text'
               bind:value={form.title}
-              placeholder={i18next.t('forms.titlePlaceholder')}
+              placeholder={i18n.t('forms.titlePlaceholder')}
               class='input w-full font-mono'
               required
             />
 
             <!-- Username -->
             <label class='label' for='username'>
-              {i18next.t('forms.username')} *
+              {i18n.t('forms.username')} *
             </label>
             <input
               id='username'
               type='text'
               bind:value={form.username}
-              placeholder={i18next.t('forms.usernamePlaceholder')}
+              placeholder={i18n.t('forms.usernamePlaceholder')}
               class='input w-full font-mono'
               required
             />
 
             <!-- Password -->
             <label class='label' for='password'>
-              {i18next.t('forms.password')} *
+              {i18n.t('forms.password')} *
             </label>
             <div class='join w-full'>
               <input
                 id='password'
                 type='text'
                 bind:value={form.password}
-                placeholder={i18next.t('forms.passwordPlaceholder')}
+                placeholder={i18n.t('forms.passwordPlaceholder')}
                 class='input join-item flex-1 font-mono'
                 required
               />
@@ -121,7 +121,7 @@
                 type='button'
                 class='btn join-item'
                 onclick={handleOpenPasswordGenerator}
-                title={i18next.t('passwordGenerator.title')}
+                title={i18n.t('passwordGenerator.title')}
               >
                 <WandSparkles size={16} />
               </button>
@@ -131,12 +131,12 @@
 
             <!-- Notes -->
             <label class='label' for='notes'>
-              {i18next.t('forms.notes')} *
+              {i18n.t('forms.notes')} *
             </label>
             <textarea
               id='notes'
               bind:value={form.notes}
-              placeholder={i18next.t('forms.notesPlaceholder')}
+              placeholder={i18n.t('forms.notesPlaceholder')}
               class='textarea textarea-bordered w-full font-mono'
               rows='3'
             ></textarea>
@@ -165,7 +165,7 @@
       disabled={!isValid}
       onclick={handleSubmit}
     >
-      {i18next.t('actions.add')}
+      {i18n.t('actions.add')}
     </button>
   {/snippet}
 </Modal>

@@ -1,6 +1,6 @@
 <script lang='ts'>
   import type { PasswordData } from '@/types/data'
-  import i18next from '@/i18n'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     entries: PasswordData[]
@@ -32,7 +32,7 @@
   <div class='list-container'>
     {#if filteredEntries.length === 0}
       <div class='empty-state'>
-        {i18next.t('search.noResults')}
+        {i18n.t('search.noResults')}
       </div>
     {:else}
       {#each filteredEntries as entry}

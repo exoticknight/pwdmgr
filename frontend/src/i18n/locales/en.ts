@@ -229,5 +229,13 @@ export const en = {
         description: 'Settings are stored in the database file. Please create or open a database file and save it at least once before modifying settings.',
       },
     },
+
+    // Auto lock functionality
+    autoLock: {
+      unlockTitle: 'Application Locked',
+      unlockMessage: 'Please enter your password to unlock the application.',
+      unlock: 'Unlock',
+      incorrectPassword: 'Incorrect password. Please try again.',
+    },
   },
 }

@@ -7,6 +7,7 @@
 
   import { getDataManager } from '@/services/data-manager'
 
+  import { autoLock } from '@/stores/auto-lock.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
@@ -62,7 +63,6 @@
       isLoading = true
 
       if (selectedFilePath) {
-        // Load existing file with decryption validation
         const databaseFile = await dataManager.loadFromFile<DataFile>(selectedFilePath, password)
         database.close()
         await database.initialize(databaseFile)
@@ -70,15 +70,14 @@
         userState.password = password
       }
       else if (isNewDatabase) {
-        // Create new database by initializing with empty data
         database.close()
-        await database.initialize() // Initialize with empty data
+        await database.initialize()
         userState.dbPath = ''
         userState.password = password
       }
 
-      // If we reach here, operation was successful
-      // Let user choose which interface to use
+      autoLock.startTimer()
+
       route.navigate(Routes.ITEMS_ALL)
     }
     catch (err) {

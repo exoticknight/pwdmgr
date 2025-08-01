@@ -229,5 +229,13 @@ export const zh = {
         description: '设置信息会保存在数据库文件中。请先创建或打开一个数据库文件，并至少保存一次后才能修改设置。',
       },
     },
+
+    // 自动锁定功能
+    autoLock: {
+      unlockTitle: '应用程序已锁定',
+      unlockMessage: '请输入密码以解锁应用程序。',
+      unlock: '解锁',
+      incorrectPassword: '密码错误，请重试。',
+    },
   },
 }

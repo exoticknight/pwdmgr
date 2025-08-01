@@ -91,7 +91,7 @@
             </div>
             <input
               type='checkbox'
-              class='toggle'
+              class='toggle toggle-primary'
               checked={setting.data.security.autoLock}
               onchange={handleAutoLockChange}
             />
@@ -104,9 +104,9 @@
             </div>
             <select
               id='auto-lock-time'
-              class='select max-w-fit'
+              class='select select-bordered max-w-fit'
               class:select-disabled={!setting.data.security.autoLock}
-              value={setting.data.security.autoLockTime}
+              value={`${setting.data.security.autoLockTime}`}
               disabled={!setting.data.security.autoLock}
               onchange={handleAutoLockTimeChange}
             >
@@ -137,8 +137,8 @@
               value={setting.data.language.code}
               onchange={handleLanguageChange}
             >
-              <option value='zh'>中文</option>
               <option value='en'>English</option>
+              <option value='zh'>中文</option>
               <option value='ja'>日本語</option>
             </select>
           </div>

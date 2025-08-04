@@ -1,28 +1,23 @@
 <script lang='ts'>
   import type { DialogControl } from '@/types/dialog'
-  import { appStore } from '@/stores/app.svelte'
+  import { app } from '@/stores/app.svelte'
+  import { database } from '@/stores/database.svelte'
   import { dialog } from '@/stores/dialog.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { route, Routes } from '@/stores/route.svelte'
 
-  // Here we can use type constraints to ensure only DialogControl interface is used
-  // This way if we change UI framework in the future, this part of code doesn't need modification
   const dialogControl: DialogControl = dialog
 
-  // Handle close/back functionality
   async function handleClose() {
-    // Check if there are unsaved changes in the application
-    const hasUnsavedChanges = appStore.hasUnsavedChanges
-
-    if (hasUnsavedChanges) {
+    if (app.hasDataUnsavedChanges || app.hasSettingUnsavedChanges) {
       const confirmed = await dialogControl.confirm(i18n.t('errors.unsavedChanges'))
       if (!confirmed) {
         return
       }
     }
 
-    // Reset app state when navigating away
-    appStore.reset()
+    app.reset()
+    database.close()
     route.navigate(Routes.LANDING)
   }
 </script>

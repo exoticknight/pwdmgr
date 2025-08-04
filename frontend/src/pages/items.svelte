@@ -4,7 +4,7 @@
   import SplitPanel from '@/components/split-panel.svelte'
 
   import { getDataManager } from '@/services/data-manager'
-  import { appStore } from '@/stores/app.svelte'
+  import { app } from '@/stores/app.svelte'
 
   import { data } from '@/stores/data.svelte'
   import { database } from '@/stores/database.svelte'
@@ -64,7 +64,7 @@
 
   // Handle save all changes
   async function handleSaveAll() {
-    if (!appStore.hasUnsavedChanges) {
+    if (!app.hasDataUnsavedChanges) {
       return
     }
 
@@ -78,7 +78,7 @@
       if (userState.dbPath) {
         const databaseData = database.export()
         await dataManager.saveToFile(userState.dbPath, password, databaseData)
-        appStore.markAsSaved()
+        app.markDataAsSaved()
         notification.success(i18n.t('notifications.saved'))
       }
       else {
@@ -107,7 +107,7 @@
     try {
       const updatedEntry = data.updateEntry(entry.id, entry.updates)
       selectedEntry = updatedEntry
-      appStore.markAsUnsaved()
+      app.markDataAsUnsaved()
     }
     catch {
       notification.error(i18n.t('errors.updateError'))
@@ -119,7 +119,7 @@
     try {
       data.deleteEntry(entry.id)
       selectedEntry = null
-      appStore.markAsUnsaved()
+      app.markDataAsUnsaved()
       notification.success(i18n.t('notifications.entryDeleted'))
     }
     catch {
@@ -134,7 +134,7 @@
 
   // Handle marking dirty state
   function handleMarkDirty() {
-    appStore.markAsUnsaved()
+    app.markDataAsUnsaved()
   }
 
   function handleModalSave(entry: OmitBasicDataExcept<PasswordData, 'TYPE'>) {
@@ -143,7 +143,7 @@
       selectedEntry = newEntry
       notification.success(i18n.t('notifications.entryAdded'))
 
-      appStore.markAsUnsaved()
+      app.markDataAsUnsaved()
       showModal = false
     }
     catch {
@@ -173,7 +173,7 @@
       const databaseData = database.commitData().export()
       await dataManager.saveToFile(filePath, password, databaseData)
       userState.dbPath = filePath
-      appStore.markAsSaved()
+      app.markDataAsSaved()
       showSaveDialog = false
       notification.success(i18n.t('notifications.saved'))
     }
@@ -265,7 +265,7 @@
 <div class='app-layout'>
   <!-- Top Toolbar -->
   <TopToolbar
-    hasUnsavedChanges={appStore.hasUnsavedChanges}
+    hasUnsavedChanges={app.hasDataUnsavedChanges}
     {searchTerm}
     onNew={handleNewEntry}
     onSave={handleSaveAll}

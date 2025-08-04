@@ -2,36 +2,48 @@
 // This store manages UI state and application-level concerns
 
 interface AppState {
-  hasUnsavedChanges: boolean
+  hasDataUnsavedChanges: boolean
+  hasSettingUnsavedChanges?: boolean
 }
 
 class AppStore {
   #state = $state<AppState>({
-    hasUnsavedChanges: false,
+    hasDataUnsavedChanges: false,
+    hasSettingUnsavedChanges: false,
   })
 
-  // Reactive getters
-  get hasUnsavedChanges() {
-    return this.#state.hasUnsavedChanges
+  get hasDataUnsavedChanges() {
+    return this.#state.hasDataUnsavedChanges
   }
 
-  // Methods to manage unsaved changes
-  markAsUnsaved(): void {
-    this.#state.hasUnsavedChanges = true
+  get hasSettingUnsavedChanges() {
+    return this.#state.hasSettingUnsavedChanges
   }
 
-  markAsSaved(): void {
-    this.#state.hasUnsavedChanges = false
+  markDataAsUnsaved(): void {
+    this.#state.hasDataUnsavedChanges = true
   }
 
-  // Reset state (useful when navigating away)
+  markDataAsSaved(): void {
+    this.#state.hasDataUnsavedChanges = false
+  }
+
+  markSettingAsUnsaved(): void {
+    this.#state.hasSettingUnsavedChanges = true
+  }
+
+  markSettingAsSaved(): void {
+    this.#state.hasSettingUnsavedChanges = false
+  }
+
   reset(): void {
-    this.#state.hasUnsavedChanges = false
+    this.#state.hasDataUnsavedChanges = false
+    this.#state.hasSettingUnsavedChanges = false
   }
 }
 
 // Create singleton instance
-const appStore = new AppStore()
+const app = new AppStore()
 
 // Export the store instance
-export { appStore }
+export { app }

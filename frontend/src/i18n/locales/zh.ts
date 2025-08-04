@@ -228,6 +228,12 @@ export const zh = {
         title: '请先保存数据库',
         description: '设置信息会保存在数据库文件中。请先创建或打开一个数据库文件，并至少保存一次后才能修改设置。',
       },
+
+      // 未保存更改提醒
+      unsavedAlert: {
+        message: '有未保存的更改',
+        saveButton: '保存更改',
+      },
     },
 
     // 自动锁定功能

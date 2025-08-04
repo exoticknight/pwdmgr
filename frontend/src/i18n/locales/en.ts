@@ -228,6 +228,12 @@ export const en = {
         title: 'Please Save Database First',
         description: 'Settings are stored in the database file. Please create or open a database file and save it at least once before modifying settings.',
       },
+
+      // Unsaved changes alert
+      unsavedAlert: {
+        message: 'You have unsaved changes',
+        saveButton: 'Save Changes',
+      },
     },
 
     // Auto lock functionality

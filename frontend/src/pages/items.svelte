@@ -170,7 +170,7 @@
     }
 
     try {
-      const databaseData = database.export()
+      const databaseData = database.commitData().export()
       await dataManager.saveToFile(filePath, password, databaseData)
       userState.dbPath = filePath
       appStore.markAsSaved()

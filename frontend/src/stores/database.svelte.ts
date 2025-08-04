@@ -67,6 +67,8 @@ class DatabaseStore {
       console.error('Failed to parse database:', error)
       throw new Error('Failed to parse database. Data format is invalid.')
     }
+
+    return this
   }
 
   commitSetting() {
@@ -75,6 +77,8 @@ class DatabaseStore {
     }
 
     this.#exportedSetting = setting.export()
+
+    return this
   }
 
   commitData() {
@@ -83,6 +87,8 @@ class DatabaseStore {
     }
 
     this.#exportedData = data.export()
+
+    return this
   }
 
   export(): DataFile {
@@ -97,15 +103,19 @@ class DatabaseStore {
     }
   }
 
-  close(): void {
+  close() {
     data.reset()
     setting.reset()
     this.#state.initialized = false
     this.#state.error = null
+
+    return this
   }
 
-  clearError(): void {
+  clearError() {
     this.#state.error = null
+
+    return this
   }
 }
 

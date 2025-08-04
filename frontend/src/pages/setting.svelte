@@ -12,6 +12,7 @@
     const select = event.target as HTMLSelectElement
     const selectedLanguage = select.value as LanguageCode
     setting.updateSetting('language.code', selectedLanguage)
+    i18n.changeLanguage(selectedLanguage)
   }
 
   function handleThemeChange(event: Event) {

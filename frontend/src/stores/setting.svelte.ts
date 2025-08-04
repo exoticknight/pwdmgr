@@ -44,8 +44,7 @@ class SettingStore {
       return this.#getNestedValue(this.#state.data, pathStr, defaultValue)
     }
     else {
-      const typedData = this.#state.data as unknown as Record<string, unknown>
-      const value = typedData[pathStr]
+      const value = (this.#state.data as unknown as Record<string, unknown>)[pathStr]
       return value !== undefined ? value : defaultValue
     }
   }

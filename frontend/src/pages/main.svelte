@@ -7,7 +7,6 @@
   import Navigation from './main/navigation.svelte'
   import Setting from './setting.svelte'
 
-  // Create reactive routes
   const routes = [
     {
       path: Routes.ITEMS_ALL,

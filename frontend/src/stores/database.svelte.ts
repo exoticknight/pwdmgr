@@ -19,9 +19,8 @@ interface DatabaseState {
 
 // Database store implementation using Svelte 5 state
 class DatabaseStore {
-  #rawDataFile: DataFile | null = null
-  #rawData: Datum[] | null = null
-  #rawSetting: Partial<Setting> | null = null
+  #exportedData: Datum[] | null = null
+  #exportedSetting: Setting | null = null
 
   #state = $state<DatabaseState>({
     initialized: false,
@@ -42,18 +41,16 @@ class DatabaseStore {
 
     try {
       if (dataFile != null) {
-        this.#rawDataFile = dataFile
-
         const rawData = typia.assert<Datum[]>(dataFile.data)
         const settings = typia.assert<Partial<Setting>>(dataFile.setting ?? {})
-
-        this.#rawData = rawData
-        this.#rawSetting = settings
 
         data.initialize(rawData)
         setting.initialize(settings)
 
         i18n.changeLanguage(setting.getSetting('language.code'))
+
+        this.#exportedData = data.export()
+        this.#exportedSetting = setting.export()
       }
       else {
         // Create new empty database
@@ -72,15 +69,31 @@ class DatabaseStore {
     }
   }
 
+  commitSetting() {
+    if (!this.initialized) {
+      throw new Error('Database not initialized')
+    }
+
+    this.#exportedSetting = setting.export()
+  }
+
+  commitData() {
+    if (!this.initialized) {
+      throw new Error('Database not initialized')
+    }
+
+    this.#exportedData = data.export()
+  }
+
   export(): DataFile {
     if (!this.initialized) {
       throw new Error('Database not initialized')
     }
 
-    return this.#rawDataFile = {
+    return {
       version: VERSION,
-      setting: setting.export(),
-      data: data.export(),
+      setting: this.#exportedSetting ?? setting.export(),
+      data: this.#exportedData ?? data.export(),
     }
   }
 

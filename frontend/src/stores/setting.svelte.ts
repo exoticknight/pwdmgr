@@ -94,12 +94,12 @@ class SettingStore {
   }
 
   // Export settings (for persistence)
-  export(): Readonly<Setting> {
+  export(): Setting {
     if (!this.#state.initialized) {
       throw new Error('Setting store not initialized')
     }
 
-    return $state.snapshot(this.#state.data) as Readonly<Setting>
+    return $state.snapshot(this.#state.data)
   }
 
   // Private method: deep merge objects

@@ -18,7 +18,8 @@ export const autoLock = {
       return
     }
 
-    const timeoutMs = autoLockTime * 1000
+    // in minutes
+    const timeoutMs = autoLockTime * 60 * 1000
     timerId = window.setTimeout(() => {
       isLocked = true
     }, timeoutMs)

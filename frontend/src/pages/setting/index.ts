@@ -1,0 +1,5 @@
+export { default as AboutSection } from './about.svelte'
+export { default as InterfaceSection } from './interface.svelte'
+export { default as SecuritySection } from './security.svelte'
+export { default as SettingItem } from './setting-item.svelte'
+export { default as SettingSection } from './setting-section.svelte'

@@ -197,6 +197,8 @@ export const ja = {
         autoLockDescription: '指定時間後にアプリケーションを自動ロック',
         autoLockTime: '自動ロック時間',
         autoLockTimeDescription: '自動ロックする時間間隔を設定',
+        changePassword: 'パスワード変更',
+        changePasswordDescription: 'このパスワードデータベースにアクセスするためのマスターパスワードを変更',
       },
 
       // インターフェース設定
@@ -242,6 +244,18 @@ export const ja = {
       unlockMessage: 'アプリケーションのロックを解除するには、パスワードを入力してください。',
       unlock: 'ロック解除',
       incorrectPassword: 'パスワードが間違っています。再試行してください。',
+    },
+
+    // パスワード変更機能
+    changePassword: {
+      title: 'パスワード変更',
+      oldPassword: '現在のパスワード',
+      oldPasswordPlaceholder: '現在のパスワードを入力してください',
+      newPassword: '新しいパスワード',
+      newPasswordPlaceholder: '新しいパスワードを入力してください',
+      confirmPassword: '新しいパスワード（確認）',
+      confirmPasswordPlaceholder: '新しいパスワードを再度入力してください',
+      oldPasswordIncorrect: '現在のパスワードが正しくありません',
     },
   },
 }

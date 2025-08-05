@@ -1,8 +1,11 @@
 <script lang='ts'>
+  import ChangePasswordModal from '@/components/change-password-modal.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { setting } from '@/stores/setting.svelte'
   import SettingItem from './setting-item.svelte'
   import SettingSection from './setting-section.svelte'
+
+  let showChangePasswordModal = $state(false)
 
   function handleAutoLockChange(event: Event, markUnsaved: () => void) {
     const checkbox = event.target as HTMLInputElement
@@ -17,6 +20,14 @@
 
     setting.updateSetting('security.autoLockTime', selectedTime)
     markUnsaved()
+  }
+
+  function openChangePasswordModal() {
+    showChangePasswordModal = true
+  }
+
+  function closeChangePasswordModal() {
+    showChangePasswordModal = false
   }
 </script>
 
@@ -58,5 +69,25 @@
         </select>
       {/snippet}
     </SettingItem>
+
+    <SettingItem
+      title={i18n.t('setting.security.changePassword')}
+      description={i18n.t('setting.security.changePasswordDescription')}
+    >
+      {#snippet control()}
+        <button
+          type='button'
+          class='btn btn-outline'
+          onclick={openChangePasswordModal}
+        >
+          {i18n.t('setting.security.changePassword')}
+        </button>
+      {/snippet}
+    </SettingItem>
   {/snippet}
 </SettingSection>
+
+<ChangePasswordModal
+  isOpen={showChangePasswordModal}
+  onClose={closeChangePasswordModal}
+/>

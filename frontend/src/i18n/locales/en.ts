@@ -197,6 +197,8 @@ export const en = {
         autoLockDescription: 'Automatically lock the application after specified time',
         autoLockTime: 'Auto Lock Time',
         autoLockTimeDescription: 'Set the time interval for auto lock',
+        changePassword: 'Change Password',
+        changePasswordDescription: 'Change the master password used to access this password database',
       },
 
       // Interface settings
@@ -242,6 +244,18 @@ export const en = {
       unlockMessage: 'Please enter your password to unlock the application.',
       unlock: 'Unlock',
       incorrectPassword: 'Incorrect password. Please try again.',
+    },
+
+    // Change password functionality
+    changePassword: {
+      title: 'Change Password',
+      oldPassword: 'Old Password',
+      oldPasswordPlaceholder: 'Please enter current password',
+      newPassword: 'New Password',
+      newPasswordPlaceholder: 'Please enter new password',
+      confirmPassword: 'Confirm New Password',
+      confirmPasswordPlaceholder: 'Please enter new password again',
+      oldPasswordIncorrect: 'Old password is incorrect',
     },
   },
 }

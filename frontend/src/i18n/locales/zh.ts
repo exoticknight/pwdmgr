@@ -197,6 +197,8 @@ export const zh = {
         autoLockDescription: '在指定时间后自动锁定应用程序',
         autoLockTime: '自动锁定时间',
         autoLockTimeDescription: '设置自动锁定的时间间隔',
+        changePassword: '修改密码',
+        changePasswordDescription: '更改用于访问此密码库的主密码',
       },
 
       // 界面设置
@@ -242,6 +244,18 @@ export const zh = {
       unlockMessage: '请输入密码以解锁应用程序。',
       unlock: '解锁',
       incorrectPassword: '密码错误，请重试。',
+    },
+
+    // 修改密码功能
+    changePassword: {
+      title: '修改密码',
+      oldPassword: '旧密码',
+      oldPasswordPlaceholder: '请输入当前密码',
+      newPassword: '新密码',
+      newPasswordPlaceholder: '请输入新密码',
+      confirmPassword: '确认新密码',
+      confirmPasswordPlaceholder: '请再次输入新密码',
+      oldPasswordIncorrect: '旧密码不正确',
     },
   },
 }

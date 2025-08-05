@@ -1,7 +1,8 @@
 <script lang='ts'>
-  import { Eye, EyeOff, WandSparkles } from '@lucide/svelte'
+  import { Check, Eye, EyeOff, HelpCircle, WandSparkles, X } from '@lucide/svelte'
   import Modal from '@/components/modal.svelte'
   import PasswordGenerator from '@/components/password-generator.svelte'
+  import PasswordStrength from '@/components/password-strength.svelte'
   import { app } from '@/stores/app.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { userState } from '@/stores/user.svelte'
@@ -29,6 +30,14 @@
   const isValid = $derived(
     form.oldPassword.trim() && form.newPassword.trim() && form.confirmPassword.trim(),
   )
+
+  // Password match status
+  const passwordsMatch = $derived(() => {
+    if (!form.newPassword || !form.confirmPassword) {
+      return null
+    }
+    return form.newPassword === form.confirmPassword
+  })
 
   function resetForm() {
     form.oldPassword = ''
@@ -153,19 +162,42 @@
                 <WandSparkles size={16} />
               </button>
             </div>
+            {#if form.newPassword}
+              <div class='mt-2'>
+                <PasswordStrength password={form.newPassword} />
+              </div>
+            {/if}
 
             <!-- Confirm new password -->
             <label class='label' for='confirm-password'>
               {i18n.t('changePassword.confirmPassword')} *
             </label>
-            <input
-              id='confirm-password'
-              type='text'
-              bind:value={form.confirmPassword}
-              placeholder={i18n.t('changePassword.confirmPasswordPlaceholder')}
-              class='input w-full font-mono'
-              required
-            />
+            <div class='join w-full'>
+              <input
+                id='confirm-password'
+                type='text'
+                bind:value={form.confirmPassword}
+                placeholder={i18n.t('changePassword.confirmPasswordPlaceholder')}
+                class='input join-item flex-1 font-mono'
+                required
+              />
+              <button
+                type='button'
+                class='btn join-item'
+                class:text-white={passwordsMatch() !== null}
+                class:btn-success={passwordsMatch()}
+                class:btn-error={passwordsMatch() === false}
+                title={passwordsMatch() === null ? i18n.t('changePassword.passwordMatchUnknown') : passwordsMatch() ? i18n.t('changePassword.passwordMatch') : i18n.t('changePassword.passwordMismatch')}
+              >
+                {#if passwordsMatch() === null}
+                  <HelpCircle size={16} />
+                {:else if passwordsMatch()}
+                  <Check size={16} />
+                {:else}
+                  <X size={16} />
+                {/if}
+              </button>
+            </div>
 
             <!-- Error message -->
             {#if errorMessage}

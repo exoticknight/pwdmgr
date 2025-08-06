@@ -18,6 +18,7 @@ export const ja = {
       allItems: 'すべてのアイテム',
       favorites: 'お気に入り',
       recentlyUsed: '最近使用',
+      securityAudit: 'セキュリティ監査',
       settings: '設定',
       close: '閉じる',
     },

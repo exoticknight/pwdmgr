@@ -22,14 +22,28 @@
   }
 </script>
 
-<nav class='w-full h-full flex flex-col justify-between navigation'>
+<nav class='navigation w-full h-full flex flex-col'>
   <ul class='menu w-full'>
     <li><button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_ALL} onclick={() => route.navigate(Routes.ITEMS_ALL)}>{i18n.t('navigation.allItems')}</button></li>
     <li><button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_FAVORITES} onclick={() => route.navigate(Routes.ITEMS_FAVORITES)}>{i18n.t('navigation.favorites')}</button></li>
     <li><button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_RECENT} onclick={() => route.navigate(Routes.ITEMS_RECENT)}>{i18n.t('navigation.recentlyUsed')}</button></li>
   </ul>
   <ul class='menu w-full'>
+    <li><button class='btn btn-ghost' class:btn-active={route.route === Routes.SECURITY_AUDIT} onclick={() => route.navigate(Routes.SECURITY_AUDIT)}>{i18n.t('navigation.securityAudit')}</button></li>
+  </ul>
+  <div class='spacing'></div>
+  <ul class='menu w-full'>
     <li><button class='btn btn-ghost' class:btn-active={route.route === Routes.SETTING} onclick={() => route.navigate(Routes.SETTING)}>{i18n.t('navigation.settings')}</button></li>
     <li><button class='btn btn-ghost' onclick={handleClose}>{i18n.t('navigation.close')}</button></li>
   </ul>
 </nav>
+
+<style scope>
+  .navigation {
+    gap: var(--space-sm);
+  }
+
+  .navigation > .spacing {
+    flex-grow: 1;
+  }
+</style>

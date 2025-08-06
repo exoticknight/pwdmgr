@@ -4,6 +4,7 @@ export const Routes = {
   ITEMS_ALL: '/home/items/all',
   ITEMS_FAVORITES: '/home/items/favorites',
   ITEMS_RECENT: '/home/items/recent',
+  SECURITY_AUDIT: '/home/security-audit',
   SETTING: '/home/setting',
 } as const
 

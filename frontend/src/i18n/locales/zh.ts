@@ -18,6 +18,7 @@ export const zh = {
       allItems: '所有条目',
       favorites: '收藏',
       recentlyUsed: '最近使用',
+      securityAudit: '安全审计',
       settings: '设置',
       close: '关闭',
     },

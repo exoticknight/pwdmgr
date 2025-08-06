@@ -5,6 +5,7 @@
   import { Routes } from '@/stores/route.svelte'
   import Items from './items.svelte'
   import Navigation from './main/navigation.svelte'
+  import SecurityAudit from './security-audit.svelte'
   import Setting from './setting.svelte'
 
   const routes = [
@@ -28,6 +29,10 @@
       props: {
         filter: 'recent',
       },
+    },
+    {
+      path: Routes.SECURITY_AUDIT,
+      component: SecurityAudit,
     },
     {
       path: Routes.SETTING,

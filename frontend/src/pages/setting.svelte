@@ -7,17 +7,14 @@
   import { notification } from '@/stores/notification.svelte'
   import { userState } from '@/stores/user.svelte'
 
-  // Import section components
   import {
     AboutSection,
     InterfaceSection,
     SecuritySection,
   } from './setting'
 
-  // Get data manager instance
   const dataManager = getDataManager()
 
-  // Check if database file has been saved
   const hasDataFile = $derived(!!userState.dbPath)
 
   async function handleSaveSettings() {
@@ -53,13 +50,8 @@
   {#if hasDataFile}
     <div class='overflow-y-auto h-full'>
       <div class='setting-container gap-8 m-4'>
-        <!-- Security Settings -->
         <SecuritySection />
-
-        <!-- Interface Settings -->
         <InterfaceSection />
-
-        <!-- About -->
         <AboutSection />
       </div>
     </div>

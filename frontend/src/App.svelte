@@ -8,6 +8,7 @@
   import Main from '@/pages/main.svelte'
   import { autoLock } from '@/stores/auto-lock.svelte'
   import { route } from '@/stores/route.svelte'
+  import { throttle } from '@/utils/throttle'
 
   const routes: RouteConfig[] = [
     {
@@ -29,8 +30,10 @@
     autoLock.resetTimer()
   }
 
+  const throttledHandleActivity = throttle(handleActivity, 300)
+
   ;['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach((event) => {
-    document.addEventListener(event, handleActivity, { passive: true })
+    document.addEventListener(event, throttledHandleActivity, { passive: true })
   })
 </script>
 

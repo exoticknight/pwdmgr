@@ -29,7 +29,7 @@
     <li><button class='btn btn-ghost' class:btn-active={route.route === Routes.ITEMS_RECENT} onclick={() => route.navigate(Routes.ITEMS_RECENT)}>{i18n.t('navigation.recentlyUsed')}</button></li>
   </ul>
   <ul class='menu w-full'>
-    <li><button class='btn btn-ghost' class:btn-active={route.route === Routes.SECURITY_AUDIT} onclick={() => route.navigate(Routes.SECURITY_AUDIT)}>{i18n.t('navigation.securityAudit')}</button></li>
+    <li><button class='btn btn-ghost' class:btn-active={route.route === Routes.AUDIT} onclick={() => route.navigate(Routes.AUDIT)}>{i18n.t('navigation.audit')}</button></li>
   </ul>
   <div class='spacing'></div>
   <ul class='menu w-full'>

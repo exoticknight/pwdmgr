@@ -3,9 +3,9 @@
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { Routes } from '@/stores/route.svelte'
+  import Audit from './audit.svelte'
   import Items from './items.svelte'
   import Navigation from './main/navigation.svelte'
-  import SecurityAudit from './security-audit.svelte'
   import Setting from './setting.svelte'
 
   const routes = [
@@ -31,8 +31,8 @@
       },
     },
     {
-      path: Routes.SECURITY_AUDIT,
-      component: SecurityAudit,
+      path: Routes.AUDIT,
+      component: Audit,
     },
     {
       path: Routes.SETTING,

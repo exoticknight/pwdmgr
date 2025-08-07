@@ -18,7 +18,7 @@ export const en = {
       allItems: 'All Items',
       favorites: 'Favorites',
       recentlyUsed: 'Recently Used',
-      securityAudit: 'Security Audit',
+      audit: 'Audit',
       settings: 'Settings',
       close: 'Close',
     },

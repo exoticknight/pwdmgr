@@ -8,7 +8,6 @@
   import { dialog } from '@/stores/dialog.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
-  import { formatCompactDateTime } from '@/utils/time-format'
 
   import PasswordGeneratorModal from './password-generator-modal.svelte'
 
@@ -285,13 +284,13 @@
       <!-- Time Information -->
       <div class='time-info'>
         <div class='time-item'>
-          {i18n.t('forms.lastUsedAt')}: <span class='time-value'>{entry._lastUsedAt !== undefined ? formatCompactDateTime(entry._lastUsedAt) : i18n.t('forms.neverUsed')}</span>
+          {i18n.t('forms.lastUsedAt')}: <span class='time-value'>{entry._lastUsedAt !== undefined ? i18n.formatDistanceToNow(entry._lastUsedAt) : i18n.t('forms.neverUsed')}</span>
         </div>
         <div class='time-item'>
-          {i18n.t('forms.updatedAt')}: <span class='time-value'>{formatCompactDateTime(entry._updatedAt)}</span>
+          {i18n.t('forms.updatedAt')}: <span class='time-value'>{i18n.formatDistanceToNow(entry._updatedAt)}</span>
         </div>
         <div class='time-item'>
-          {i18n.t('forms.createdAt')}: <span class='time-value'>{formatCompactDateTime(entry._createdAt)}</span>
+          {i18n.t('forms.createdAt')}: <span class='time-value'>{i18n.formatDistanceToNow(entry._createdAt)}</span>
         </div>
       </div>
     </div>

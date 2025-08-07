@@ -105,6 +105,8 @@ interface DataCollectors {
 class Audit {
   #securityIssues = $state<SecurityIssue[]>([])
   #isAnalyzing = $state(false)
+  #lastAnalyzed = $state<Date | null>(null)
+  #hasAnalyzed = $state(false)
 
   // 使用统一的统计数据结构
   #statistics = $state<AuditStatistics>({
@@ -159,6 +161,14 @@ class Audit {
     return this.#statistics
   }
 
+  get lastAnalyzed(): Date | null {
+    return this.#lastAnalyzed
+  }
+
+  get hasAnalyzed(): boolean {
+    return this.#hasAnalyzed
+  }
+
   // 统一的分析函数，一次遍历生成所有数据
   analyze() {
     this.#isAnalyzing = true
@@ -173,6 +183,8 @@ class Audit {
       // 更新状态
       this.#securityIssues = analysisResult.issues
       this.#statistics = analysisResult.statistics
+      this.#lastAnalyzed = new Date()
+      this.#hasAnalyzed = true
     }
     finally {
       this.#isAnalyzing = false

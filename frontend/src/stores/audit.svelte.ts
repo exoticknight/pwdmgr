@@ -71,12 +71,6 @@ export interface AuditStatistics {
   // 时间相关统计
   recentlyModifiedCount: number
 
-  // 扩展功能统计（预留）
-  totalBreachCount: number
-  compromisedAccounts: number
-  expiredCertificates: number
-  insecureConnections: number
-
   // 分布数据
   passwordLengthDistribution: { length: number, count: number }[]
   passwordStrengthDistribution: { strength: string, count: number, percentage: number }[]
@@ -137,12 +131,6 @@ class Audit {
 
     // 时间相关统计
     recentlyModifiedCount: 0,
-
-    // 扩展功能统计（预留）
-    totalBreachCount: 0,
-    compromisedAccounts: 0,
-    expiredCertificates: 0,
-    insecureConnections: 0,
 
     // 分布数据
     passwordLengthDistribution: [],
@@ -410,12 +398,6 @@ class Audit {
 
       // 时间相关统计
       recentlyModifiedCount: collectors.ageDistribution.get('0-30') ?? 0,
-
-      // 扩展功能统计（预留）
-      totalBreachCount: 0,
-      compromisedAccounts: 0,
-      expiredCertificates: 0,
-      insecureConnections: 0,
 
       // 分布数据
       passwordLengthDistribution,

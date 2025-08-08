@@ -3,6 +3,9 @@
 
   import { AlertTriangle, CheckCircle, Info, ShieldAlert } from '@lucide/svelte'
 
+  import BarChart from '@/components/bar-chart.svelte'
+  import PieChart from '@/components/pie-chart.svelte'
+  import RadialChart from '@/components/radial-chart.svelte'
   import { audit } from '@/stores/audit.svelte'
 
   interface Props {
@@ -130,33 +133,55 @@
       <div class='grid grid-cols-2 gap-6 mt-6'>
         <!-- 长度分布 -->
         <div class='space-y-3'>
-          <h4 class='font-medium text-sm'>长度分布</h4>
-          <div class='h-32 bg-base-200 rounded flex items-center justify-center'>
-            <span class='text-base-content/50 text-sm'>图表占位符</span>
+          <h4 class='font-medium text-center text-sm'>长度分布</h4>
+          <div class='h-64'>
+            <BarChart
+              data={audit.statistics.passwordLengthDistribution}
+              x='length'
+              y='count'
+              xLabel='密码长度'
+              yLabel='数量'
+            />
           </div>
         </div>
 
         <!-- 强度分布 -->
         <div class='space-y-3'>
-          <h4 class='font-medium text-sm'>强度分布</h4>
-          <div class='h-32 bg-base-200 rounded flex items-center justify-center'>
-            <span class='text-base-content/50 text-sm'>图表占位符</span>
+          <h4 class='font-medium text-center text-sm'>强度分布</h4>
+          <div class='h-64'>
+            <PieChart
+              data={audit.statistics.passwordStrengthDistribution}
+              key='strength'
+              value='count' />
           </div>
         </div>
 
         <!-- 年龄分布 -->
         <div class='space-y-3'>
-          <h4 class='font-medium text-sm'>年龄分布</h4>
-          <div class='h-32 bg-base-200 rounded flex items-center justify-center'>
-            <span class='text-base-content/50 text-sm'>图表占位符</span>
+          <h4 class='font-medium text-center text-sm'>年龄分布</h4>
+          <div class='h-64'>
+            <PieChart
+              data={audit.statistics.passwordAgeDistribution}
+              key='ageRange'
+              value='count'
+            />
           </div>
         </div>
 
         <!-- 字符类型使用情况 -->
         <div class='space-y-3'>
-          <h4 class='font-medium text-sm'>字符类型使用情况</h4>
-          <div class='h-32 bg-base-200 rounded flex items-center justify-center'>
-            <span class='text-base-content/50 text-sm'>图表占位符</span>
+          <h4 class='font-medium text-center text-sm'>字符类型使用情况</h4>
+          <div class='h-64'>
+            <RadialChart
+              data={[
+                { type: '小写字母', count: audit.statistics.characterTypeUsage.lowercase },
+                { type: '大写字母', count: audit.statistics.characterTypeUsage.uppercase },
+                { type: '数字', count: audit.statistics.characterTypeUsage.numbers },
+                { type: '符号', count: audit.statistics.characterTypeUsage.symbols },
+              ]}
+              x='type'
+              y='count'
+            />
           </div>
         </div>
       </div>

@@ -81,7 +81,7 @@ export interface AuditStatistics {
   // 分布数据
   passwordLengthDistribution: { length: number, count: number }[]
   passwordStrengthDistribution: { strength: string, count: number, percentage: number }[]
-  passwordAgeDistribution: { ageRangeDays: [number, number | null], count: number }[]
+  passwordAgeDistribution: { ageRange: string, count: number }[]
   characterTypeUsage: {
     lowercase: number
     uppercase: number
@@ -379,13 +379,13 @@ class Audit {
         percentage: totalEntries > 0 ? Math.round((count / totalEntries) * 100) : 0,
       }))
 
-    const passwordAgeDistribution = [
-      { ageRangeDays: [0, 30] as [number, number | null], count: collectors.ageDistribution.get('0-30') ?? 0 },
-      { ageRangeDays: [30, 90] as [number, number | null], count: collectors.ageDistribution.get('30-90') ?? 0 },
-      { ageRangeDays: [90, 180] as [number, number | null], count: collectors.ageDistribution.get('90-180') ?? 0 },
-      { ageRangeDays: [180, 365] as [number, number | null], count: collectors.ageDistribution.get('180-365') ?? 0 },
-      { ageRangeDays: [365, null] as [number, number | null], count: collectors.ageDistribution.get('365+') ?? 0 },
-    ]
+    const passwordAgeDistribution = Array.from(collectors.ageDistribution.entries())
+      .map(([ageRange, count]) => ({ ageRange, count }))
+      .sort((a, b) => {
+        // 简单排序：按照预定义的顺序
+        const order = ['0-30', '30-90', '90-180', '180-365', '365+']
+        return order.indexOf(a.ageRange) - order.indexOf(b.ageRange)
+      })
 
     // 预先计算各种筛选结果，避免重复筛选
     const highSeverityIssues = issues.filter(i => i.severity === 'high')

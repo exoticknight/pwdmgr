@@ -15,10 +15,15 @@
   "dependencies": {
     "@lucide/svelte": "^0.523.0",
     "@mateothegreat/svelte5-router": "^2.15.3",
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-shape": "^3.1.7",
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0",
     "daisyui": "^5.0.43",
     "date-fns": "^4.1.0",
     "fuse.js": "^7.1.0",
     "i18next": "^25.2.1",
+    "layerchart": "2.0.0-next.36",
     "svelte-i18next": "^2.2.2",
     "tailwindcss": "^4.1.10",
     "typia": "^9.6.0"

@@ -1,8 +1,9 @@
 <script lang='ts'>
   import { onMount } from 'svelte'
+  import AutoRefresh from '@/components/auto-refresh.svelte'
   import { audit } from '@/stores/audit.svelte'
-  import { i18n } from '@/stores/i18n.svelte'
 
+  import { i18n } from '@/stores/i18n.svelte'
   import Issues from './audit/issues.svelte'
   import Overview from './audit/overview.svelte'
   import Statistics from './audit/statistics.svelte'
@@ -35,9 +36,13 @@
   <div class='flex justify-end items-center gap-4'>
     <!-- 上次刷新时间 -->
     {#if audit.lastAnalyzed && !audit.isAnalyzing && !isUILoading}
-      <span class='text-sm text-gray-500'>
-        上次刷新: {i18n.formatDistanceToNow(audit.lastAnalyzed.toISOString())}
-      </span>
+      <AutoRefresh interval={60_000} initial={false} refresh={() => i18n.formatDistanceToNow(audit.lastAnalyzed!.toISOString())}>
+        {#snippet children(result)}
+          <span class='text-sm text-gray-500'>
+            上次刷新: {result}
+          </span>
+        {/snippet}
+      </AutoRefresh>
     {/if}
 
     <button

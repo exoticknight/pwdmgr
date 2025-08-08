@@ -31,58 +31,58 @@
   }
 </script>
 
-<div class='w-full h-full p-6 overflow-y-auto'>
-  <div class='flex justify-end items-center mb-6'>
-    <div class='flex items-center gap-4'>
-      <!-- 上次刷新时间 -->
-      {#if audit.lastAnalyzed && !audit.isAnalyzing && !isUILoading}
-        <span class='text-sm text-gray-500'>
-          上次刷新: {i18n.formatDistanceToNow(audit.lastAnalyzed.toISOString())}
-        </span>
-      {/if}
+<div class='w-full h-full p-6 grid grid-rows-[auto_1fr]'>
+  <div class='flex justify-end items-center gap-4'>
+    <!-- 上次刷新时间 -->
+    {#if audit.lastAnalyzed && !audit.isAnalyzing && !isUILoading}
+      <span class='text-sm text-gray-500'>
+        上次刷新: {i18n.formatDistanceToNow(audit.lastAnalyzed.toISOString())}
+      </span>
+    {/if}
 
-      <button
-        class='btn btn-primary'
-        onclick={handleAnalyze}
-        disabled={audit.isAnalyzing || isUILoading}
-      >
-        {(audit.isAnalyzing || isUILoading) ? '分析中...' : '刷新分析'}
-      </button>
-    </div>
+    <button
+      class='btn btn-primary'
+      onclick={handleAnalyze}
+      disabled={audit.isAnalyzing || isUILoading}
+    >
+      {(audit.isAnalyzing || isUILoading) ? '分析中...' : '刷新分析'}
+    </button>
   </div>
 
   {#if audit.isAnalyzing || isUILoading}
     <!-- 分析中的loading效果 -->
     <div class='flex flex-col items-center justify-center h-96 space-y-4'>
       <div class='loading loading-spinner loading-lg'></div>
-      <p class='text-lg text-gray-600'>正在分析密码安全状况...</p>
+      <p class='text-lg text-gray-600'>分析中...</p>
       <p class='text-sm text-gray-500'>这可能需要几秒钟时间</p>
     </div>
   {:else}
     <!-- Tab Navigation -->
-    <div class='tabs tabs-lift w-full'>
-      <label class='tab'>
-        <input type='radio' name='security_tabs' checked />
-        概览
-      </label>
-      <div class='tab-content bg-base-100 border-base-300 p-6'>
-        <Overview securityIssues={audit.securityIssues} isAnalyzing={audit.isAnalyzing} />
-      </div>
+    <div class='min-h-0'>
+      <div class='tabs tabs-lift h-full'>
+        <label class='tab'>
+          <input type='radio' name='security_tabs' checked />
+          概览
+        </label>
+        <div class='tab-content overflow-y-auto bg-base-100 border-base-300 p-6'>
+          <Overview securityIssues={audit.securityIssues} isAnalyzing={audit.isAnalyzing} />
+        </div>
 
-      <label class='tab'>
-        <input type='radio' name='security_tabs' />
-        安全问题
-      </label>
-      <div class='tab-content bg-base-100 border-base-300 p-6'>
-        <Issues securityIssues={audit.securityIssues} isAnalyzing={audit.isAnalyzing} />
-      </div>
+        <label class='tab'>
+          <input type='radio' name='security_tabs' />
+          安全问题
+        </label>
+        <div class='tab-content overflow-y-auto bg-base-100 border-base-300 p-6'>
+          <Issues securityIssues={audit.securityIssues} isAnalyzing={audit.isAnalyzing} />
+        </div>
 
-      <label class='tab'>
-        <input type='radio' name='security_tabs' />
-        数据统计
-      </label>
-      <div class='tab-content bg-base-100 border-base-300 p-6'>
-        <Statistics />
+        <label class='tab'>
+          <input type='radio' name='security_tabs' />
+          数据统计
+        </label>
+        <div class='tab-content overflow-y-auto bg-base-100 border-base-300 p-6'>
+          <Statistics />
+        </div>
       </div>
     </div>
   {/if}

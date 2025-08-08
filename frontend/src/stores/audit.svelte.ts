@@ -8,6 +8,13 @@ interface DataItem {
   _updatedAt?: string | number | Date
 }
 
+// 密码强度检查结果接口
+interface PasswordStrengthResult {
+  score: number
+  feedback: string[]
+  strength: 'weak' | 'fair' | 'good' | 'strong'
+}
+
 // 基础问题接口
 interface BaseSecurityIssue {
   id: string
@@ -82,7 +89,6 @@ export interface AuditStatistics {
     symbols: number
   }
   commonPatterns: { patternType: 'lowercase_only' | 'uppercase_only' | 'numbers_only' | 'letters_only' | 'too_short' | 'repeated_chars' | 'sequential_chars', count: number, regex: string }[]
-  securityTrends: { date: string, score: number }[]
 }
 
 // 数据收集器接口
@@ -145,7 +151,6 @@ class Audit {
       symbols: 0,
     },
     commonPatterns: [],
-    securityTrends: [],
   })
 
   // 公开访问器
@@ -234,8 +239,8 @@ class Audit {
   #analyzePasswordItem(item: DataItem, collectors: DataCollectors, issues: SecurityIssue[]) {
     // 分析密码强度和收集统计数据
     if (item.password != null && item.password.trim() !== '') {
-      this.#analyzePasswordSecurity(item, collectors, issues)
-      this.#collectPasswordStatistics(item, collectors)
+      const strengthResult = this.#analyzePasswordSecurity(item, collectors, issues)
+      this.#collectPasswordStatistics(item, collectors, strengthResult)
       this.#collectPasswordForDuplicateCheck(item, collectors)
     }
 
@@ -246,11 +251,11 @@ class Audit {
   }
 
   // 分析密码安全性
-  #analyzePasswordSecurity(item: DataItem, collectors: DataCollectors, issues: SecurityIssue[]) {
+  #analyzePasswordSecurity(item: DataItem, collectors: DataCollectors, issues: SecurityIssue[]): PasswordStrengthResult {
     const strengthResult = PasswordGenerator.checkStrength(item.password!)
 
     // 检查弱密码
-    if (this.#isWeakPassword(item.password!)) {
+    if (strengthResult.strength === 'weak' || strengthResult.strength === 'fair') {
       issues.push({
         id: `weak_${item._id}`,
         type: 'weak_password',
@@ -264,18 +269,19 @@ class Audit {
     else if (strengthResult.strength === 'good' || strengthResult.strength === 'strong') {
       collectors.strongPasswords++
     }
+
+    return strengthResult
   }
 
   // 收集密码统计数据
-  #collectPasswordStatistics(item: DataItem, collectors: DataCollectors) {
+  #collectPasswordStatistics(item: DataItem, collectors: DataCollectors, strengthResult: PasswordStrengthResult) {
     const password = item.password!
 
     // 统计密码长度分布
     const length = password.length
     collectors.lengthDistribution.set(length, (collectors.lengthDistribution.get(length) ?? 0) + 1)
 
-    // 统计密码强度分布
-    const strengthResult = PasswordGenerator.checkStrength(password)
+    // 统计密码强度分布 - 复用已计算的结果
     collectors.strengthDistribution.set(strengthResult.strength, (collectors.strengthDistribution.get(strengthResult.strength) ?? 0) + 1)
 
     // 统计字符类型使用
@@ -381,9 +387,16 @@ class Audit {
       { ageRangeDays: [365, null] as [number, number | null], count: collectors.ageDistribution.get('365+') ?? 0 },
     ]
 
+    // 预先计算各种筛选结果，避免重复筛选
+    const highSeverityIssues = issues.filter(i => i.severity === 'high')
+    const mediumSeverityIssues = issues.filter(i => i.severity === 'medium')
+    const lowSeverityIssues = issues.filter(i => i.severity === 'low')
+    const weakPasswordIssues = issues.filter(i => i.type === 'weak_password')
+    const oldPasswordIssues = issues.filter(i => i.type === 'old_password')
+
     // 计算评分
     const strongPasswordsPercentage = totalEntries > 0 ? Math.round((collectors.strongPasswords / totalEntries) * 100) : 0
-    const totalScore = this.#calculateSecurityScore(totalEntries, issues)
+    const totalScore = this.#calculateSecurityScore(totalEntries, highSeverityIssues.length, mediumSeverityIssues.length, lowSeverityIssues.length)
     const mediumPasswords = collectors.strengthDistribution.get('fair') ?? 0
 
     return {
@@ -393,14 +406,14 @@ class Audit {
       totalPasswords: totalEntries,
 
       // 问题分类统计
-      highSeverityIssues: issues.filter(i => i.severity === 'high').length,
-      mediumSeverityIssues: issues.filter(i => i.severity === 'medium').length,
-      lowSeverityIssues: issues.filter(i => i.severity === 'low').length,
-      weakPasswords: issues.filter(i => i.type === 'weak_password').length,
+      highSeverityIssues: highSeverityIssues.length,
+      mediumSeverityIssues: mediumSeverityIssues.length,
+      lowSeverityIssues: lowSeverityIssues.length,
+      weakPasswords: weakPasswordIssues.length,
       mediumPasswords,
       strongPasswords: collectors.strongPasswords,
       duplicatePasswords: duplicateGroups,
-      oldPasswords: issues.filter(i => i.type === 'old_password').length,
+      oldPasswords: oldPasswordIssues.length,
 
       // 评分相关
       totalScore,
@@ -417,31 +430,19 @@ class Audit {
       passwordAgeDistribution,
       characterTypeUsage: collectors.characterTypes,
       commonPatterns: this.#detectCommonPatterns(entries),
-      securityTrends: this.#generateSecurityTrends(totalScore),
     }
   }
 
   // 计算安全评分
-  #calculateSecurityScore(totalEntries: number, issues: SecurityIssue[]): number {
+  #calculateSecurityScore(totalEntries: number, highSeverityCount: number, mediumSeverityCount: number, lowSeverityCount: number): number {
     if (totalEntries === 0) {
       return 100
     }
 
-    const highSeverityIssues = issues.filter(i => i.severity === 'high').length
-    const mediumSeverityIssues = issues.filter(i => i.severity === 'medium').length
-    const lowSeverityIssues = issues.filter(i => i.severity === 'low').length
-
-    const deduction = (highSeverityIssues * 10) + (mediumSeverityIssues * 5) + (lowSeverityIssues * 2)
+    const deduction = (highSeverityCount * 10) + (mediumSeverityCount * 5) + (lowSeverityCount * 2)
     const maxPossibleDeduction = totalEntries * 10
 
     return Math.max(0, 100 - Math.round((deduction / maxPossibleDeduction) * 100))
-  }
-
-  // 检查是否为弱密码（复用项目内现有的密码检测功能）
-  #isWeakPassword(password: string): boolean {
-    const strengthResult = PasswordGenerator.checkStrength(password)
-    // 将 weak 和 fair 都认为是弱密码
-    return strengthResult.strength === 'weak' || strengthResult.strength === 'fair'
   }
 
   // 获取按类型分组的问题
@@ -466,17 +467,7 @@ class Audit {
 
   // 获取安全评分 (0-100)
   getSecurityScore(): number {
-    const { totalEntries, totalIssues, highSeverityIssues, mediumSeverityIssues } = this.statistics
-    if (totalEntries === 0) {
-      return 100
-    }
-
-    // 计算扣分: 高危问题扣10分，中危问题扣5分，低危问题扣2分
-    const deduction = (highSeverityIssues * 10) + (mediumSeverityIssues * 5) + ((totalIssues - highSeverityIssues - mediumSeverityIssues) * 2)
-    const maxPossibleDeduction = totalEntries * 10
-
-    const score = Math.max(0, 100 - Math.round((deduction / maxPossibleDeduction) * 100))
-    return score
+    return this.statistics.totalScore
   }
 
   // 获取安全等级
@@ -520,27 +511,6 @@ class Audit {
     }).filter(p => p.count > 0)
 
     return patternCounts
-  }
-
-  // 生成安全趋势数据（模拟数据，实际应用中可以基于历史数据）
-  #generateSecurityTrends(currentScore: number) {
-    const trends = []
-
-    // 模拟过去6个月的趋势数据
-    for (let i = 5; i >= 0; i--) {
-      const date = new Date()
-      date.setMonth(date.getMonth() - i)
-
-      // 模拟分数变化（实际应用中应该从历史记录获取）
-      const score = Math.max(0, Math.min(100, currentScore + (Math.random() - 0.5) * 20))
-
-      trends.push({
-        date: date.toISOString().split('T')[0],
-        score: Math.round(score),
-      })
-    }
-
-    return trends
   }
 }
 

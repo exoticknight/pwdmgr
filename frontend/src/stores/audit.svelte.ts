@@ -114,6 +114,17 @@ class Audit {
   #lastAnalyzed = $state<Date | null>(null)
   #hasAnalyzed = $state(false)
 
+  // 按严重程度分组的问题 - 直接存储避免重复过滤
+  #issuesBySeverity = $state<{
+    high: SecurityIssue[]
+    medium: SecurityIssue[]
+    low: SecurityIssue[]
+  }>({
+    high: [],
+    medium: [],
+    low: [],
+  })
+
   // 使用统一的统计数据结构
   #statistics = $state<AuditStatistics>({
     // 基础统计
@@ -158,6 +169,10 @@ class Audit {
     return this.#securityIssues
   }
 
+  get issuesBySeverity() {
+    return this.#issuesBySeverity
+  }
+
   get isAnalyzing(): boolean {
     return this.#isAnalyzing
   }
@@ -188,6 +203,14 @@ class Audit {
       // 更新状态
       this.#securityIssues = analysisResult.issues
       this.#statistics = analysisResult.statistics
+
+      // 更新按严重程度分组的数据
+      this.#issuesBySeverity = {
+        high: analysisResult.issues.filter(i => i.severity === 'high'),
+        medium: analysisResult.issues.filter(i => i.severity === 'medium'),
+        low: analysisResult.issues.filter(i => i.severity === 'low'),
+      }
+
       this.#lastAnalyzed = new Date()
       this.#hasAnalyzed = true
     }
@@ -443,26 +466,6 @@ class Audit {
     const maxPossibleDeduction = totalEntries * 10
 
     return Math.max(0, 100 - Math.round((deduction / maxPossibleDeduction) * 100))
-  }
-
-  // 获取按类型分组的问题
-  getIssuesByType() {
-    const issues = this.securityIssues
-    return {
-      weakPasswords: issues.filter(i => i.type === 'weak_password'),
-      duplicatePasswords: issues.filter(i => i.type === 'duplicate_password'),
-      oldPasswords: issues.filter(i => i.type === 'old_password'),
-    }
-  }
-
-  // 获取按严重程度分组的问题
-  getIssuesBySeverity() {
-    const issues = this.securityIssues
-    return {
-      high: issues.filter(i => i.severity === 'high'),
-      medium: issues.filter(i => i.severity === 'medium'),
-      low: issues.filter(i => i.severity === 'low'),
-    }
   }
 
   // 获取安全评分 (0-100)

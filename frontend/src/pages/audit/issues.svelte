@@ -5,28 +5,20 @@
 
   import { audit } from '@/stores/audit.svelte'
 
-  // 过滤状态
-  let selectedSeverity: 'all' | 'high' | 'medium' | 'low' = $state('all')
+  let selectedSeverity: 'high' | 'medium' | 'low' = $state('high')
 
-  // 计算每个严重程度的问题数量 - 直接从store获取
   const severityCounts = $derived(() => {
     return {
       high: audit.statistics.highSeverityIssues,
       medium: audit.statistics.mediumSeverityIssues,
       low: audit.statistics.lowSeverityIssues,
-      total: audit.statistics.totalIssues,
     }
   })
 
-  // 当前显示的问题列表 - 直接从store的分组数据获取
   const currentIssues = $derived(() => {
-    if (selectedSeverity === 'all') {
-      return audit.securityIssues
-    }
     return audit.issuesBySeverity[selectedSeverity]
   })
 
-  // 根据问题类型和数据生成标题
   function getIssueTitle(issue: SecurityIssue): string {
     switch (issue.type) {
       case 'weak_password':
@@ -53,7 +45,6 @@
     }
   }
 
-  // 根据问题类型和数据生成描述
   function getIssueDescription(issue: SecurityIssue): string {
     switch (issue.type) {
       case 'weak_password':
@@ -100,54 +91,49 @@
     <span>未发现安全问题</span>
   </div>
 {:else}
-  <div class='space-y-4'>
-    <!-- 过滤标签 -->
-    <div class='flex flex-wrap gap-3 mb-6'>
+  <div class='flex flex-col max-h-full'>
+    <div class='flex-none flex flex-wrap gap-3 mb-4'>
       <button
-        class='badge badge-lg {selectedSeverity === 'all' ? 'badge-primary' : 'badge-ghost'} cursor-pointer transition-colors'
-        onclick={() => selectedSeverity = 'all'}
-      >
-        全部 ({severityCounts().total})
-      </button>
-      <button
-        class='badge badge-lg {selectedSeverity === 'high' ? 'badge-error' : 'badge-outline badge-error'} cursor-pointer transition-colors'
+        class='badge badge-lg {selectedSeverity === 'high' ? 'badge-error' : 'badge-soft badge-error'} cursor-pointer transition-colors'
         onclick={() => selectedSeverity = 'high'}
       >
         高危 ({severityCounts().high})
       </button>
       <button
-        class='badge badge-lg {selectedSeverity === 'medium' ? 'badge-warning' : 'badge-outline badge-warning'} cursor-pointer transition-colors'
+        class='badge badge-lg {selectedSeverity === 'medium' ? 'badge-warning' : 'badge-soft badge-warning'} cursor-pointer transition-colors'
         onclick={() => selectedSeverity = 'medium'}
       >
         中危 ({severityCounts().medium})
       </button>
       <button
-        class='badge badge-lg {selectedSeverity === 'low' ? 'badge-info' : 'badge-outline badge-info'} cursor-pointer transition-colors'
+        class='badge badge-lg {selectedSeverity === 'low' ? 'badge-info' : 'badge-soft badge-info'} cursor-pointer transition-colors'
         onclick={() => selectedSeverity = 'low'}
       >
         低危 ({severityCounts().low})
       </button>
     </div>
 
-    {#each currentIssues() as issue (issue.id)}
-      <div class='card bg-base-100 shadow-xl border-l-4 {issue.severity === 'high' ? 'border-error' : issue.severity === 'medium' ? 'border-warning' : 'border-info'}'>
-        <div class='card-body'>
-          <div class='flex justify-between items-start'>
-            <div class='flex-1'>
-              <div class='flex items-center gap-2 mb-2'>
-                <h3 class='card-title {getSeverityClass(issue.severity)}'>{getIssueTitle(issue)}</h3>
-                <div class='badge badge-sm {getSeverityBadgeClass(issue.severity)}'>{issue.severity === 'high' ? '高危' : issue.severity === 'medium' ? '中危' : '低危'}</div>
-              </div>
-              <p class='text-base-content/70 mb-2'>{getIssueDescription(issue)}</p>
-              {#if issue.itemTitle}
-                <div class='text-sm text-base-content/50'>
-                  受影响的条目: <span class='font-medium'>{issue.itemTitle}</span>
+    <div class='flex-1 flex flex-col space-y-4 py-2 overflow-y-auto'>
+      {#each currentIssues() as issue (issue.id)}
+        <div class='card bg-base-100 shadow-sm border-l-4 {issue.severity === 'high' ? 'border-error' : issue.severity === 'medium' ? 'border-warning' : 'border-info'}'>
+          <div class='card-body'>
+            <div class='flex justify-between items-start'>
+              <div class='flex-1'>
+                <div class='flex items-center gap-2 mb-2'>
+                  <h3 class='card-title {getSeverityClass(issue.severity)}'>{getIssueTitle(issue)}</h3>
+                  <div class='badge badge-sm {getSeverityBadgeClass(issue.severity)}'>{issue.severity === 'high' ? '高危' : issue.severity === 'medium' ? '中危' : '低危'}</div>
                 </div>
-              {/if}
+                <p class='text-base-content/70 mb-2'>{getIssueDescription(issue)}</p>
+                {#if issue.itemTitle}
+                  <div class='text-sm text-base-content/50'>
+                    受影响的条目: <span class='font-medium'>{issue.itemTitle}</span>
+                  </div>
+                {/if}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    {/each}
+      {/each}
+    </div>
   </div>
 {/if}

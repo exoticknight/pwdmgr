@@ -70,7 +70,7 @@
           概览
         </label>
         <div class='tab-content overflow-y-auto bg-base-100 border-base-300 p-6'>
-          <Overview securityIssues={audit.securityIssues} isAnalyzing={audit.isAnalyzing} />
+          <Overview />
         </div>
 
         <label class='tab'>
@@ -78,7 +78,7 @@
           安全问题
         </label>
         <div class='tab-content overflow-y-auto bg-base-100 border-base-300 p-6'>
-          <Issues securityIssues={audit.securityIssues} isAnalyzing={audit.isAnalyzing} />
+          <Issues />
         </div>
 
         <label class='tab'>

@@ -1,19 +1,10 @@
 <script lang='ts'>
-  import type { SecurityIssue } from '@/stores/audit.svelte'
-
   import { AlertTriangle, CheckCircle, Info, ShieldAlert } from '@lucide/svelte'
 
   import BarChart from '@/components/bar-chart.svelte'
   import PieChart from '@/components/pie-chart.svelte'
   import RadialChart from '@/components/radial-chart.svelte'
   import { audit } from '@/stores/audit.svelte'
-
-  interface Props {
-    securityIssues: SecurityIssue[]
-    isAnalyzing: boolean
-  }
-
-  const { securityIssues, isAnalyzing }: Props = $props()
 
   // 获取安全等级的颜色类
   function getScoreColor(score: number): string {
@@ -78,19 +69,19 @@
     <div class='stats shadow flex-1'>
       <div class='stat'>
         <div class='stat-title'>总问题数</div>
-        <div class='stat-value'>{securityIssues.length}</div>
+        <div class='stat-value'>{audit.statistics.totalIssues}</div>
       </div>
       <div class='stat'>
         <div class='stat-title'>高危问题</div>
-        <div class='stat-value text-error'>{securityIssues.filter(i => i.severity === 'high').length}</div>
+        <div class='stat-value text-error'>{audit.statistics.highSeverityIssues}</div>
       </div>
       <div class='stat'>
         <div class='stat-title'>中危问题</div>
-        <div class='stat-value text-warning'>{securityIssues.filter(i => i.severity === 'medium').length}</div>
+        <div class='stat-value text-warning'>{audit.statistics.mediumSeverityIssues}</div>
       </div>
       <div class='stat'>
         <div class='stat-title'>低危问题</div>
-        <div class='stat-value text-info'>{securityIssues.filter(i => i.severity === 'low').length}</div>
+        <div class='stat-value text-info'>{audit.statistics.lowSeverityIssues}</div>
       </div>
     </div>
   </div>
@@ -188,12 +179,12 @@
     </div>
   </div>
 
-  {#if securityIssues.length === 0 && !isAnalyzing}
+  {#if audit.securityIssues.length === 0 && !audit.isAnalyzing}
     <div class='alert alert-success'>
       <CheckCircle class='h-6 w-6' />
       <span>未发现安全问题</span>
     </div>
-  {:else if !isAnalyzing}
+  {:else if !audit.isAnalyzing}
     <!-- 安全建议 -->
     <div class='card bg-base-100 shadow'>
       <div class='card-body'>

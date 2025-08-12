@@ -1,19 +1,19 @@
 <script lang='ts'>
-  import type { PasswordData } from '@/types/data'
+  import type { EncryptedTextData, PasswordData } from '@/types/data'
   import type { DialogControl } from '@/types/dialog'
 
-  import { Copy, Eye, EyeOff, Heart, Share2, Trash2, WandSparkles } from '@lucide/svelte'
+  import { Heart, Share2, Trash2 } from '@lucide/svelte'
 
-  import PasswordStrength from '@/components/password-strength.svelte'
   import { dialog } from '@/stores/dialog.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
 
-  import PasswordGeneratorModal from './password-generator-modal.svelte'
+  import EncryptedTextDetailForm from './encrypted-text/encrypted-text-detail-form.svelte'
+  import PasswordDetailForm from './password/password-detail-form.svelte'
 
   interface Props {
-    entry: PasswordData | null
-    onUpdate?: (data: { id: string, updates: Partial<PasswordData> }) => void
+    entry: PasswordData | EncryptedTextData | null
+    onUpdate?: (data: { id: string, updates: Partial<PasswordData | EncryptedTextData> }) => void
     onMarkDirty?: () => void
     onDelete?: (data: { id: string }) => void
   }
@@ -23,9 +23,11 @@
   // Use interface constraints to improve code portability
   const dialogControl: DialogControl = dialog
 
-  let formData = $state<Partial<PasswordData>>({})
-  let showPassword = $state(false)
-  let showPasswordGenerator = $state(false)
+  let formData = $state<Partial<PasswordData | EncryptedTextData>>({})
+
+  // Derived state based on entry type
+  const isPasswordEntry = $derived(entry?._type === 'password')
+  const isEncryptedTextEntry = $derived(entry?._type === 'encrypted_text')
 
   // Update form data when entry changes
   $effect(() => {
@@ -36,8 +38,9 @@
       formData = {}
     }
   })
-  function handleFieldChange(field: keyof PasswordData, value: string) {
-    formData[field] = value as any
+
+  function handleFieldChange(field: string, value: string) {
+    (formData as any)[field] = value
     onMarkDirty?.()
 
     // Auto-save when field changes
@@ -47,25 +50,9 @@
         updates: {
           [field]: value,
           _updatedAt: new Date().toISOString(),
-        },
+        } as any,
       })
     }
-  }
-
-  function togglePasswordVisibility() {
-    showPassword = !showPassword
-  }
-
-  function openPasswordGenerator() {
-    showPasswordGenerator = true
-  }
-
-  function closePasswordGenerator() {
-    showPasswordGenerator = false
-  }
-
-  function handlePasswordGenerated(password: string) {
-    handleFieldChange('password', password)
   }
 
   function copyToClipboard(text: string) {
@@ -115,11 +102,20 @@
       if (entry.title) {
         data.push(`Title:\n${entry.title}`)
       }
-      if (entry.username) {
-        data.push(`Username:\n${entry.username}`)
+      if (entry._type === 'password') {
+        const passwordEntry = entry as PasswordData
+        if (passwordEntry.username) {
+          data.push(`Username:\n${passwordEntry.username}`)
+        }
+        if (passwordEntry.password) {
+          data.push(`Password:\n${passwordEntry.password}`)
+        }
       }
-      if (entry.password) {
-        data.push(`Password:\n${entry.password}`)
+      else if (entry._type === 'encrypted_text') {
+        const textEntry = entry as EncryptedTextData
+        if (textEntry.content) {
+          data.push(`Content:\n${textEntry.content}`)
+        }
       }
       if (entry.notes) {
         data.push(`Notes:\n${entry.notes}`)
@@ -195,90 +191,21 @@
     <!-- Content - Scrollable -->
     <div class='detail-content'>
       <fieldset class='fieldset w-full'>
-        <!-- Username Field -->
-        <label class='label' for='username-input'>
-          {i18n.t('forms.username')}
-        </label>
-        <div class='join w-full'>
-          <input
-            id='username-input'
-            type='text'
-            class='input join-item flex-1'
-            value={formData.username || ''}
-            oninput={e =>
-              handleFieldChange('username', e.currentTarget.value)}
-            placeholder={i18n.t('forms.usernamePlaceholder')}
+        {#if isPasswordEntry}
+          <PasswordDetailForm
+            entry={entry as PasswordData}
+            formData={formData as Partial<PasswordData>}
+            onFieldChange={handleFieldChange}
+            onCopyToClipboard={copyToClipboard}
           />
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={() => copyToClipboard(entry.username)}
-            title={i18n.t('actions.copy')}
-          >
-            <Copy size={16} />
-          </button>
-        </div>
-
-        <!-- Password Field -->
-        <label class='label' for='password-input'>
-          {i18n.t('forms.password')}
-        </label>
-        <div class='join w-full'>
-          <input
-            id='password-input'
-            type={showPassword ? 'text' : 'password'}
-            class='input join-item flex-1'
-            value={formData.password || ''}
-            oninput={e =>
-              handleFieldChange('password', e.currentTarget.value)}
-            placeholder={i18n.t('forms.passwordPlaceholder')}
+        {:else if isEncryptedTextEntry}
+          <EncryptedTextDetailForm
+            entry={entry as EncryptedTextData}
+            formData={formData as Partial<EncryptedTextData>}
+            onFieldChange={handleFieldChange}
+            onCopyToClipboard={copyToClipboard}
           />
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={togglePasswordVisibility}
-            title={showPassword
-              ? i18n.t('actions.hidePassword')
-              : i18n.t('actions.showPassword')}
-          >
-            {#if showPassword}
-              <EyeOff size={16} />
-            {:else}
-              <Eye size={16} />
-            {/if}
-          </button>
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={openPasswordGenerator}
-            title={i18n.t('passwordGenerator.title')}
-          >
-            <WandSparkles size={16} />
-          </button>
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={() => copyToClipboard(entry.password)}
-            title={i18n.t('actions.copy')}
-          >
-            <Copy size={16} />
-          </button>
-        </div>
-        <!-- Password strength indicator -->
-        <PasswordStrength alwaysShow={true} password={formData.password || ''} />
-
-        <!-- Notes Field -->
-        <label class='label' for='notes-input'>
-          {i18n.t('forms.notes')}
-        </label>
-        <textarea
-          id='notes-input'
-          class='textarea w-full'
-          value={formData.notes || ''}
-          oninput={e => handleFieldChange('notes', e.currentTarget.value)}
-          placeholder={i18n.t('forms.notesPlaceholder')}
-          rows='4'
-        ></textarea>
+        {/if}
       </fieldset>
 
       <!-- Time Information -->
@@ -296,13 +223,6 @@
     </div>
   </div>
 {/if}
-
-<!-- Password Generator Modal -->
-<PasswordGeneratorModal
-  isOpen={showPasswordGenerator}
-  onClose={closePasswordGenerator}
-  onSelect={handlePasswordGenerated}
-/>
 
 <style>
   .detail-empty {

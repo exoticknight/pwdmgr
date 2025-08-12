@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { OmitBasicDataExcept, PasswordData } from '@/types/data'
+  import type { BasicData, Datum, OmitBasicDataExcept } from '@/types/data'
 
   import SplitPanel from '@/components/split-panel.svelte'
 
@@ -12,15 +12,14 @@
   import { notification } from '@/stores/notification.svelte'
   import { userState } from '@/stores/user.svelte'
 
-  import { DataMetaType } from '@/types/data'
-
   import { exportToCSV, exportToJSON } from '@/utils/export'
   import { compareISO8601String } from '@/utils/iso8601-compare'
 
+  import EncryptedTextNewModal from './items/encrypted-text/encrypted-text-new-modal.svelte'
   import EntriesList from './items/entries-list.svelte'
   import EntryDetailPanel from './items/entry-detail-panel.svelte'
   import ExportModal from './items/export-modal.svelte'
-  import NewEntryModal from './items/new-entry-modal.svelte'
+  import PasswordNewModal from './items/password/password-new-modal.svelte'
   import SaveFileModal from './items/save-file-modal.svelte'
   import TopToolbar from './items/top-toolbar.svelte'
 
@@ -32,10 +31,11 @@
   // UI State
   let leftPanelWidth = $state(35) // percentage
   let searchTerm = $state('')
-  let selectedEntry = $state<PasswordData | null>(null)
+  let selectedEntry = $state<Datum | null>(null)
 
   // Modal state
   let showModal = $state(false)
+  let currentEntryType = $state<BasicData['_type']>('password')
   let showSaveDialog = $state(false)
   let showExportDialog = $state(false)
 
@@ -54,7 +54,8 @@
   })
 
   // Handle new entry
-  function handleNewEntry() {
+  function handleNewEntry(entryType: BasicData['_type']) {
+    currentEntryType = entryType
     showModal = true
   }
 
@@ -64,7 +65,7 @@
   }
 
   // Handle save all changes
-  async function handleSaveAll() {
+  async function handleSave() {
     if (!app.hasDataUnsavedChanges) {
       return
     }
@@ -77,7 +78,7 @@
 
       // If there's a file path, save to file
       if (userState.dbPath) {
-        const databaseData = database.export()
+        const databaseData = database.commitData().export()
         await dataManager.saveToFile(userState.dbPath, password, databaseData)
         app.markDataAsSaved()
         notification.success(i18n.t('notifications.saved'))
@@ -94,7 +95,7 @@
   }
 
   // Handle entry selection
-  function handleEntrySelect(data: { entry: PasswordData }) {
+  function handleEntrySelect(data: { entry: Datum }) {
     selectedEntry = data.entry
   }
 
@@ -104,7 +105,7 @@
   }
 
   // Handle entry updates
-  function handleEntryUpdate(entry: { id: string, updates: Partial<PasswordData> }) {
+  function handleEntryUpdate(entry: { id: string, updates: Partial<Datum> }) {
     try {
       const updatedEntry = data.updateEntry(entry.id, entry.updates)
       selectedEntry = updatedEntry
@@ -138,7 +139,7 @@
     app.markDataAsUnsaved()
   }
 
-  function handleModalSave(entry: OmitBasicDataExcept<PasswordData, 'TYPE'>) {
+  function handleModalSave(entry: OmitBasicDataExcept<Datum, 'TYPE'>) {
     try {
       const newEntry = data.addEntry(entry)
       selectedEntry = newEntry
@@ -269,7 +270,7 @@
     hasUnsavedChanges={app.hasDataUnsavedChanges}
     {searchTerm}
     onNew={handleNewEntry}
-    onSave={handleSaveAll}
+    onSave={handleSave}
     onSearch={handleSearch}
     onExport={handleExport}
   />
@@ -311,9 +312,16 @@
 </div>
 
 <!-- Modals -->
-{#if showModal}
-  <NewEntryModal
-    dataType={DataMetaType.PASSWORD}
+{#if showModal && currentEntryType === 'password'}
+  <PasswordNewModal
+    isOpen={showModal}
+    onSave={handleModalSave}
+    onCancel={handleModalCancel}
+  />
+{/if}
+
+{#if showModal && currentEntryType === 'encrypted_text'}
+  <EncryptedTextNewModal
     isOpen={showModal}
     onSave={handleModalSave}
     onCancel={handleModalCancel}

@@ -2,6 +2,7 @@ import type { SnakeCase } from 'type-fest'
 
 export const DataMetaType = {
   PASSWORD: 'password',
+  ENCRYPTED_TEXT: 'encrypted_text',
 } as const
 
 export interface BasicData {
@@ -34,4 +35,11 @@ export interface PasswordData extends BasicData {
   notes?: string
 }
 
-export type Datum = PasswordData
+export interface EncryptedTextData extends BasicData {
+  _type: typeof DataMetaType.ENCRYPTED_TEXT
+  title: string
+  content: string
+  notes?: string
+}
+
+export type Datum = PasswordData | EncryptedTextData

@@ -57,12 +57,14 @@ export const ja = {
       password: 'パスワード',
       notes: 'メモ',
       title: 'タイトル',
+      content: 'コンテンツ',
 
       // フィールドプレースホルダー
       usernamePlaceholder: 'ユーザー名を入力',
       passwordPlaceholder: 'パスワードを入力',
       notesPlaceholder: 'オプションのメモ...',
       titlePlaceholder: 'タイトルを入力',
+      contentPlaceholder: '暗号化するテキストを入力...',
 
       // エントリ管理
       emptySubtitle: 'エントリを選択して詳細を表示',
@@ -74,6 +76,12 @@ export const ja = {
       updatedAt: '更新日時',
       lastUsedAt: '最終使用',
       neverUsed: '未使用',
+    },
+
+    // エントリタイプ
+    entryTypes: {
+      password: 'パスワード',
+      encryptedText: '暗号化テキスト',
     },
 
     // パスワードダイアログ

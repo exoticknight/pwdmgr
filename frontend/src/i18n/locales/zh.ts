@@ -57,12 +57,14 @@ export const zh = {
       password: '密码',
       notes: '备注',
       title: '标题',
+      content: '内容',
 
       // Field placeholders
       usernamePlaceholder: '请输入用户名',
       passwordPlaceholder: '请输入密码',
       notesPlaceholder: '可选备注...',
       titlePlaceholder: '请输入标题',
+      contentPlaceholder: '请输入要加密的文本内容...',
 
       // Entry management
       emptySubtitle: '选择一个条目来查看详细信息',
@@ -74,6 +76,12 @@ export const zh = {
       updatedAt: '修改时间',
       lastUsedAt: '最近使用',
       neverUsed: '未使用',
+    },
+
+    // Entry types
+    entryTypes: {
+      password: '密码',
+      encryptedText: '加密文本',
     },
 
     // Password dialog

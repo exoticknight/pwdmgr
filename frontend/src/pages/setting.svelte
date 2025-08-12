@@ -28,9 +28,7 @@
         throw new Error('No database file path available')
       }
 
-      // Commit settings and export database
-      database.commitSetting()
-      const databaseData = database.export()
+      const databaseData = database.commitSetting().export()
 
       // Save to file
       await dataManager.saveToFile(userState.dbPath, password, databaseData)

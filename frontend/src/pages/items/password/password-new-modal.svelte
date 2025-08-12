@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { BasicData, BasicDataKey, OmitBasicDataExcept, PasswordData } from '@/types/data'
+  import type { OmitBasicDataExcept, PasswordData } from '@/types/data'
 
   import { WandSparkles } from '@lucide/svelte'
 
@@ -10,13 +10,12 @@
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
-    dataType: BasicData[typeof BasicDataKey.TYPE]
     isOpen?: boolean
     onSave: (entry: OmitBasicDataExcept<PasswordData, 'TYPE'>) => void
     onCancel: () => void
   }
 
-  const { isOpen = false, onSave, onCancel, dataType }: Props = $props()
+  const { isOpen = false, onSave, onCancel }: Props = $props()
 
   // Form state
   const form = $state({
@@ -40,7 +39,7 @@
     }
 
     onSave({
-      _type: dataType,
+      _type: 'password',
       title: form.title.trim(),
       username: form.username.trim(),
       password: form.password.trim(),

@@ -1,11 +1,11 @@
 <script lang='ts'>
-  import type { PasswordData } from '@/types/data'
+  import type { Datum, EncryptedTextData, PasswordData } from '@/types/data'
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
-    entries: PasswordData[]
+    entries: Datum[]
     selectedId?: string
-    onSelect?: (data: { entry: PasswordData }) => void
+    onSelect?: (data: { entry: Datum }) => void
   }
 
   const { entries, selectedId, onSelect }: Props = $props()
@@ -15,14 +15,36 @@
     return entries.filter(entry => entry.title)
   })
 
-  function handleEntryClick(entry: PasswordData) {
+  function handleEntryClick(entry: Datum) {
     onSelect?.({ entry })
   }
 
-  function handleKeydown(event: KeyboardEvent, entry: PasswordData) {
+  function handleKeydown(event: KeyboardEvent, entry: Datum) {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       handleEntryClick(entry)
+    }
+  }
+
+  function getSubtitleForEntry(entry: Datum): string {
+    if (entry._type === 'password') {
+      return (entry as PasswordData).username || ''
+    }
+    else if (entry._type === 'encrypted_text') {
+      const content = (entry as EncryptedTextData).content
+      return content ? content.substring(0, 50) + (content.length > 50 ? '...' : '') : ''
+    }
+    return ''
+  }
+
+  function getEntryTypeLabel(type: string): string {
+    switch (type) {
+      case 'password':
+        return i18n.t('entryTypes.password')
+      case 'encrypted_text':
+        return i18n.t('entryTypes.encryptedText')
+      default:
+        return ''
     }
   }
 </script>
@@ -44,8 +66,11 @@
           tabindex='0'
         >
           <div class='item-content'>
-            <div class='item-title'>{entry.title}</div>
-            <div class='item-subtitle'>{entry.username || ''}</div>
+            <div class='item-header'>
+              <div class='item-title'>{entry.title}</div>
+              <div class='item-type'>{getEntryTypeLabel(entry._type)}</div>
+            </div>
+            <div class='item-subtitle'>{getSubtitleForEntry(entry)}</div>
           </div>
         </div>
       {/each}
@@ -108,6 +133,13 @@
     gap: var(--space-xs);
   }
 
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
   .item-title {
     font-size: var(--font-size-base);
     font-weight: 500;
@@ -115,6 +147,22 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+  }
+
+  .item-type {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    background: var(--color-bg-secondary);
+    padding: 2px 6px;
+    border-radius: var(--radius-xs);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .list-item-selected .item-type {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .item-subtitle {

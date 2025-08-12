@@ -57,12 +57,14 @@ export const en = {
       password: 'Password',
       notes: 'Notes',
       title: 'Title',
+      content: 'Content',
 
       // Field placeholders
       usernamePlaceholder: 'Enter username',
       passwordPlaceholder: 'Enter password',
       notesPlaceholder: 'Optional notes...',
       titlePlaceholder: 'Enter title',
+      contentPlaceholder: 'Enter text content to encrypt...',
 
       // Entry management
       emptySubtitle: 'Select an entry to view details',
@@ -74,6 +76,12 @@ export const en = {
       updatedAt: 'Modified',
       lastUsedAt: 'Last Used',
       neverUsed: 'Never Used',
+    },
+
+    // Entry types
+    entryTypes: {
+      password: 'Password',
+      encryptedText: 'Encrypted Text',
     },
 
     // Password dialogs

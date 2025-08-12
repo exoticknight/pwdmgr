@@ -48,7 +48,7 @@ class Data {
       throw new Error('Data store not initialized')
     }
 
-    const newEntry: Datum = {
+    const newEntry = {
       ...entry,
       _id: crypto.randomUUID(),
       _isFavorite: false,
@@ -56,9 +56,9 @@ class Data {
       _updatedAt: new Date().toISOString(),
     }
 
-    this.#state.entries.push(newEntry)
+    this.#state.entries.push(newEntry as Datum)
     this.#updateSearchIndex()
-    return newEntry
+    return newEntry as Datum
   }
 
   updateEntry(id: string, updates: Partial<Omit<Datum, 'id'>>): Datum {
@@ -72,9 +72,9 @@ class Data {
     }
 
     const updatedEntry = { ...this.#state.entries[index], ...updates }
-    this.#state.entries[index] = updatedEntry
+    this.#state.entries[index] = updatedEntry as Datum
     this.#updateSearchIndex()
-    return updatedEntry
+    return updatedEntry as Datum
   }
 
   deleteEntry(id: string): void {

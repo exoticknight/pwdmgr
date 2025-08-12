@@ -1,11 +1,11 @@
 <script lang='ts'>
-  import { Plus, Save, Search, Share } from '@lucide/svelte'
+  import { ChevronDown, Plus, Save, Search, Share } from '@lucide/svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     hasUnsavedChanges: boolean
     searchTerm?: string
-    onNew?: () => void
+    onNew?: (entryType: 'password' | 'encrypted_text') => void
     onSave?: () => void
     onSearch?: (data: { term: string }) => void
     onExport?: () => void
@@ -13,8 +13,16 @@
 
   const { hasUnsavedChanges, searchTerm = '', onNew, onSave, onSearch, onExport }: Props = $props()
 
-  function handleNew() {
-    onNew?.()
+  let showDropdown = $state(false)
+
+  function handleNewPassword() {
+    onNew?.('password')
+    showDropdown = false
+  }
+
+  function handleNewEncryptedText() {
+    onNew?.('encrypted_text')
+    showDropdown = false
   }
 
   function handleSave() {
@@ -68,13 +76,28 @@
       <Share size={16} />
     </button>
 
-    <button
-      class='toolbar-btn'
-      onclick={handleNew}
-      title={i18n.t('buttons.newEntry')}
-    >
-      <Plus size={16} />
-    </button>
+    <div class='dropdown {showDropdown ? 'dropdown-open' : ''}'>
+      <button
+        class='toolbar-btn dropdown-trigger'
+        onclick={() => showDropdown = !showDropdown}
+        title={i18n.t('buttons.newEntry')}
+      >
+        <Plus size={16} />
+        <ChevronDown size={12} />
+      </button>
+      {#if showDropdown}
+        <div class='dropdown-menu'>
+          <button class='dropdown-item' onclick={handleNewPassword}>
+            <Plus size={14} />
+            {i18n.t('entryTypes.password')}
+          </button>
+          <button class='dropdown-item' onclick={handleNewEncryptedText}>
+            <Plus size={14} />
+            {i18n.t('entryTypes.encryptedText')}
+          </button>
+        </div>
+      {/if}
+    </div>
   </div>
 </div>
 
@@ -179,5 +202,53 @@
 
   .search-input::placeholder {
     color: var(--color-text-placeholder);
+  }
+
+  /* Dropdown styles */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 150px;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: var(--space-xs);
+    margin-top: var(--space-xs);
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    width: 100%;
+    padding: var(--space-xs) var(--space-sm);
+    border: none;
+    background: none;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background-color 0.15s ease;
+  }
+
+  .dropdown-item:hover {
+    background-color: var(--color-bg-hover);
+  }
+
+  .dropdown-item:active {
+    background-color: var(--color-primary-bg);
   }
 </style>

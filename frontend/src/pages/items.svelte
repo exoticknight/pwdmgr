@@ -14,13 +14,11 @@
   import { notification } from '@/stores/notification.svelte'
   import { userState } from '@/stores/user.svelte'
 
-  import { exportToCSV, exportToJSON } from '@/utils/export'
   import { compareISO8601String } from '@/utils/iso8601-compare'
 
   import EncryptedTextNewModal from './items/encrypted-text/encrypted-text-new-modal.svelte'
   import EntriesList from './items/entries-list.svelte'
   import EntryDetailPanel from './items/entry-detail-panel.svelte'
-  import ExportModal from './items/export-modal.svelte'
   import PasswordNewModal from './items/password/password-new-modal.svelte'
   import SaveFileModal from './items/save-file-modal.svelte'
   import TopToolbar from './items/top-toolbar.svelte'
@@ -39,7 +37,6 @@
   let showModal = $state(false)
   let currentEntryType = $state<BasicData['_type']>('password')
   let showSaveDialog = $state(false)
-  let showExportDialog = $state(false)
 
   // Computed filtered entries using the store
   const filteredEntries = $derived.by(() => {
@@ -58,10 +55,6 @@
   function handleNewEntry(entryType: BasicData['_type']) {
     currentEntryType = entryType
     showModal = true
-  }
-
-  function handleExport() {
-    showExportDialog = true
   }
 
   async function handleSave() {
@@ -179,39 +172,6 @@
   function handleSaveDialogCancel() {
     showSaveDialog = false
   }
-
-  async function handleExportData(format: 'csv' | 'json', filePaths: string[]) {
-    if (filePaths.length === 0) {
-      return
-    }
-
-    try {
-      const filePath = filePaths[0]
-      let content: string
-
-      const databaseData = database.export()
-
-      if (format === 'csv') {
-        content = exportToCSV(databaseData)
-      }
-      else {
-        content = exportToJSON(databaseData)
-      }
-
-      await dataManager.saveToFileWithoutPassword(filePath, content)
-
-      showExportDialog = false
-      notification.success(i18n.t('notifications.exportSuccess'))
-    }
-    catch (err) {
-      console.error('Failed to export data:', err)
-      notification.error(i18n.t('errors.exportError'))
-    }
-  }
-
-  function handleExportCancel() {
-    showExportDialog = false
-  }
 </script>
 
 <div class='relative h-screen flex flex-col'>
@@ -219,7 +179,6 @@
     {searchTerm}
     onNew={handleNewEntry}
     onSearch={handleSearch}
-    onExport={handleExport}
   />
 
   <div class='flex-1 flex overflow-hidden'>
@@ -289,14 +248,6 @@
     isOpen={showSaveDialog}
     onSave={handleSaveDialogSave}
     onCancel={handleSaveDialogCancel}
-  />
-{/if}
-
-{#if showExportDialog}
-  <ExportModal
-    isOpen={showExportDialog}
-    onExport={handleExportData}
-    onCancel={handleExportCancel}
   />
 {/if}
 

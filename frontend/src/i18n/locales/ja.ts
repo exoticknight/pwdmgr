@@ -210,6 +210,15 @@ export const ja = {
         changePasswordDescription: 'このパスワードデータベースにアクセスするためのマスターパスワードを変更',
       },
 
+      // データ設定
+      data: {
+        title: 'データ',
+        export: {
+          title: 'データエクスポート',
+          description: 'パスワードデータをCSVまたはJSONファイルとしてエクスポート',
+        },
+      },
+
       // インターフェース設定
       interface: {
         title: 'インターフェース',

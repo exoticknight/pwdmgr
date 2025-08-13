@@ -9,6 +9,7 @@
 
   import {
     AboutSection,
+    DataSection,
     InterfaceSection,
     SecuritySection,
   } from './setting'
@@ -49,6 +50,7 @@
     <div class='overflow-y-auto h-full'>
       <div class='setting-container gap-8 m-4'>
         <SecuritySection />
+        <DataSection />
         <InterfaceSection />
         <AboutSection />
       </div>

@@ -85,6 +85,7 @@
   }
 
   .save-alert {
+    border-radius: 0%;
     transform: translateY(100%);
     transition: transform 0.3s ease-in-out;
   }

@@ -1,6 +1,8 @@
 <script lang='ts'>
   import type { BasicData, Datum, OmitBasicDataExcept } from '@/types/data'
 
+  import { Info } from '@lucide/svelte'
+
   import SplitPanel from '@/components/split-panel.svelte'
 
   import { getDataManager } from '@/services/data-manager'
@@ -53,18 +55,15 @@
     }
   })
 
-  // Handle new entry
   function handleNewEntry(entryType: BasicData['_type']) {
     currentEntryType = entryType
     showModal = true
   }
 
-  // Handle export
   function handleExport() {
     showExportDialog = true
   }
 
-  // Handle save all changes
   async function handleSave() {
     if (!app.hasDataUnsavedChanges) {
       return
@@ -94,17 +93,14 @@
     }
   }
 
-  // Handle entry selection
   function handleEntrySelect(data: { entry: Datum }) {
     selectedEntry = data.entry
   }
 
-  // Handle resizing
   function handleResize(leftWidth: number) {
     leftPanelWidth = leftWidth
   }
 
-  // Handle entry updates
   function handleEntryUpdate(entry: { id: string, updates: Partial<Datum> }) {
     try {
       const updatedEntry = data.updateEntry(entry.id, entry.updates)
@@ -116,7 +112,6 @@
     }
   }
 
-  // Handle entry deletion
   function handleEntryDelete(entry: { id: string }) {
     try {
       data.deleteEntry(entry.id)
@@ -129,17 +124,15 @@
     }
   }
 
-  // Handle search
   function handleSearch(data: { term: string }) {
     searchTerm = data.term
   }
 
-  // Handle marking dirty state
   function handleMarkDirty() {
     app.markDataAsUnsaved()
   }
 
-  function handleModalSave(entry: OmitBasicDataExcept<Datum, 'TYPE'>) {
+  function handleNewModalSave(entry: OmitBasicDataExcept<Datum, 'TYPE'>) {
     try {
       const newEntry = data.addEntry(entry)
       selectedEntry = newEntry
@@ -153,12 +146,10 @@
     }
   }
 
-  // Handle modal cancel
-  function handleModalCancel() {
+  function handleNewModalCancel() {
     showModal = false
   }
 
-  // Handle save dialog
   async function handleSaveDialogSave(filePaths: string[]) {
     if (filePaths.length === 0) {
       return
@@ -189,7 +180,6 @@
     showSaveDialog = false
   }
 
-  // Handle export modal events
   async function handleExportData(format: 'csv' | 'json', filePaths: string[]) {
     if (filePaths.length === 0) {
       return
@@ -224,20 +214,93 @@
   }
 </script>
 
+<div class='relative h-screen flex flex-col'>
+  <TopToolbar
+    {searchTerm}
+    onNew={handleNewEntry}
+    onSearch={handleSearch}
+    onExport={handleExport}
+  />
+
+  <div class='flex-1 flex overflow-hidden'>
+    <SplitPanel
+      initialLeftWidth={leftPanelWidth}
+      onResize={handleResize}
+    >
+      {#snippet left()}
+        <div class='sidebar'>
+          <div class='sidebar-content'>
+            <EntriesList
+              entries={filteredEntries}
+              selectedId={selectedEntry?._id}
+              onSelect={handleEntrySelect}
+            />
+          </div>
+        </div>
+      {/snippet}
+
+      {#snippet right()}
+        <div class='main-content'>
+          <div class='detail-content'>
+            <EntryDetailPanel
+              entry={selectedEntry}
+              onUpdate={handleEntryUpdate}
+              onMarkDirty={handleMarkDirty}
+              onDelete={handleEntryDelete}
+            />
+          </div>
+        </div>
+      {/snippet}
+    </SplitPanel>
+  </div>
+
+  <div
+    role='alert'
+    class='absolute w-full bottom-0 alert alert-error alert-soft save-alert'
+    class:save-alert-show={app.hasDataUnsavedChanges}
+  >
+    <Info class='h-4 w-4 stroke-error' />
+    <p class='text-lg'>{i18n.t('setting.unsavedAlert.message')}</p>
+    <div>
+      <button class='btn btn-error text-white' onclick={handleSave}>{i18n.t('setting.unsavedAlert.saveButton')}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+{#if showModal && currentEntryType === 'password'}
+  <PasswordNewModal
+    isOpen={showModal}
+    onSave={handleNewModalSave}
+    onCancel={handleNewModalCancel}
+  />
+{/if}
+
+{#if showModal && currentEntryType === 'encrypted_text'}
+  <EncryptedTextNewModal
+    isOpen={showModal}
+    onSave={handleNewModalSave}
+    onCancel={handleNewModalCancel}
+  />
+{/if}
+
+{#if showSaveDialog}
+  <SaveFileModal
+    isOpen={showSaveDialog}
+    onSave={handleSaveDialogSave}
+    onCancel={handleSaveDialogCancel}
+  />
+{/if}
+
+{#if showExportDialog}
+  <ExportModal
+    isOpen={showExportDialog}
+    onExport={handleExportData}
+    onCancel={handleExportCancel}
+  />
+{/if}
+
 <style>
-  .app-layout {
-    height: 100vh;
-    background-color: var(--color-bg-primary);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .main-layout {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-  }
-
   .sidebar {
     height: 100%;
     display: flex;
@@ -262,84 +325,14 @@
     flex: 1;
     overflow: hidden;
   }
+
+  .save-alert {
+    border-radius: 0%;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .save-alert-show {
+    transform: translateY(0);
+  }
 </style>
-
-<div class='app-layout'>
-  <!-- Top Toolbar -->
-  <TopToolbar
-    hasUnsavedChanges={app.hasDataUnsavedChanges}
-    {searchTerm}
-    onNew={handleNewEntry}
-    onSave={handleSave}
-    onSearch={handleSearch}
-    onExport={handleExport}
-  />
-
-  <!-- Main Layout with Split Panel -->
-  <div class='main-layout'>
-    <SplitPanel
-      initialLeftWidth={leftPanelWidth}
-      onResize={handleResize}
-    >
-      {#snippet left()}
-        <div class='sidebar'>
-          <!-- Entries List -->
-          <div class='sidebar-content'>
-            <EntriesList
-              entries={filteredEntries}
-              selectedId={selectedEntry?._id}
-              onSelect={handleEntrySelect}
-            />
-          </div>
-        </div>
-      {/snippet}
-
-      {#snippet right()}
-        <div class='main-content'>
-          <!-- Detail Content -->
-          <div class='detail-content'>
-            <EntryDetailPanel
-              entry={selectedEntry}
-              onUpdate={handleEntryUpdate}
-              onMarkDirty={handleMarkDirty}
-              onDelete={handleEntryDelete}
-            />
-          </div>
-        </div>
-      {/snippet}
-    </SplitPanel>
-  </div>
-</div>
-
-<!-- Modals -->
-{#if showModal && currentEntryType === 'password'}
-  <PasswordNewModal
-    isOpen={showModal}
-    onSave={handleModalSave}
-    onCancel={handleModalCancel}
-  />
-{/if}
-
-{#if showModal && currentEntryType === 'encrypted_text'}
-  <EncryptedTextNewModal
-    isOpen={showModal}
-    onSave={handleModalSave}
-    onCancel={handleModalCancel}
-  />
-{/if}
-
-{#if showSaveDialog}
-  <SaveFileModal
-    isOpen={showSaveDialog}
-    onSave={handleSaveDialogSave}
-    onCancel={handleSaveDialogCancel}
-  />
-{/if}
-
-{#if showExportDialog}
-  <ExportModal
-    isOpen={showExportDialog}
-    onExport={handleExportData}
-    onCancel={handleExportCancel}
-  />
-{/if}

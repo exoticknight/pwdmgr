@@ -2,7 +2,7 @@
   import type { EncryptedTextData, PasswordData } from '@/types/data'
   import type { DialogControl } from '@/types/dialog'
 
-  import { Heart, Share2, Trash2 } from '@lucide/svelte'
+  import { Share2, Star, Trash2 } from '@lucide/svelte'
 
   import { dialog } from '@/stores/dialog.svelte'
   import { i18n } from '@/stores/i18n.svelte'
@@ -151,39 +151,40 @@
     </div>
   </div>
 {:else}
-  <div class='detail-panel'>
-    <!-- Header with title and action buttons -->
-    <div class='detail-header'>
-      <h2 class='detail-title'>{entry.title}</h2>
-      <div class='header-actions'>
+  <div class='h-full flex flex-col p-4 gap-2'>
+    <div class='flex items-center justify-between'>
+      <h2 class='detail-title flex-1 flex items-center gap-2'>
+        {entry.title}
         <button
           type='button'
-          class='btn btn-ghost favorite-btn'
+          class='star-btn'
           onclick={toggleFavorite}
           title={entry._isFavorite
             ? i18n.t('actions.removeFromFavorites')
             : i18n.t('actions.addToFavorites')}
         >
-          <Heart
-            size={20}
-            class={entry._isFavorite ? 'favorite-active' : 'favorite-inactive'}
+          <Star
+            size={16}
+            style={entry._isFavorite ? 'color: var(--color-warning); fill: var(--color-warning);' : ''}
           />
         </button>
+      </h2>
+      <div class='join'>
         <button
           type='button'
-          class='btn btn-ghost delete-btn'
+          class='btn btn-sm join-item'
           onclick={handleDelete}
           title={i18n.t('actions.delete')}
         >
-          <Trash2 size={20} />
+          <Trash2 size={16} />
         </button>
         <button
           type='button'
-          class='btn btn-ghost share-btn'
+          class='btn btn-sm join-item'
           onclick={shareEntry}
           title={i18n.t('actions.share')}
         >
-          <Share2 size={20} />
+          <Share2 size={16} />
         </button>
       </div>
     </div>
@@ -224,7 +225,7 @@
   </div>
 {/if}
 
-<style>
+<style scoped>
   .detail-empty {
     height: 100%;
     display: flex;
@@ -243,20 +244,22 @@
     margin: 0;
   }
 
-  .detail-panel {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-bg-primary);
+  .detail-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .detail-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-md);
-    border-bottom: 1px solid var(--color-border);
-    background-color: var(--color-bg-primary);
+  .star-btn {
+    cursor: pointer;
+  }
+
+  .detail-content {
+    flex: 1;
+    overflow-y: auto;
   }
 
   .time-info {
@@ -272,75 +275,6 @@
     font-family: var(--font-mono, monospace);
     font-size: var(--font-size-sm);
     text-align: center;
-  }
-
-  .detail-title {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
-    margin: 0;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-  }
-
-  .favorite-btn,
-  .delete-btn,
-  .share-btn {
-    padding: var(--space-xs);
-    min-height: auto;
-    border-radius: var(--radius-md);
-  }
-
-  .favorite-btn:hover,
-  .delete-btn:hover,
-  .share-btn:hover {
-    background-color: var(--color-bg-hover);
-  }
-
-  .delete-btn {
-    color: var(--color-text-secondary);
-  }
-
-  .delete-btn:hover {
-    color: var(--color-error);
-    background-color: var(--color-error-bg);
-  }
-
-  .share-btn {
-    color: var(--color-text-secondary);
-  }
-
-  .share-btn:hover {
-    color: var(--color-primary);
-    background-color: var(--color-primary-bg, var(--color-bg-hover));
-  }
-
-  :global(.favorite-active) {
-    fill: var(--color-error);
-    color: var(--color-error);
-  }
-
-  :global(.favorite-inactive) {
-    fill: none;
-    color: var(--color-text-muted);
-  }
-
-  :global(.favorite-inactive:hover) {
-    color: var(--color-error);
-  }
-
-  .detail-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: var(--space-md);
   }
 
   /* Scrollbar styling */

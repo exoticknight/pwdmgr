@@ -45,7 +45,7 @@
       <div tabindex='0' role='button' class='btn btn-sm btn-soft'>
         {i18n.t('buttons.newEntry')}<ChevronDown size={12} />
       </div>
-      <ul class='dropdown-content menu bg-base-100 rounded-box min-w-24 shadow-sm'>
+      <ul class='dropdown-content menu bg-base-100 min-w-24 shadow-sm'>
         <li>
           <button onclick={handleNewPassword}>
             {i18n.t('entryTypes.password')}

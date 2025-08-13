@@ -31,7 +31,7 @@
       return (entry as PasswordData).username || ''
     }
     else if (entry._type === 'encrypted_text') {
-      const content = (entry as EncryptedTextData).content
+      const content = (entry as EncryptedTextData).notes
       return content ? content.substring(0, 50) + (content.length > 50 ? '...' : '') : ''
     }
     return ''
@@ -66,11 +66,14 @@
           tabindex='0'
         >
           <div class='item-content'>
-            <div class='item-header'>
+            <div class='item-figure'></div>
+            <div class='item-text'>
               <div class='item-title'>{entry.title}</div>
-              <div class='item-type'>{getEntryTypeLabel(entry._type)}</div>
+              <div class='item-subtitle'>{getSubtitleForEntry(entry)}</div>
             </div>
-            <div class='item-subtitle'>{getSubtitleForEntry(entry)}</div>
+            <div class='item-append'>
+              <div class='badge badge-ghost'>{getEntryTypeLabel(entry._type)}</div>
+            </div>
           </div>
         </div>
       {/each}
@@ -99,7 +102,7 @@
   }
 
   .list-item {
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-sm);
     border-bottom: 1px solid var(--color-border-light);
     cursor: pointer;
     transition: background-color 0.15s ease;
@@ -129,51 +132,40 @@
 
   .item-content {
     display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-  }
-
-  .item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: row;
     gap: var(--space-sm);
   }
 
+  .item-figure {
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-sm);
+  }
+
+  .item-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
   .item-title {
-    font-size: var(--font-size-base);
+    font-size: var(--text-xl);
+    line-height: var(--text-xl--line-height);
     font-weight: 500;
     color: inherit;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex: 1;
-  }
-
-  .item-type {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
-    background: var(--color-bg-secondary);
-    padding: 2px 6px;
-    border-radius: var(--radius-xs);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .list-item-selected .item-type {
-    background: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
   }
 
   .item-subtitle {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* Scrollbar styling */
   .list-container {
     scrollbar-width: thin;
     scrollbar-color: var(--color-border) transparent;

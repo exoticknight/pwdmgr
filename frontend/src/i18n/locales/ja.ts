@@ -201,7 +201,7 @@ export const ja = {
 
       // セキュリティ設定
       security: {
-        title: 'セキュリティ設定',
+        title: 'セキュリティ',
         autoLock: '自動ロック',
         autoLockDescription: '指定時間後にアプリケーションを自動ロック',
         autoLockTime: '自動ロック時間',
@@ -212,7 +212,7 @@ export const ja = {
 
       // インターフェース設定
       interface: {
-        title: 'インターフェース設定',
+        title: 'インターフェース',
         language: '言語',
         languageDescription: 'アプリケーションの表示言語を変更',
         theme: 'テーマ',

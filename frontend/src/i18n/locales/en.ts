@@ -201,7 +201,7 @@ export const en = {
 
       // Security settings
       security: {
-        title: 'Security Settings',
+        title: 'Security',
         autoLock: 'Auto Lock',
         autoLockDescription: 'Automatically lock the application after specified time',
         autoLockTime: 'Auto Lock Time',
@@ -212,7 +212,7 @@ export const en = {
 
       // Interface settings
       interface: {
-        title: 'Interface Settings',
+        title: 'Interface',
         language: 'Language',
         languageDescription: 'Change the display language of the application',
         theme: 'Theme',

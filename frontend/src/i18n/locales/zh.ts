@@ -210,6 +210,15 @@ export const zh = {
         changePasswordDescription: '更改用于访问此密码库的主密码',
       },
 
+      // 数据设置
+      data: {
+        title: '数据',
+        export: {
+          title: '导出数据',
+          description: '将您的密码数据导出为 CSV 或 JSON 文件',
+        },
+      },
+
       // 界面设置
       interface: {
         title: '界面',

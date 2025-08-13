@@ -1,15 +1,14 @@
 <script lang='ts'>
-  import { ChevronDown, Search, Share } from '@lucide/svelte'
+  import { ChevronDown, Search } from '@lucide/svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     searchTerm?: string
     onNew?: (entryType: 'password' | 'encrypted_text') => void
     onSearch?: (data: { term: string }) => void
-    onExport?: () => void
   }
 
-  const { searchTerm = '', onNew, onSearch, onExport }: Props = $props()
+  const { searchTerm = '', onNew, onSearch }: Props = $props()
 
   function handleNewPassword() {
     onNew?.('password')
@@ -17,10 +16,6 @@
 
   function handleNewEncryptedText() {
     onNew?.('encrypted_text')
-  }
-
-  function handleExport() {
-    onExport?.()
   }
 
   function handleSearchInput(event: Event) {
@@ -46,14 +41,6 @@
 
   <!-- Right side - Actions -->
   <div class='toolbar-section'>
-    <button
-      class='btn btn-sm join-item'
-      onclick={handleExport}
-      title={i18n.t('buttons.export')}
-    >
-      <Share size={16} />
-    </button>
-
     <div class='dropdown dropdown-end'>
       <div tabindex='0' role='button' class='btn btn-sm btn-soft'>
         {i18n.t('buttons.newEntry')}<ChevronDown size={12} />

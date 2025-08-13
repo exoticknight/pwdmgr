@@ -210,6 +210,15 @@ export const en = {
         changePasswordDescription: 'Change the master password used to access this password database',
       },
 
+      // Data settings
+      data: {
+        title: 'Data',
+        export: {
+          title: 'Export Data',
+          description: 'Export your password data as CSV or JSON files',
+        },
+      },
+
       // Interface settings
       interface: {
         title: 'Interface',

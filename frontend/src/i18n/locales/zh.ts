@@ -201,7 +201,7 @@ export const zh = {
 
       // 安全设置
       security: {
-        title: '安全设置',
+        title: '安全',
         autoLock: '自动锁定',
         autoLockDescription: '在指定时间后自动锁定应用程序',
         autoLockTime: '自动锁定时间',
@@ -212,7 +212,7 @@ export const zh = {
 
       // 界面设置
       interface: {
-        title: '界面设置',
+        title: '界面',
         language: '语言',
         languageDescription: '更改应用程序的显示语言',
         theme: '主题',

@@ -126,10 +126,13 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    padding: 0 var(--space-sm);
     overflow: hidden;
   }
 
   .item-title {
+    font-size: var(--text-lg);
+    line-height: var(--text-lg--line-height);
     font-weight: 500;
     color: inherit;
     white-space: nowrap;

@@ -6,6 +6,7 @@
     initialLeftWidth?: number // percentage
     minLeftWidth?: number // percentage
     maxLeftWidth?: number // percentage
+    resizerWidth?: number // pixels
     onResize?: (leftWidth: number) => void
     left: Snippet
     right: Snippet
@@ -15,6 +16,7 @@
     initialLeftWidth = 40,
     minLeftWidth = 20,
     maxLeftWidth = 80,
+    resizerWidth = 1,
     onResize,
     left,
     right,
@@ -76,6 +78,7 @@
   <!-- Resizer -->
   <button
     class='split-resizer {isDragging ? 'split-resizer-active' : ''}'
+    style='width: {resizerWidth}px'
     aria-label='Resize panels'
     type='button'
     onmousedown={handleMouseDown}
@@ -112,7 +115,6 @@
 
   .split-resizer {
     flex: none;
-    width: 1px;
     background-color: var(--color-border);
     cursor: col-resize;
     border: none;

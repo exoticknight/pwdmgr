@@ -152,9 +152,11 @@
   </div>
 {:else}
   <div class='h-full flex flex-col p-4 gap-2'>
-    <div class='flex items-center justify-between'>
-      <h2 class='detail-title flex-1 flex items-center gap-2'>
-        {entry.title}
+    <div class='flex items-center justify-between gap-6'>
+      <h2 class='detail-title flex-1 flex items-center overflow-hidden gap-2'>
+        <span class='min-w-0 overflow-hidden text-lg font-semibold text-ellipsis text-nowrap'>
+          {entry.title}
+        </span>
         <button
           type='button'
           class='star-btn'
@@ -242,15 +244,6 @@
     font-size: var(--font-size-base);
     color: var(--color-text-muted);
     margin: 0;
-  }
-
-  .detail-title {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--color-text-primary);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .star-btn {

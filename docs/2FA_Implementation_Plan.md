@@ -544,8 +544,7 @@ export class Client2FAManager {
 {
   "otpauth": "^9.0.0",           // TOTP/HOTP算法实现
   "lean-qr": "^2.5.0",           // QR码生成
-  "jsqr": "^1.4.0",             // QR码解析
-  "crypto-js": "^4.1.1"         // 加密算法补充
+  "qr-scanner": "^1.4.2",             // QR码解析
 }
 ```
 

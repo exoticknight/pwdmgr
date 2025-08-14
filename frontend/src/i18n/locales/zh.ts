@@ -82,6 +82,7 @@ export const zh = {
     entryTypes: {
       password: '密码',
       encryptedText: '加密文本',
+      twoFactorAuth: '双重认证',
     },
 
     // Password dialog

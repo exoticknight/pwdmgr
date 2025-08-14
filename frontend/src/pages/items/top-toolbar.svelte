@@ -1,10 +1,12 @@
 <script lang='ts'>
+  import type { BasicData } from '@/types/data'
+
   import { ChevronDown, Search } from '@lucide/svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     searchTerm?: string
-    onNew?: (entryType: 'password' | 'encrypted_text') => void
+    onNew?: (entryType: BasicData['_type']) => void
     onSearch?: (data: { term: string }) => void
   }
 
@@ -16,6 +18,10 @@
 
   function handleNewEncryptedText() {
     onNew?.('encrypted_text')
+  }
+
+  function handleNewTwoFactorAuth() {
+    onNew?.('two_factor_auth')
   }
 
   function handleSearchInput(event: Event) {
@@ -45,15 +51,20 @@
       <div tabindex='0' role='button' class='btn btn-sm btn-soft'>
         {i18n.t('buttons.newEntry')}<ChevronDown size={12} />
       </div>
-      <ul class='dropdown-content menu bg-base-100 min-w-24 shadow-sm'>
+      <ul class='dropdown-content menu bg-base-100 shadow-sm'>
         <li>
-          <button onclick={handleNewPassword}>
+          <button class='min-w-fit text-nowrap' onclick={handleNewPassword}>
             {i18n.t('entryTypes.password')}
           </button>
         </li>
         <li>
-          <button onclick={handleNewEncryptedText}>
+          <button class='min-w-fit text-nowrap' onclick={handleNewEncryptedText}>
             {i18n.t('entryTypes.encryptedText')}
+          </button>
+        </li>
+        <li>
+          <button class='min-w-fit text-nowrap' onclick={handleNewTwoFactorAuth}>
+            {i18n.t('entryTypes.twoFactorAuth')}
           </button>
         </li>
       </ul>

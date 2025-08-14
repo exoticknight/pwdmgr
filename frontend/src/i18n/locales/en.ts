@@ -82,6 +82,7 @@ export const en = {
     entryTypes: {
       password: 'Password',
       encryptedText: 'Encrypted Text',
+      twoFactorAuth: '2FA',
     },
 
     // Password dialogs

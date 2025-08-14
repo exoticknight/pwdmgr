@@ -1,5 +1,4 @@
 <script lang='ts'>
-  import { Download } from '@lucide/svelte'
   import { getDataManager } from '@/services/data-manager'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'

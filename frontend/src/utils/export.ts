@@ -10,29 +10,46 @@ export function exportToCSV(databaseData: DataFile): string {
     return ''
   }
 
-  // CSV headers - readable names matching JSON keys
+  // CSV headers
   const headers = [
     'Title',
     'Username',
     'Password',
     'Notes',
-    'Is Favorite',
+    'Type',
+    'Favorite',
     'Created At',
     'Updated At',
     'Last Used At',
   ]
 
   // Convert entries to CSV rows (excluding _id and _type)
-  const rows = entries.map(entry => [
-    escapeCSVField(entry.title || ''),
-    escapeCSVField(entry.username || ''),
-    escapeCSVField(entry.password || ''),
-    escapeCSVField(entry.notes ?? ''),
-    entry._isFavorite ? 'true' : 'false',
-    entry._createdAt || '',
-    entry._updatedAt || '',
-    entry._lastUsedAt ?? '',
-  ])
+  const rows = entries.map((entry) => {
+    // Handle different data types
+    let username = ''
+    let password = ''
+
+    if (entry._type === 'password') {
+      username = entry.username || ''
+      password = entry.password || ''
+    }
+    else if (entry._type === 'two_factor_auth') {
+      username = entry.accountName || ''
+      password = '[2FA Entry]'
+    }
+
+    return [
+      escapeCSVField(entry.title || ''),
+      escapeCSVField(username),
+      escapeCSVField(password),
+      escapeCSVField(entry.notes ?? ''),
+      escapeCSVField(entry._type),
+      entry._isFavorite ? 'true' : 'false',
+      entry._createdAt || '',
+      entry._updatedAt || '',
+      entry._lastUsedAt ?? '',
+    ]
+  })
 
   // Combine headers and rows
   const csvContent = [headers, ...rows]
@@ -47,16 +64,31 @@ export function exportToCSV(databaseData: DataFile): string {
  */
 export function exportToJSON(databaseData: DataFile): string {
   // Create a clean data structure with only necessary fields and readable keys
-  const cleanData = databaseData.data.map(entry => ({
-    title: entry.title,
-    username: entry.username,
-    password: entry.password,
-    notes: entry.notes ?? '',
-    isFavorite: entry._isFavorite,
-    createdAt: entry._createdAt,
-    updatedAt: entry._updatedAt,
-    lastUsedAt: entry._lastUsedAt ?? '',
-  }))
+  const cleanData = databaseData.data.map((entry) => {
+    let username = ''
+    let password = ''
+
+    if (entry._type === 'password') {
+      username = entry.username || ''
+      password = entry.password || ''
+    }
+    else if (entry._type === 'two_factor_auth') {
+      username = entry.accountName || ''
+      password = '[2FA Entry]'
+    }
+
+    return {
+      title: entry.title,
+      username,
+      password,
+      notes: entry.notes ?? '',
+      type: entry._type,
+      isFavorite: entry._isFavorite,
+      createdAt: entry._createdAt,
+      updatedAt: entry._updatedAt,
+      lastUsedAt: entry._lastUsedAt ?? '',
+    }
+  })
 
   return JSON.stringify(cleanData, null, 2)
 }

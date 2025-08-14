@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { EncryptedTextData, PasswordData } from '@/types/data'
+  import type { Datum, EncryptedTextData, PasswordData, TwoFactorAuthData } from '@/types/data'
   import type { DialogControl } from '@/types/dialog'
 
   import { Share2, Star, Trash2 } from '@lucide/svelte'
@@ -8,12 +8,13 @@
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
 
+  import TwoFactorAuthDetailForm from './2fa/2fa-detail-form.svelte'
   import EncryptedTextDetailForm from './encrypted-text/encrypted-text-detail-form.svelte'
   import PasswordDetailForm from './password/password-detail-form.svelte'
 
   interface Props {
-    entry: PasswordData | EncryptedTextData | null
-    onUpdate?: (data: { id: string, updates: Partial<PasswordData | EncryptedTextData> }) => void
+    entry: Datum | null
+    onUpdate?: (data: { id: string, updates: Partial<Datum> }) => void
     onMarkDirty?: () => void
     onDelete?: (data: { id: string }) => void
   }
@@ -23,11 +24,12 @@
   // Use interface constraints to improve code portability
   const dialogControl: DialogControl = dialog
 
-  let formData = $state<Partial<PasswordData | EncryptedTextData>>({})
+  let formData = $state<Partial<Datum>>({})
 
   // Derived state based on entry type
   const isPasswordEntry = $derived(entry?._type === 'password')
   const isEncryptedTextEntry = $derived(entry?._type === 'encrypted_text')
+  const isTwoFactorAuthEntry = $derived(entry?._type === 'two_factor_auth')
 
   // Update form data when entry changes
   $effect(() => {
@@ -115,6 +117,18 @@
         const textEntry = entry as EncryptedTextData
         if (textEntry.content) {
           data.push(`Content:\n${textEntry.content}`)
+        }
+      }
+      else if (entry._type === 'two_factor_auth') {
+        const twoFactorEntry = entry as TwoFactorAuthData
+        if (twoFactorEntry.issuer) {
+          data.push(`Service Provider:\n${twoFactorEntry.issuer}`)
+        }
+        if (twoFactorEntry.accountName) {
+          data.push(`Account Name:\n${twoFactorEntry.accountName}`)
+        }
+        if (twoFactorEntry.serviceUrl) {
+          data.push(`Website:\n${twoFactorEntry.serviceUrl}`)
         }
       }
       if (entry.notes) {
@@ -206,6 +220,11 @@
             entry={entry as EncryptedTextData}
             formData={formData as Partial<EncryptedTextData>}
             onFieldChange={handleFieldChange}
+            onCopyToClipboard={copyToClipboard}
+          />
+        {:else if isTwoFactorAuthEntry}
+          <TwoFactorAuthDetailForm
+            entry={entry as TwoFactorAuthData}
             onCopyToClipboard={copyToClipboard}
           />
         {/if}

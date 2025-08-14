@@ -184,17 +184,16 @@
   <div class='flex-1 flex overflow-hidden'>
     <SplitPanel
       initialLeftWidth={leftPanelWidth}
+      resizerWidth={2}
       onResize={handleResize}
     >
       {#snippet left()}
         <div class='sidebar'>
-          <div class='sidebar-content'>
-            <EntriesList
-              entries={filteredEntries}
-              selectedId={selectedEntry?._id}
-              onSelect={handleEntrySelect}
-            />
-          </div>
+          <EntriesList
+            entries={filteredEntries}
+            selectedId={selectedEntry?._id}
+            onSelect={handleEntrySelect}
+          />
         </div>
       {/snippet}
 
@@ -254,15 +253,9 @@
 <style>
   .sidebar {
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-bg-secondary);
-    border-right: 1px solid var(--color-border);
-  }
-
-  .sidebar-content {
-    flex: 1;
-    overflow: hidden;
+    display: grid;
+    grid-row: 1fr;
+    grid-column: 1fr;
   }
 
   .main-content {

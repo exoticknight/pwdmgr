@@ -82,6 +82,7 @@ export const ja = {
     entryTypes: {
       password: 'パスワード',
       encryptedText: '暗号化テキスト',
+      twoFactorAuth: '二段階認証',
     },
 
     // パスワードダイアログ

@@ -16,6 +16,7 @@
 
   import { compareISO8601String } from '@/utils/iso8601-compare'
 
+  import TwoFactorNewModal from './items/2fa/2fa-new-modal.svelte'
   import EncryptedTextNewModal from './items/encrypted-text/encrypted-text-new-modal.svelte'
   import EntriesList from './items/entries-list.svelte'
   import EntryDetailPanel from './items/entry-detail-panel.svelte'
@@ -239,6 +240,14 @@
     isOpen={showModal}
     onSave={handleNewModalSave}
     onCancel={handleNewModalCancel}
+  />
+{/if}
+
+{#if showModal && currentEntryType === 'two_factor_auth'}
+  <TwoFactorNewModal
+    isOpen={showModal}
+    onCancel={handleNewModalCancel}
+    onSave={handleNewModalSave}
   />
 {/if}
 

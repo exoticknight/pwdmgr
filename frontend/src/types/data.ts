@@ -3,6 +3,7 @@ import type { SnakeCase } from 'type-fest'
 export const DataMetaType = {
   PASSWORD: 'password',
   ENCRYPTED_TEXT: 'encrypted_text',
+  TWO_FACTOR_AUTH: 'two_factor_auth',
 } as const
 
 export interface BasicData {
@@ -42,4 +43,20 @@ export interface EncryptedTextData extends BasicData {
   notes?: string
 }
 
-export type Datum = PasswordData | EncryptedTextData
+// 2FA客户端数据（存储各种服务的2FA信息）
+export interface TwoFactorAuthData extends BasicData {
+  _type: typeof DataMetaType.TWO_FACTOR_AUTH
+  title: string
+  issuer: string // 服务提供方（如Google, GitHub等）
+  accountName: string // 在该服务的账户名
+  secret: string // 加密存储的密钥
+  algorithm: 'SHA1' | 'SHA256' | 'SHA512'
+  digits: 6 | 8
+  period: number
+  notes?: string
+  // 客户端特有字段
+  serviceUrl?: string // 服务网址
+  iconUrl?: string // 服务图标
+}
+
+export type Datum = PasswordData | EncryptedTextData | TwoFactorAuthData

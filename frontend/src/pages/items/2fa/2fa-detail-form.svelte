@@ -1,8 +1,8 @@
 <script lang='ts'>
-  import type { TwoFactorAuthData } from '../../../types/data'
+  import type { TwoFactorAuthData } from '@/types/data'
   import { Copy } from '@lucide/svelte'
-  import TotpDisplay from '../../../components/totp-display.svelte'
-  import { Client2FAService } from '../../../services/2fa-client'
+  import TotpDisplay from '@/components/totp-display.svelte'
+  import { Client2FAService } from '@/services/2fa-client'
 
   interface Props {
     entry: TwoFactorAuthData
@@ -18,13 +18,11 @@
 <div class='2fa-detail-form space-y-6'>
   <!-- TOTP显示 -->
   <div class='card bg-base-200 shadow-sm'>
-    <div class='card-body p-4'>
-      <TotpDisplay
-        {entry}
-        showNextCode={true}
-        autoRefresh={true}
-      />
-    </div>
+    <TotpDisplay
+      {entry}
+      showNextCode={true}
+      autoRefresh={true}
+    />
   </div>
 
   <!-- 基本信息 -->
@@ -57,10 +55,10 @@
         <div class='flex items-center justify-between'>
           <span class='text-base-content/70'>Account Name</span>
           <div class='flex items-center gap-2'>
-            <span class='font-mono'>{entry.accountName}</span>
+            <span class='font-mono'>{entry.username}</span>
             <button
               class='btn btn-ghost btn-xs'
-              onclick={() => onCopyToClipboard(entry.accountName)}
+              onclick={() => onCopyToClipboard(entry.username)}
             >
               <Copy class='w-3 h-3' />
             </button>

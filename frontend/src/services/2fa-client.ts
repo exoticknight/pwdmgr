@@ -1,6 +1,6 @@
-import type { QRCodeData, ServiceProviderInfo, TOTPResult } from '../types/2fa'
-import type { TwoFactorAuthData } from '../types/data'
-import { TOTPGenerator } from '../utils/totp'
+import type { ServiceProviderInfo, TOTPResult, TwoFAData } from '@/types/2fa'
+import type { TwoFactorAuthData } from '@/types/data'
+import { TOTPGenerator } from '@/utils/totp'
 
 /**
  * 客户端2FA服务 - 管理用户存储的2FA条目
@@ -52,27 +52,27 @@ export class Client2FAService {
   /**
    * 从QR码数据创建2FA条目
    */
-  static createFrom2FAData(qrData: QRCodeData): Partial<TwoFactorAuthData> {
+  static createFrom2FAData(qrData: TwoFAData): Partial<TwoFactorAuthData> {
     const now = new Date().toISOString()
 
     // 解析标签以获取issuer和账户名
     let issuer = qrData.issuer ?? ''
-    let accountName = qrData.label
+    let username = qrData.label
 
     if (qrData.label.includes(':')) {
       const parts = qrData.label.split(':', 2)
       issuer = issuer || parts[0].trim()
-      accountName = parts[1].trim()
+      username = parts[1].trim()
     }
 
     return {
-      title: `${issuer || 'Unknown'} - ${accountName}`,
+      title: `${issuer || username}`,
       issuer,
-      accountName,
+      username,
       secret: qrData.secret,
       algorithm: (qrData.algorithm as 'SHA1' | 'SHA256' | 'SHA512') || 'SHA1',
-      digits: (qrData.digits != null ? Number.parseInt(qrData.digits, 10) : 6) as 6 | 8,
-      period: qrData.period != null ? Number.parseInt(qrData.period, 10) : 30,
+      digits: (qrData.digits != null ? qrData.digits : 6) as 6 | 8,
+      period: qrData.period != null ? qrData.period : 30,
       _isFavorite: false,
       _createdAt: now,
       _updatedAt: now,
@@ -89,7 +89,7 @@ export class Client2FAService {
       digits: entry.digits,
       period: entry.period,
       issuer: entry.issuer,
-      accountName: entry.accountName,
+      username: entry.username,
     }
 
     return TOTPGenerator.generate(config)
@@ -118,42 +118,39 @@ export class Client2FAService {
 
   /**
    * 验证2FA条目数据
+   * @throws {Error} 验证失败时抛出错误
    */
-  static validate2FAData(data: Partial<TwoFactorAuthData>): string[] {
-    const errors: string[] = []
-
+  static validate2FAData(data: Partial<TwoFactorAuthData>): void {
     if (data.title == null || data.title.trim() === '') {
-      errors.push('Title is required')
+      throw new Error('Title is required')
     }
 
     if (data.issuer == null || data.issuer.trim() === '') {
-      errors.push('Issuer is required')
+      throw new Error('Issuer is required')
     }
 
-    if (data.accountName == null || data.accountName.trim() === '') {
-      errors.push('Account name is required')
+    if (data.username == null || data.username.trim() === '') {
+      throw new Error('Account name is required')
     }
 
     if (data.secret == null || data.secret.trim() === '') {
-      errors.push('Secret is required')
+      throw new Error('Secret is required')
     }
     else if (!TOTPGenerator.validateSecret(data.secret)) {
-      errors.push('Invalid secret format')
+      throw new Error('Invalid secret format')
     }
 
     if (!data.algorithm || !['SHA1', 'SHA256', 'SHA512'].includes(data.algorithm)) {
-      errors.push('Invalid algorithm')
+      throw new Error('Invalid algorithm')
     }
 
     if (!data.digits || ![6, 8].includes(data.digits)) {
-      errors.push('Digits must be 6 or 8')
+      throw new Error('Digits must be 6 or 8')
     }
 
     if (data.period == null || data.period < 1 || data.period > 300) {
-      errors.push('Period must be between 1 and 300 seconds')
+      throw new Error('Period must be between 1 and 300 seconds')
     }
-
-    return errors
   }
 
   /**
@@ -167,7 +164,7 @@ export class Client2FAService {
       entries: entries.map(entry => ({
         title: entry.title,
         issuer: entry.issuer,
-        accountName: entry.accountName,
+        username: entry.username,
         secret: entry.secret,
         algorithm: entry.algorithm,
         digits: entry.digits,
@@ -190,7 +187,7 @@ export class Client2FAService {
         entries: Array<{
           title: string
           issuer: string
-          accountName: string
+          username: string
           secret: string
           algorithm?: string
           digits?: number
@@ -209,7 +206,7 @@ export class Client2FAService {
       return parsed.entries.map(entry => ({
         title: entry.title,
         issuer: entry.issuer,
-        accountName: entry.accountName,
+        username: entry.username,
         secret: entry.secret,
         algorithm: (entry.algorithm as 'SHA1' | 'SHA256' | 'SHA512') || 'SHA1',
         digits: (entry.digits as 6 | 8) || 6,

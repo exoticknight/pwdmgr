@@ -1,4 +1,4 @@
-import type { QRCodeData } from '../types/2fa'
+import type { TwoFAData } from '@/types/2fa'
 import QrScanner from 'qr-scanner'
 import { TOTPGenerator } from './totp'
 
@@ -6,13 +6,13 @@ export class QRScannerService {
   /**
    * 从图片文件扫描QR码
    */
-  static async scanFromImage(file: File): Promise<QRCodeData[]> {
+  static async scanFromImage(file: File): Promise<TwoFAData[]> {
     try {
       const result = await QrScanner.scanImage(file)
 
       if (typeof result === 'string') {
-        const qrData = TOTPGenerator.parseQRCode(result)
-        return [qrData]
+        const twoFAData = TOTPGenerator.parseURI(result)
+        return [twoFAData]
       }
 
       return []
@@ -26,14 +26,14 @@ export class QRScannerService {
   /**
    * 从剪贴板扫描QR码
    */
-  static async scanFromClipboard(): Promise<QRCodeData[]> {
+  static async scanFromClipboard(): Promise<TwoFAData[]> {
     try {
       if (!('clipboard' in navigator) || !('read' in navigator.clipboard)) {
         throw new Error('Clipboard API not supported')
       }
 
       const clipboardItems = await navigator.clipboard.read()
-      const results: QRCodeData[] = []
+      const results: TwoFAData[] = []
 
       for (const clipboardItem of clipboardItems) {
         for (const type of clipboardItem.types) {
@@ -57,10 +57,10 @@ export class QRScannerService {
   /**
    * 从拖拽文件扫描QR码
    */
-  static async scanFromDragDrop(dataTransfer: DataTransfer): Promise<QRCodeData[]> {
+  static async scanFromDragDrop(dataTransfer: DataTransfer): Promise<TwoFAData[]> {
     try {
       const files = Array.from(dataTransfer.files)
-      const results: QRCodeData[] = []
+      const results: TwoFAData[] = []
 
       for (const file of files) {
         if (file.type.startsWith('image/')) {
@@ -74,26 +74,6 @@ export class QRScannerService {
     catch (error) {
       console.error('Failed to scan from drag drop:', error)
       throw new Error('Failed to scan QR code from dropped files')
-    }
-  }
-
-  /**
-   * 解析otpauth://URL
-   */
-  static parseOtpauthURL(url: string): QRCodeData {
-    return TOTPGenerator.parseQRCode(url)
-  }
-
-  /**
-   * 验证是否为有效的otpauth URL
-   */
-  static isValidOtpauthURL(url: string): boolean {
-    try {
-      this.parseOtpauthURL(url)
-      return true
-    }
-    catch {
-      return false
     }
   }
 }

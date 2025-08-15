@@ -14,5 +14,7 @@ words:
   - pnpm
   - tsconfig
   - typia
+  - totp
+  - hotp
 ignoreWords: []
 import: []

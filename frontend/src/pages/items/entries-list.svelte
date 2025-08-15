@@ -27,14 +27,18 @@
   }
 
   function getSubtitleForEntry(entry: Datum): string {
-    if (entry._type === 'password') {
-      return (entry as PasswordData).username || ''
+    switch (entry._type) {
+      case 'two_factor_auth':
+        return entry.username || ''
+      case 'password':
+        return (entry as PasswordData).username || ''
+      case 'encrypted_text': {
+        const content = (entry as EncryptedTextData).notes
+        return content ? content.substring(0, 50) + (content.length > 50 ? '...' : '') : ''
+      }
+      default:
+        return ''
     }
-    else if (entry._type === 'encrypted_text') {
-      const content = (entry as EncryptedTextData).notes
-      return content ? content.substring(0, 50) + (content.length > 50 ? '...' : '') : ''
-    }
-    return ''
   }
 
   function getEntryTypeLabel(type: string): string {
@@ -43,6 +47,8 @@
         return i18n.t('entryTypes.password')
       case 'encrypted_text':
         return i18n.t('entryTypes.encryptedText')
+      case 'two_factor_auth':
+        return i18n.t('entryTypes.twoFactorAuth')
       default:
         return ''
     }

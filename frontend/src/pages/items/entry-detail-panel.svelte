@@ -124,8 +124,8 @@
         if (twoFactorEntry.issuer) {
           data.push(`Service Provider:\n${twoFactorEntry.issuer}`)
         }
-        if (twoFactorEntry.accountName) {
-          data.push(`Account Name:\n${twoFactorEntry.accountName}`)
+        if (twoFactorEntry.username) {
+          data.push(`Account Name:\n${twoFactorEntry.username}`)
         }
         if (twoFactorEntry.serviceUrl) {
           data.push(`Website:\n${twoFactorEntry.serviceUrl}`)

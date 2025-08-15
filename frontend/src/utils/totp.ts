@@ -1,5 +1,6 @@
-import type { QRCodeData, TOTPConfig, TOTPResult } from '../types/2fa'
+import type { TOTPConfig, TOTPResult, TwoFAData } from '@/types/2fa'
 import * as OTPAuth from 'otpauth'
+import typia from 'typia'
 
 export class TOTPGenerator {
   /**
@@ -9,23 +10,22 @@ export class TOTPGenerator {
     try {
       const totp = new OTPAuth.TOTP({
         issuer: config.issuer,
-        label: config.accountName,
+        label: config.username,
         algorithm: config.algorithm,
         digits: config.digits,
         period: config.period,
         secret: config.secret,
       })
 
-      const now = Math.floor(Date.now() / 1000)
-      const currentPeriodStart = Math.floor(now / config.period) * config.period
-      const remainingTime = currentPeriodStart + config.period - now
-      const progress = 1 - (remainingTime / config.period)
+      const remainingTime = Math.round(totp.remaining() / 1000)
+      const progress = remainingTime / config.period
 
       const currentCode = totp.generate()
 
       // 生成下一个验证码预览
+      const nextTimestamp = Date.now() + (config.period * 1000)
       const nextCode = totp.generate({
-        timestamp: (currentPeriodStart + config.period) * 1000,
+        timestamp: nextTimestamp,
       })
 
       return {
@@ -42,48 +42,43 @@ export class TOTPGenerator {
   }
 
   /**
-   * 解析QR码URL
+   * 解析URI
    */
-  static parseQRCode(url: string): QRCodeData {
+  static parseURI(urlStr: string): TwoFAData {
     try {
-      const urlObj = new URL(url)
+      const uri = OTPAuth.URI.parse(urlStr)
 
-      if (urlObj.protocol !== 'otpauth:') {
-        throw new Error('Invalid OTP URL protocol')
+      const type = (uri as OTPAuth.TOTP).period ? 'totp' : 'hotp'
+      if (type === 'hotp') {
+        const data = typia.assert<OTPAuth.HOTP>(uri)
+        return {
+          type,
+          label: data.label,
+          secret: data.secret.base32,
+          issuer: data.issuer ?? undefined,
+          algorithm: data.algorithm ?? undefined,
+          digits: data.digits ?? undefined,
+          counter: data.counter ?? undefined,
+        }
+      }
+      if (type === 'totp') {
+        const data = typia.assert<OTPAuth.TOTP>(uri)
+        return {
+          type,
+          label: data.label,
+          secret: data.secret.base32,
+          issuer: data.issuer ?? undefined,
+          algorithm: data.algorithm ?? undefined,
+          digits: data.digits ?? undefined,
+          period: data.period ?? undefined,
+        }
       }
 
-      const type = urlObj.hostname as 'totp' | 'hotp'
-      if (type !== 'totp' && type !== 'hotp') {
-        throw new Error('Unsupported OTP type')
-      }
-
-      const label = decodeURIComponent(urlObj.pathname.substring(1))
-      const secret = urlObj.searchParams.get('secret')
-
-      if (!secret || secret.trim() === '') {
-        throw new Error('Missing secret parameter')
-      }
-
-      const issuer = urlObj.searchParams.get('issuer')
-      const algorithm = urlObj.searchParams.get('algorithm')
-      const digits = urlObj.searchParams.get('digits')
-      const period = urlObj.searchParams.get('period')
-      const counter = urlObj.searchParams.get('counter')
-
-      return {
-        type,
-        label,
-        secret,
-        issuer: issuer ?? undefined,
-        algorithm: algorithm ?? undefined,
-        digits: digits ?? undefined,
-        period: period ?? undefined,
-        counter: counter ?? undefined,
-      }
+      throw new Error('Unsupported URI type')
     }
     catch (error) {
-      console.error('Failed to parse QR code:', error)
-      throw new Error('Invalid QR code format')
+      console.error('Failed to parse URI:', error)
+      throw new Error('Invalid URI format')
     }
   }
 
@@ -129,7 +124,7 @@ export class TOTPGenerator {
     try {
       const totp = new OTPAuth.TOTP({
         issuer: config.issuer,
-        label: config.accountName,
+        label: config.username,
         algorithm: config.algorithm,
         digits: config.digits,
         period: config.period,
@@ -155,7 +150,7 @@ export class TOTPGenerator {
   static generateQRCodeURL(config: TOTPConfig): string {
     const totp = new OTPAuth.TOTP({
       issuer: config.issuer,
-      label: config.accountName,
+      label: config.username,
       algorithm: config.algorithm,
       digits: config.digits,
       period: config.period,

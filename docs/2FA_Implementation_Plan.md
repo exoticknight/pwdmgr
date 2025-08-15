@@ -61,7 +61,7 @@ export interface TwoFactorAuthData extends BasicData {
   _type: typeof DataMetaType.TWO_FACTOR_AUTH
   title: string
   issuer: string           // 服务提供方（如Google, GitHub等）
-  accountName: string      // 在该服务的账户名
+  username: string      // 在该服务的账户名
   secret: string          // 加密存储的密钥
   algorithm: 'SHA1' | 'SHA256' | 'SHA512'
   digits: 6 | 8
@@ -101,7 +101,7 @@ export interface TOTPConfig {
   digits: 6 | 8
   period: number
   issuer?: string
-  accountName?: string
+  username?: string
 }
 
 // TOTP结果接口

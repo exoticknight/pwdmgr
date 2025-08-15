@@ -34,7 +34,7 @@ export function exportToCSV(databaseData: DataFile): string {
       password = entry.password || ''
     }
     else if (entry._type === 'two_factor_auth') {
-      username = entry.accountName || ''
+      username = entry.username || ''
       password = '[2FA Entry]'
     }
 
@@ -73,7 +73,7 @@ export function exportToJSON(databaseData: DataFile): string {
       password = entry.password || ''
     }
     else if (entry._type === 'two_factor_auth') {
-      username = entry.accountName || ''
+      username = entry.username || ''
       password = '[2FA Entry]'
     }
 

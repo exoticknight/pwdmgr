@@ -5,7 +5,7 @@ export interface TOTPConfig {
   digits: 6 | 8
   period: number
   issuer?: string
-  accountName?: string
+  username?: string
 }
 
 // TOTP结果接口
@@ -17,15 +17,15 @@ export interface TOTPResult {
 }
 
 // QR码解析结果
-export interface QRCodeData {
+export interface TwoFAData {
   type: 'totp' | 'hotp'
   label: string
   secret: string
   issuer?: string
   algorithm?: string
-  digits?: string
-  period?: string
-  counter?: string
+  digits?: number
+  period?: number // TOTP
+  counter?: number // HOTP
 }
 
 // 服务提供商信息
@@ -36,6 +36,3 @@ export interface ServiceProviderInfo {
   backgroundColor?: string
   textColor?: string
 }
-
-// 2FA输入模式
-export type TwoFactorInputMode = 'manual' | 'image' | 'url'

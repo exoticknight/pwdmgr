@@ -47,6 +47,10 @@ class DatabaseStore {
         data.initialize(rawData)
         setting.initialize(settings)
 
+        // !!!for DEBUG
+        // data.initialize(dataFile.data)
+        // setting.initialize(dataFile.setting ?? {})
+
         i18n.changeLanguage(setting.getSetting('language.code'))
 
         this.#exportedData = data.export()

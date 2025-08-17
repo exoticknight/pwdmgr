@@ -1,5 +1,7 @@
-@import "./fontawesome.min.css";
-@import "./brands.min.css";
+@import "./assets/fontawesome-free-7.0.0-web/css/fontawesome.min.css";
+@import "./assets/fontawesome-free-7.0.0-web/css/regular.min.css";
+@import "./assets/fontawesome-free-7.0.0-web/css/brands.min.css";
+
 @import "tailwindcss";
 @plugin "daisyui" {
   exclude: rootscrollgutter;
@@ -83,13 +85,6 @@ html, body {
   font-weight: 400;
   src: local("Inter"), local("Inter-Regular"), url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
   font-display: swap;
-}
-
-@font-face {
-  font-family: "Font Awesome 7 Brands";
-  font-style: normal;
-  font-weight: 400;
-  src: local("Font Awesome 7 Brands"), local("FontAwesome7Brands-Regular"), url("assets/fonts/fa-brands-400.woff2") format("woff2");
 }
 
 #app {

@@ -53,6 +53,7 @@ export const ja = {
     // フォームフィールドとエントリ管理
     forms: {
       // フィールドラベル
+      icon: 'アイコン',
       username: 'ユーザー名',
       password: 'パスワード',
       notes: 'メモ',

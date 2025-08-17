@@ -3,10 +3,11 @@
 
   import { WandSparkles } from '@lucide/svelte'
 
+  import BrandIcon from '@/components/brand-icon.svelte'
   import Modal from '@/components/modal.svelte'
   import PasswordGenerator from '@/components/password-generator.svelte'
-  import PasswordStrength from '@/components/password-strength.svelte'
 
+  import PasswordStrength from '@/components/password-strength.svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
@@ -77,6 +78,8 @@
       <div class='flex-1 new-entry-panel-left'>
         <form onsubmit={handleFormSubmit}>
           <fieldset class='fieldset w-full'>
+            <BrandIcon name={form.title} />
+
             <!-- Title -->
             <label class='label' for='title'>
               {i18n.t('forms.title')} *

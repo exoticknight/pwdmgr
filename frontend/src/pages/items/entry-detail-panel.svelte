@@ -6,8 +6,8 @@
 
   import { dialog } from '@/stores/dialog.svelte'
   import { i18n } from '@/stores/i18n.svelte'
-  import { notification } from '@/stores/notification.svelte'
 
+  import { notification } from '@/stores/notification.svelte'
   import TwoFactorAuthDetailForm from './2fa/2fa-detail-form.svelte'
   import EncryptedTextDetailForm from './encrypted-text/encrypted-text-detail-form.svelte'
   import PasswordDetailForm from './password/password-detail-form.svelte'

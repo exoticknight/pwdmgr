@@ -13,6 +13,7 @@
     "prepare": "ts-patch install"
   },
   "dependencies": {
+    "@icons-pack/svelte-simple-icons": "^6.4.0",
     "@lucide/svelte": "^0.523.0",
     "@mateothegreat/svelte5-router": "^2.15.3",
     "@types/d3-scale": "^4.0.9",

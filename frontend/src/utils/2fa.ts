@@ -41,6 +41,7 @@ export function createFrom2FAData(qrData: OTPAuth.TOTP | OTPAuth.HOTP): Partial<
 
 /**
  * Identify service provider
+ * !!!TODO：delete
  */
 export function identifyServiceProvider(issuer: string): ServiceProviderInfo {
   const provider = ServiceProviderService.find(issuer)

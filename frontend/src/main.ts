@@ -1,6 +1,9 @@
 import { mount } from 'svelte'
+
 import App from './app.svelte'
+
 import './global.css'
+
 import './i18n'
 
 document.addEventListener('contextmenu', (e) => {

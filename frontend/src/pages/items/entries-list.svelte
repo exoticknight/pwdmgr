@@ -1,5 +1,6 @@
 <script lang='ts'>
   import type { Datum, EncryptedTextData, PasswordData } from '@/types/data'
+  import BrandIcon from '@/components/brand-icon.svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
@@ -70,7 +71,9 @@
         role='button'
         tabindex='0'
       >
-        <div class='item-figure'></div>
+        <div class='item-figure'>
+          <BrandIcon name={entry.title} size='2rem' />
+        </div>
         <div class='item-text'>
           <div class='item-title'>{entry.title}</div>
           <div class='item-subtitle'>{getSubtitleForEntry(entry)}</div>
@@ -83,7 +86,7 @@
   {/if}
 </div>
 
-<style>
+<style scoped>
   .empty-state {
     padding: var(--space-lg);
     text-align: center;
@@ -123,7 +126,9 @@
   .item-figure {
     width: 40px;
     height: 40px;
-    background-color: var(--color-bg-secondary);
+    display: grid;
+    place-items: center;
+    place-content: center;
     border-radius: var(--radius-sm);
   }
 

@@ -2,7 +2,7 @@
   import type { TOTPResult } from '@/types/2fa'
   import type { TwoFactorAuthData } from '@/types/data'
   import { onDestroy, onMount } from 'svelte'
-  import { Client2FAService } from '@/services/2fa-client'
+  import { generate } from '@/utils/totp'
   import Countdown from './countdown.svelte'
 
   interface Props {
@@ -24,7 +24,7 @@
   // 生成验证码
   function generateCode() {
     try {
-      totpResult = Client2FAService.generateCurrentTOTP(entry)
+      totpResult = generate(entry)
     }
     catch (error) {
       console.error('Failed to generate TOTP code:', error)

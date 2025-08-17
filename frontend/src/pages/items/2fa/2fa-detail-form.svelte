@@ -2,7 +2,7 @@
   import type { TwoFactorAuthData } from '@/types/data'
   import { Copy } from '@lucide/svelte'
   import TotpDisplay from '@/components/totp-display.svelte'
-  import { Client2FAService } from '@/services/2fa-client'
+  import { identifyServiceProvider } from '@/utils/2fa'
 
   interface Props {
     entry: TwoFactorAuthData
@@ -12,7 +12,7 @@
   const { entry, onCopyToClipboard }: Props = $props()
 
   // Get service provider information
-  const serviceInfo = Client2FAService.identifyServiceProvider(entry.issuer)
+  const serviceInfo = identifyServiceProvider(entry.issuer)
 </script>
 
 <div class='2fa-detail-form space-y-6'>

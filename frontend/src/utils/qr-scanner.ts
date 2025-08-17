@@ -1,17 +1,17 @@
-import type { TwoFAData } from '@/types/2fa'
+import type * as OTPAuth from 'otpauth'
 import QrScanner from 'qr-scanner'
-import { TOTPGenerator } from './totp'
+import { parseURI } from './2fa'
 
 export class QRScannerService {
   /**
    * 从图片文件扫描QR码
    */
-  static async scanFromImage(file: File): Promise<TwoFAData[]> {
+  static async scanFromImage(file: File): Promise<(OTPAuth.TOTP | OTPAuth.HOTP)[]> {
     try {
       const result = await QrScanner.scanImage(file)
 
       if (typeof result === 'string') {
-        const twoFAData = TOTPGenerator.parseURI(result)
+        const twoFAData = parseURI(result)
         return [twoFAData]
       }
 
@@ -26,14 +26,14 @@ export class QRScannerService {
   /**
    * 从剪贴板扫描QR码
    */
-  static async scanFromClipboard(): Promise<TwoFAData[]> {
+  static async scanFromClipboard(): Promise<(OTPAuth.TOTP | OTPAuth.HOTP)[]> {
     try {
       if (!('clipboard' in navigator) || !('read' in navigator.clipboard)) {
         throw new Error('Clipboard API not supported')
       }
 
       const clipboardItems = await navigator.clipboard.read()
-      const results: TwoFAData[] = []
+      const results: (OTPAuth.TOTP | OTPAuth.HOTP)[] = []
 
       for (const clipboardItem of clipboardItems) {
         for (const type of clipboardItem.types) {
@@ -57,10 +57,10 @@ export class QRScannerService {
   /**
    * 从拖拽文件扫描QR码
    */
-  static async scanFromDragDrop(dataTransfer: DataTransfer): Promise<TwoFAData[]> {
+  static async scanFromDragDrop(dataTransfer: DataTransfer): Promise<(OTPAuth.TOTP | OTPAuth.HOTP)[]> {
     try {
       const files = Array.from(dataTransfer.files)
-      const results: TwoFAData[] = []
+      const results: (OTPAuth.TOTP | OTPAuth.HOTP)[] = []
 
       for (const file of files) {
         if (file.type.startsWith('image/')) {

@@ -1,13 +1,11 @@
 <script lang='ts'>
-  import type { TwoFAData } from '@/types/2fa'
   import type { OmitBasicDataExcept, TwoFactorAuthData } from '@/types/data'
   import { Link, QrCode } from '@lucide/svelte'
   import Modal from '@/components/modal.svelte'
   import WailsFileSelect from '@/components/wails-file-select.svelte'
-  import { Client2FAService } from '@/services/2fa-client'
   import { getFile } from '@/services/file'
+  import { createFrom2FAData, parseURI, validate2FAData } from '@/utils/2fa'
   import { QRScannerService } from '@/utils/qr-scanner'
-  import { TOTPGenerator } from '@/utils/totp'
 
   interface Props {
     isOpen: boolean
@@ -61,8 +59,8 @@
   }
 
   // Fill form from QR data
-  function fillForm(twoFAData: TwoFAData) {
-    const partial = Client2FAService.createFrom2FAData(twoFAData)
+  function fillForm(twoFAData: import('otpauth').TOTP | import('otpauth').HOTP) {
+    const partial = createFrom2FAData(twoFAData)
     formData = { ...formData, ...partial }
 
     handleSave()
@@ -133,7 +131,7 @@
     }
 
     try {
-      const twoFAData = TOTPGenerator.parseURI(urlInput.trim())
+      const twoFAData = parseURI(urlInput.trim())
       fillForm(twoFAData)
     }
     catch (error) {
@@ -169,7 +167,7 @@
   // Validate and save
   function handleSave() {
     try {
-      Client2FAService.validate2FAData(formData)
+      validate2FAData(formData)
     }
     catch (error) {
       errorMessage = error instanceof Error ? error.message : 'Validation failed'

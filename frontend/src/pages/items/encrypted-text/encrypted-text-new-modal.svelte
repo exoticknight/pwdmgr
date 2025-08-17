@@ -1,5 +1,6 @@
 <script lang='ts'>
   import type { EncryptedTextData, OmitBasicDataExcept } from '@/types/data'
+  import BrandIcon from '@/components/brand-icon.svelte'
   import Modal from '@/components/modal.svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
@@ -57,6 +58,13 @@
       <div class='flex-1 new-entry-panel-left'>
         <form onsubmit={handleFormSubmit}>
           <fieldset class='fieldset w-full'>
+            <label class='label' for='icon'>
+              {i18n.t('forms.icon')}
+            </label>
+            <div class='flex w-full justify-center h-[3rem]'>
+              <BrandIcon name={form.title} size='3rem' />
+            </div>
+
             <!-- Title -->
             <label class='label' for='title'>
               {i18n.t('forms.title')} *

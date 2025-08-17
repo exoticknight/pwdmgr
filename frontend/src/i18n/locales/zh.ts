@@ -53,6 +53,7 @@ export const zh = {
     // Form fields and entry management
     forms: {
       // Field labels
+      icon: '图标',
       username: '用户名',
       password: '密码',
       notes: '备注',

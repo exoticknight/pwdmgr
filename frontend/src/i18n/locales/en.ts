@@ -53,6 +53,7 @@ export const en = {
     // Form fields and entry management
     forms: {
       // Field labels
+      icon: 'Icon',
       username: 'Username',
       password: 'Password',
       notes: 'Notes',

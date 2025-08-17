@@ -78,7 +78,12 @@
       <div class='flex-1 new-entry-panel-left'>
         <form onsubmit={handleFormSubmit}>
           <fieldset class='fieldset w-full'>
-            <BrandIcon name={form.title} />
+            <label class='label' for='icon'>
+              {i18n.t('forms.icon')}
+            </label>
+            <div class='flex w-full justify-center h-[3rem]'>
+              <BrandIcon name={form.title} size='3rem' />
+            </div>
 
             <!-- Title -->
             <label class='label' for='title'>
@@ -133,7 +138,7 @@
 
             <!-- Notes -->
             <label class='label' for='notes'>
-              {i18n.t('forms.notes')} *
+              {i18n.t('forms.notes')}
             </label>
             <textarea
               id='notes'

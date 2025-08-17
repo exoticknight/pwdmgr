@@ -15,24 +15,3 @@ export interface TOTPResult {
   progress: number // Progress between 0-1
   nextCode?: string // Next verification code preview
 }
-
-// QR code parsing result
-export interface TwoFAData {
-  type: 'totp' | 'hotp'
-  label: string
-  secret: string
-  issuer?: string
-  algorithm?: string
-  digits?: number
-  period?: number // TOTP
-  counter?: number // HOTP
-}
-
-// Service provider information
-export interface ServiceProviderInfo {
-  name: string
-  iconUrl?: string
-  websiteUrl?: string
-  backgroundColor?: string
-  textColor?: string
-}

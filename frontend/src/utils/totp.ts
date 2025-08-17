@@ -4,7 +4,7 @@ import typia from 'typia'
 
 export class TOTPGenerator {
   /**
-   * 生成TOTP验证码
+   * Generate TOTP verification code
    */
   static generate(config: TOTPConfig): TOTPResult {
     try {
@@ -22,7 +22,7 @@ export class TOTPGenerator {
 
       const currentCode = totp.generate()
 
-      // 生成下一个验证码预览
+      // Generate next verification code preview
       const nextTimestamp = Date.now() + (config.period * 1000)
       const nextCode = totp.generate({
         timestamp: nextTimestamp,
@@ -42,7 +42,7 @@ export class TOTPGenerator {
   }
 
   /**
-   * 解析URI
+   * Parse URI
    */
   static parseURI(urlStr: string): TwoFAData {
     try {
@@ -83,15 +83,15 @@ export class TOTPGenerator {
   }
 
   /**
-   * 验证secret格式
+   * Validate secret format
    */
   static validateSecret(secret: string): boolean {
     try {
-      // 尝试创建一个TOTP实例来验证secret
+      // Try to create a TOTP instance to verify secret
       const totp = new OTPAuth.TOTP({
         secret,
       })
-      // 尝试生成一个token来验证secret有效性
+      // Try to generate a token to verify secret validity
       totp.generate()
       return true
     }
@@ -101,7 +101,7 @@ export class TOTPGenerator {
   }
 
   /**
-   * 计算剩余时间
+   * Calculate remaining time
    */
   static getRemainingTime(period: number): number {
     const now = Math.floor(Date.now() / 1000)
@@ -110,7 +110,7 @@ export class TOTPGenerator {
   }
 
   /**
-   * 生成随机密钥
+   * Generate random secret key
    */
   static generateSecret(): string {
     const secret = new OTPAuth.Secret()
@@ -118,7 +118,7 @@ export class TOTPGenerator {
   }
 
   /**
-   * 验证TOTP码
+   * Verify TOTP code
    */
   static verify(token: string, config: TOTPConfig, window = 1): boolean {
     try {
@@ -145,7 +145,7 @@ export class TOTPGenerator {
   }
 
   /**
-   * 生成QR码URL
+   * Generate QR code URL
    */
   static generateQRCodeURL(config: TOTPConfig): string {
     const totp = new OTPAuth.TOTP({

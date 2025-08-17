@@ -17,7 +17,7 @@
 
   const { isOpen, onCancel, onSave }: Props = $props()
 
-  // 表单数据
+  // Form data
   let formData = $state<Partial<TwoFactorAuthData>>({
     title: '',
     issuer: '',
@@ -30,14 +30,14 @@
     serviceUrl: '',
   })
 
-  // 错误信息
+  // Error messages
   let errorMessage = $state('')
   let isLoading = $state(false)
 
-  // 输入字段
+  // Input fields
   let urlInput = $state('')
 
-  // 重置表单
+  // Reset form
   function resetForm() {
     formData = {
       title: '',
@@ -54,13 +54,13 @@
     urlInput = ''
   }
 
-  // 关闭模态框
+  // Close modal
   function handleClose() {
     resetForm()
     onCancel()
   }
 
-  // 从QR数据填充表单
+  // Fill form from QR data
   function fillForm(twoFAData: TwoFAData) {
     const partial = Client2FAService.createFrom2FAData(twoFAData)
     formData = { ...formData, ...partial }
@@ -68,7 +68,7 @@
     handleSave()
   }
 
-  // 处理图片上传
+  // Handle image upload
   async function handleImageUpload(filePaths: string[]) {
     if (!filePaths || filePaths.length === 0) {
       return
@@ -79,17 +79,17 @@
     errorMessage = ''
 
     try {
-      // 使用 file service 读取文件
+      // Use file service to read file
       const fileService = getFile()
       const arrayBuffer = await fileService.readFile(filePath)
 
-      // 将 ArrayBuffer 转换为 Blob
+      // Convert ArrayBuffer to Blob
       const blob = new Blob([arrayBuffer])
 
-      // 获取文件扩展名来确定 MIME 类型
+      // Get file extension to determine MIME type
       const fileName = filePath.split(/[/\\]/).pop() || 'image'
       const extension = fileName.split('.').pop()?.toLowerCase() || ''
-      let mimeType = 'image/jpeg' // 默认类型
+      let mimeType = 'image/jpeg' // Default type
 
       if (extension === 'png') {
         mimeType = 'image/png'
@@ -104,7 +104,7 @@
         mimeType = 'image/webp'
       }
 
-      // 创建 File 对象
+      // Create File object
       const file = new File([blob], fileName, { type: mimeType })
 
       const qrResults = await QRScannerService.scanFromImage(file)
@@ -125,7 +125,7 @@
     }
   }
 
-  // 处理URL输入
+  // Handle URL input
   function handleUrlSubmit() {
     if (!urlInput.trim()) {
       errorMessage = 'Please enter a valid otpauth:// URL'
@@ -142,7 +142,7 @@
     }
   }
 
-  // 处理剪贴板扫描
+  // Handle clipboard scanning
   async function handleClipboardScan() {
     isLoading = true
     errorMessage = ''
@@ -166,7 +166,7 @@
     }
   }
 
-  // 验证并保存
+  // Validate and save
   function handleSave() {
     try {
       Client2FAService.validate2FAData(formData)
@@ -177,7 +177,7 @@
       return
     }
 
-    // 创建符合类型要求的entry
+    // Create entry that meets type requirements
     const entry: OmitBasicDataExcept<TwoFactorAuthData, 'TYPE'> = {
       _type: 'two_factor_auth',
       title: formData.title!,

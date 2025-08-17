@@ -43,20 +43,20 @@ export interface EncryptedTextData extends BasicData {
   notes?: string
 }
 
-// 2FA客户端数据（存储各种服务的2FA信息）
+// 2FA client data (stores 2FA information for various services)
 export interface TwoFactorAuthData extends BasicData {
   _type: typeof DataMetaType.TWO_FACTOR_AUTH
   title: string
-  issuer: string // 服务提供方（如Google, GitHub等）
-  username: string // 在该服务的账户名
-  secret: string // 加密存储的密钥
+  issuer: string // Service provider (e.g. Google, GitHub, etc.)
+  username: string // Account name for this service
+  secret: string // Encrypted storage key
   algorithm: 'SHA1' | 'SHA256' | 'SHA512'
   digits: 6 | 8
   period: number
   notes?: string
-  // 客户端特有字段
-  serviceUrl?: string // 服务网址
-  iconUrl?: string // 服务图标
+  // Client-specific fields
+  serviceUrl?: string // Service URL
+  iconUrl?: string // Service icon
 }
 
 export type Datum = PasswordData | EncryptedTextData | TwoFactorAuthData

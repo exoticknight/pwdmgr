@@ -55,7 +55,7 @@ export class Client2FAService {
   static createFrom2FAData(qrData: TwoFAData): Partial<TwoFactorAuthData> {
     const now = new Date().toISOString()
 
-    // 解析标签以获取issuer和账户名
+    // Parse label to get issuer and account name
     let issuer = qrData.issuer ?? ''
     let username = qrData.label
 
@@ -101,14 +101,14 @@ export class Client2FAService {
   static identifyServiceProvider(issuer: string): ServiceProviderInfo {
     const normalizedIssuer = issuer.trim()
 
-    // 查找已知服务
+    // Find known services
     for (const [key, info] of Object.entries(this.KNOWN_SERVICES)) {
       if (normalizedIssuer.toLowerCase().includes(key.toLowerCase())) {
         return info
       }
     }
 
-    // 返回默认信息
+    // Return default information
     return {
       name: normalizedIssuer || 'Unknown Service',
       backgroundColor: '#6b7280',

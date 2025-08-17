@@ -1,4 +1,4 @@
-// TOTP配置接口
+// TOTP configuration interface
 export interface TOTPConfig {
   secret: string
   algorithm: 'SHA1' | 'SHA256' | 'SHA512'
@@ -8,15 +8,15 @@ export interface TOTPConfig {
   username?: string
 }
 
-// TOTP结果接口
+// TOTP result interface
 export interface TOTPResult {
   code: string
   remainingTime: number
-  progress: number // 0-1之间的进度
-  nextCode?: string // 下一个验证码预览
+  progress: number // Progress between 0-1
+  nextCode?: string // Next verification code preview
 }
 
-// QR码解析结果
+// QR code parsing result
 export interface TwoFAData {
   type: 'totp' | 'hotp'
   label: string
@@ -28,7 +28,7 @@ export interface TwoFAData {
   counter?: number // HOTP
 }
 
-// 服务提供商信息
+// Service provider information
 export interface ServiceProviderInfo {
   name: string
   iconUrl?: string

@@ -11,7 +11,7 @@
 
   const { entry, onCopyToClipboard }: Props = $props()
 
-  // 获取服务提供商信息
+  // Get service provider information
   const serviceInfo = Client2FAService.identifyServiceProvider(entry.issuer)
 </script>
 

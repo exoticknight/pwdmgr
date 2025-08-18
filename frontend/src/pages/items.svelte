@@ -48,6 +48,12 @@
         return data.searchEntries(searchTerm).toSorted((a, b) => {
           return compareISO8601String(b._lastUsedAt, a._lastUsedAt)
         })
+      case 'password':
+        return data.searchEntries(searchTerm).filter(entry => entry._type === 'password')
+      case 'text':
+        return data.searchEntries(searchTerm).filter(entry => entry._type === 'encrypted_text')
+      case '2fa':
+        return data.searchEntries(searchTerm).filter(entry => entry._type === 'two_factor_auth')
       default:
         return data.searchEntries(searchTerm)
     }

@@ -1,8 +1,6 @@
 import type { TwoFactorAuthData } from '@/types/data'
-import type { ServiceProviderInfo } from '@/types/service-provider'
 import * as OTPAuth from 'otpauth'
 import typia from 'typia'
-import { ServiceProviderService } from '@/services/service-provider'
 import { validateSecret } from '@/utils/totp'
 
 /**
@@ -36,25 +34,6 @@ export function createFrom2FAData(qrData: OTPAuth.TOTP | OTPAuth.HOTP): Partial<
     _isFavorite: false,
     _createdAt: now,
     _updatedAt: now,
-  }
-}
-
-/**
- * Identify service provider
- * !!!TODO：delete
- */
-export function identifyServiceProvider(issuer: string): ServiceProviderInfo {
-  const provider = ServiceProviderService.find(issuer)
-
-  if (provider) {
-    return provider
-  }
-
-  // Return default information if not found
-  return {
-    name: issuer?.trim() || 'Unknown Service',
-    backgroundColor: '#6b7280',
-    textColor: '#ffffff',
   }
 }
 

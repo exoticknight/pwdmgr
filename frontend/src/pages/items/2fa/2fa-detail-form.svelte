@@ -1,8 +1,8 @@
 <script lang='ts'>
   import type { TwoFactorAuthData } from '@/types/data'
   import { Copy } from '@lucide/svelte'
+  import BrandIcon from '@/components/brand-icon.svelte'
   import TotpDisplay from '@/components/totp-display.svelte'
-  import { identifyServiceProvider } from '@/utils/2fa'
 
   interface Props {
     entry: TwoFactorAuthData
@@ -11,8 +11,6 @@
 
   const { entry, onCopyToClipboard }: Props = $props()
 
-  // Get service provider information
-  const serviceInfo = identifyServiceProvider(entry.issuer)
 </script>
 
 <div class='2fa-detail-form space-y-6'>
@@ -35,12 +33,7 @@
         <div class='flex items-center justify-between'>
           <span class='text-base-content/70'>Service Provider</span>
           <div class='flex items-center gap-2'>
-            <div
-              class='w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold'
-              style='background-color: {serviceInfo.backgroundColor}; color: {serviceInfo.textColor}'
-            >
-              {entry.issuer.charAt(0).toUpperCase()}
-            </div>
+            <BrandIcon name={entry.issuer} size='1.5rem' />
             <span class='font-medium'>{entry.issuer}</span>
             <button
               class='btn btn-ghost btn-xs'

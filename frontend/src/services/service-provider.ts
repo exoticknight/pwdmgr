@@ -4,7 +4,7 @@ import { SERVICE_PROVIDERS } from '@/consts/service-providers'
 /**
  * Service provider management service
  */
-export class ServiceProviderService {
+export class ServiceProvider {
   /**
    * Find service provider by name with partial case-insensitive matching
    * @param query - Query string, service name to search for
@@ -19,8 +19,8 @@ export class ServiceProviderService {
 
     // Partial case-insensitive matching of service names
     for (const [key, provider] of Object.entries(SERVICE_PROVIDERS)) {
-      if (normalizedQuery.includes(key.toLowerCase()) || key.toLowerCase().includes(normalizedQuery)) {
-        return { ...provider }
+      if (normalizedQuery.includes(key)) {
+        return provider
       }
     }
 

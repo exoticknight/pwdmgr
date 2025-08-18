@@ -31,6 +31,27 @@
       },
     },
     {
+      path: Routes.ITEMS_PASSWORD,
+      component: Items,
+      props: {
+        filter: 'password',
+      },
+    },
+    {
+      path: Routes.ITEMS_TEXT,
+      component: Items,
+      props: {
+        filter: 'text',
+      },
+    },
+    {
+      path: Routes.ITEMS_2FA,
+      component: Items,
+      props: {
+        filter: '2fa',
+      },
+    },
+    {
       path: Routes.AUDIT,
       component: Audit,
     },

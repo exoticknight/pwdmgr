@@ -2,6 +2,5 @@
 export interface ServiceProviderInfo {
   name: string
   websiteUrl?: string
-  backgroundColor?: string
-  textColor?: string
+  color?: string
 }

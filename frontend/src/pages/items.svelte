@@ -275,7 +275,6 @@
 
   .main-content {
     height: 100%;
-    background-color: var(--color-bg-primary);
     display: flex;
     flex-direction: column;
   }

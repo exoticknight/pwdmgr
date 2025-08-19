@@ -247,10 +247,6 @@
 {/if}
 
 <style scoped>
-  .detail {
-    background-color: var(--color-bg-secondary);
-  }
-
   .detail-empty {
     height: 100%;
     display: flex;

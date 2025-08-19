@@ -2,6 +2,7 @@
   import type { DialogControl } from '@/types/dialog'
   import {
     BrickWallShield,
+    CircleX,
     Clock,
     FileText,
     RectangleEllipsis,
@@ -9,7 +10,6 @@
     ShieldUser,
     Star,
     WalletCards,
-    X,
   } from '@lucide/svelte'
   import { app } from '@/stores/app.svelte'
   import { database } from '@/stores/database.svelte'
@@ -79,19 +79,18 @@
         {i18n.t('navigation.audit')}
       </button>
     </li>
-  </ul>
-  <div class='flex-grow-1'></div>
-  <ul class='menu w-full'>
     <li>
       <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.SETTING} onclick={() => route.navigate(Routes.SETTING)}>
         <Settings size={16} />
         {i18n.t('navigation.settings')}
       </button>
     </li>
+  </ul>
+  <div class='flex-grow-1'></div>
+  <ul class='menu w-full'>
     <li>
       <button class='btn btn-ghost justify-start gap-3' onclick={handleClose}>
-        <X size={16} />
-        {i18n.t('navigation.close')}
+        <CircleX size={16} />
       </button>
     </li>
   </ul>
@@ -99,6 +98,6 @@
 
 <style scope>
   .navigation {
-    gap: var(--space-sm);
+    background-color: var(--color-bg-secondary);
   }
 </style>

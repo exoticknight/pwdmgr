@@ -24,7 +24,7 @@
 <style scoped>
   .setting-item {
     display: flex;
-    align-items: center;
+    align-items: start;
     justify-content: space-between;
     transition: opacity 0.2s ease-in-out;
   }

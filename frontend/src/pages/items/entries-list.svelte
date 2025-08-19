@@ -80,7 +80,7 @@
             <div class='item-subtitle'>{getSubtitleForEntry(entry)}</div>
           </div>
           <div class='item-append'>
-            <div class='badge badge-ghost'>{getEntryTypeLabel(entry._type)}</div>
+            <div class='badge badge-ghost badge-outline'>{getEntryTypeLabel(entry._type)}</div>
           </div>
         </div>
       {/each}
@@ -111,6 +111,7 @@
 
   .list-item:hover,
   .list-item-selected {
+    background-color: color-mix(in oklab,var(--color-primary,var(--color-base-content))8%,var(--color-base-100));
     border-left-color: var(--color-primary);
   }
 
@@ -122,6 +123,7 @@
     place-content: center;
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-border);
+    background-color: var(--color-base-100);
   }
 
   .item-text {

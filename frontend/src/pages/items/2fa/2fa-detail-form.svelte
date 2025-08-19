@@ -1,6 +1,7 @@
 <script lang='ts'>
   import type { TwoFactorAuthData } from '@/types/data'
-  import { Copy } from '@lucide/svelte'
+  import { Copy, ExternalLink } from '@lucide/svelte'
+  import { BrowserOpenURL } from '@/../wailsjs/runtime/runtime'
   import BrandIcon from '@/components/brand-icon.svelte'
   import TotpDisplay from '@/components/totp-display.svelte'
 
@@ -10,6 +11,12 @@
   }
 
   const { entry, onCopyToClipboard }: Props = $props()
+
+  function handleOpenUrl() {
+    if (entry.serviceUrl) {
+      BrowserOpenURL(entry.serviceUrl)
+    }
+  }
 
 </script>
 
@@ -67,15 +74,23 @@
                 href={entry.serviceUrl}
                 target='_blank'
                 rel='noopener noreferrer'
-                class='link link-primary'
+                class='link link-primary truncate max-w-48'
               >
                 {entry.serviceUrl}
               </a>
               <button
                 class='btn btn-ghost btn-xs'
                 onclick={() => onCopyToClipboard(entry.serviceUrl || '')}
+                title='Copy URL'
               >
                 <Copy class='w-3 h-3' />
+              </button>
+              <button
+                class='btn btn-ghost btn-xs'
+                onclick={handleOpenUrl}
+                title='Open in browser'
+              >
+                <ExternalLink class='w-3 h-3' />
               </button>
             </div>
           </div>

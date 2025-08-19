@@ -1,8 +1,9 @@
 <script lang='ts'>
   import type { PasswordData } from '@/types/data'
 
-  import { Copy, Eye, EyeOff, WandSparkles } from '@lucide/svelte'
+  import { Copy, ExternalLink, Eye, EyeOff, WandSparkles } from '@lucide/svelte'
 
+  import { BrowserOpenURL } from '@/../wailsjs/runtime/runtime'
   import PasswordStrength from '@/components/password-strength.svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
@@ -43,6 +44,13 @@
     onFieldChange('password', password)
     closePasswordGenerator()
   }
+
+  function handleOpenUrl() {
+    const url = formData.url || entry.url
+    if (url) {
+      BrowserOpenURL(url)
+    }
+  }
 </script>
 
 <div class='password-detail-form'>
@@ -55,7 +63,7 @@
       id='username-input'
       type='text'
       class='input join-item flex-1'
-      value={(formData as any).username || ''}
+      value={formData.username || ''}
       oninput={e => onFieldChange('username', e.currentTarget.value)}
       placeholder={i18n.t('forms.usernamePlaceholder')}
     />
@@ -78,7 +86,7 @@
       id='password-input'
       type={showPassword ? 'text' : 'password'}
       class='input join-item flex-1'
-      value={(formData as any).password || ''}
+      value={formData.password || ''}
       oninput={e => onFieldChange('password', e.currentTarget.value)}
       placeholder={i18n.t('forms.passwordPlaceholder')}
     />
@@ -115,6 +123,39 @@
   </div>
   <!-- Password strength indicator -->
   <PasswordStrength alwaysShow={true} password={(formData as any).password || ''} />
+
+  <!-- URL Field -->
+  <label class='label' for='url-input'>
+    {i18n.t('forms.url')}
+  </label>
+  <div class='join w-full'>
+    <input
+      id='url-input'
+      type='url'
+      class='input join-item flex-1'
+      value={formData.url || ''}
+      oninput={e => onFieldChange('url', e.currentTarget.value)}
+      placeholder={i18n.t('forms.urlPlaceholder')}
+    />
+    <button
+      type='button'
+      class='btn join-item'
+      onclick={() => onCopyToClipboard(entry.url || '')}
+      title={i18n.t('actions.copy')}
+      disabled={!formData.url && !entry.url}
+    >
+      <Copy size={16} />
+    </button>
+    <button
+      type='button'
+      class='btn join-item'
+      onclick={handleOpenUrl}
+      title={i18n.t('actions.openUrl')}
+      disabled={!formData.url && !entry.url}
+    >
+      <ExternalLink size={16} />
+    </button>
+  </div>
 
   <!-- Notes Field -->
   <label class='label' for='notes-input'>

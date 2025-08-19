@@ -62,13 +62,15 @@ export const en = {
       notes: 'Notes',
       title: 'Title',
       content: 'Content',
+      url: 'Website URL',
 
       // Field placeholders
       usernamePlaceholder: 'Enter username',
       passwordPlaceholder: 'Enter password',
-      notesPlaceholder: 'Optional notes...',
+      notesPlaceholder: 'Enter notes',
       titlePlaceholder: 'Enter title',
-      contentPlaceholder: 'Enter text content to encrypt...',
+      contentPlaceholder: 'Enter text content to encrypt',
+      urlPlaceholder: 'Enter website URL',
 
       // Entry management
       emptySubtitle: 'Select an entry to view details',
@@ -116,6 +118,7 @@ export const en = {
       copy: 'Copy',
       showPassword: 'Show password',
       hidePassword: 'Hide password',
+      openUrl: 'Open in browser',
 
       // Favorite actions
       addToFavorites: 'Add to favorites',

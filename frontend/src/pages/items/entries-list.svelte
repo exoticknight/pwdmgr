@@ -62,27 +62,30 @@
       {i18n.t('search.noResults')}
     </div>
   {:else}
-    {#each filteredEntries as entry}
-      <div
-        class='list-item'
-        class:list-item-selected={selectedId === entry._id}
-        onclick={() => handleEntryClick(entry)}
-        onkeydown={e => handleKeydown(e, entry)}
-        role='button'
-        tabindex='0'
-      >
-        <div class='item-figure'>
-          <BrandIcon name={entry.title} size='2rem' />
+    <div class='w-full flex flex-col'>
+      {#each filteredEntries as entry}
+        <div
+          class='list-item'
+          class:list-item-selected={selectedId === entry._id}
+          onclick={() => handleEntryClick(entry)}
+          onkeydown={e => handleKeydown(e, entry)}
+          role='button'
+          tabindex='0'
+        >
+          <div class='item-figure'>
+            <BrandIcon name={entry.title} size='2rem' />
+          </div>
+          <div class='item-text'>
+            <div class='item-title'>{entry.title}</div>
+            <div class='item-subtitle'>{getSubtitleForEntry(entry)}</div>
+          </div>
+          <div class='item-append'>
+            <div class='badge badge-ghost'>{getEntryTypeLabel(entry._type)}</div>
+          </div>
         </div>
-        <div class='item-text'>
-          <div class='item-title'>{entry.title}</div>
-          <div class='item-subtitle'>{getSubtitleForEntry(entry)}</div>
-        </div>
-        <div class='item-append'>
-          <div class='badge badge-ghost'>{getEntryTypeLabel(entry._type)}</div>
-        </div>
-      </div>
-    {/each}
+      {/each}
+    </div>
+
   {/if}
 </div>
 
@@ -100,27 +103,15 @@
     display: grid;
     grid-template-columns: auto 1fr auto;
     overflow: hidden;
-    border-bottom: 1px solid var(--color-border-light);
+    border: 5px solid transparent;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition: border-color 0.15s ease;
     background-color: var(--color-bg-primary);
   }
 
-  .list-item:hover:not(.list-item-selected) {
-    background-color: var(--color-bg-secondary);
-  }
-
+  .list-item:hover,
   .list-item-selected {
-    background-color: var(--color-primary);
-    color: white;
-  }
-
-  .list-item-selected:hover {
-    background-color: var(--color-primary-hover);
-  }
-
-  .list-item-selected .item-subtitle {
-    color: rgba(255, 255, 255, 0.8);
+    border-left-color: var(--color-primary);
   }
 
   .item-figure {
@@ -129,7 +120,8 @@
     display: grid;
     place-items: center;
     place-content: center;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
   }
 
   .item-text {

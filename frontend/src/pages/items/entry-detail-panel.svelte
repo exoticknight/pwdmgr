@@ -165,7 +165,7 @@
     </div>
   </div>
 {:else}
-  <div class='h-full flex flex-col p-4 gap-2'>
+  <div class='detail h-full flex flex-col p-4 gap-2'>
     <div class='flex items-center justify-between gap-6'>
       <h2 class='detail-title flex-1 flex items-center overflow-hidden gap-2'>
         <span class='min-w-0 overflow-hidden text-lg font-semibold text-ellipsis text-nowrap'>
@@ -247,6 +247,10 @@
 {/if}
 
 <style scoped>
+  .detail {
+    background-color: var(--color-bg-secondary);
+  }
+
   .detail-empty {
     height: 100%;
     display: flex;

@@ -48,7 +48,7 @@
   <!-- Right side - Actions -->
   <div class='toolbar-section'>
     <div class='dropdown dropdown-end'>
-      <div tabindex='0' role='button' class='btn btn-sm btn-soft'>
+      <div tabindex='0' role='button' class='btn btn-sm btn-primary'>
         {i18n.t('buttons.newEntry')}<ChevronDown size={12} />
       </div>
       <ul class='dropdown-content menu bg-base-100 shadow-sm'>

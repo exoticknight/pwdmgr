@@ -1,24 +1,22 @@
 <script lang='ts'>
   import { KeyRound } from '@lucide/svelte'
-  import { ServiceProvider } from '@/services/service-provider'
 
   interface Props {
     name: string
     size: string
     class?: string
+    style?: string
   }
 
-  const { name, class: className, size, ...props }: Props = $props()
+  const { name, class: className, size, style: customStyle, ...props }: Props = $props()
   const c = $derived(`${name.length > 1 ? `fa-brands fa-${name.toLocaleLowerCase()}` : ''} ${className || ''}`)
-
-  const fillColor = $derived(`color:${ServiceProvider.find(name)?.color || 'inherit'}`)
 
   const style = $derived([
     'line-height:1',
     `width:${size}`,
     `height:${size}`,
     `font-size:${size}`,
-    fillColor,
+    customStyle,
   ].join(';'))
 </script>
 

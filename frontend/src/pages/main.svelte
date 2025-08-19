@@ -106,7 +106,7 @@
   }
 
   .main-split-bar {
-    width: 1px;
+    width: 2px;
     background-color: var(--color-border);
     border: none;
     padding: 0;

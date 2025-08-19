@@ -24,6 +24,7 @@
     username: '',
     password: '',
     notes: '',
+    url: '',
   })
 
   // UI state
@@ -45,6 +46,7 @@
       username: form.username.trim(),
       password: form.password.trim(),
       notes: form.notes.trim(),
+      url: form.url.trim() || undefined,
     })
   }
 
@@ -135,6 +137,18 @@
             </div>
             <!-- Password strength indicator -->
             <PasswordStrength alwaysShow={true} password={form.password} />
+
+            <!-- URL -->
+            <label class='label' for='url'>
+              {i18n.t('forms.url')}
+            </label>
+            <input
+              id='url'
+              type='url'
+              bind:value={form.url}
+              placeholder={i18n.t('forms.urlPlaceholder')}
+              class='input w-full font-mono'
+            />
 
             <!-- Notes -->
             <label class='label' for='notes'>

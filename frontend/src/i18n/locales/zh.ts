@@ -62,13 +62,15 @@ export const zh = {
       notes: '备注',
       title: '标题',
       content: '内容',
+      url: '网站网址',
 
       // Field placeholders
       usernamePlaceholder: '请输入用户名',
       passwordPlaceholder: '请输入密码',
-      notesPlaceholder: '可选备注...',
+      notesPlaceholder: '请输入备注',
       titlePlaceholder: '请输入标题',
-      contentPlaceholder: '请输入要加密的文本内容...',
+      contentPlaceholder: '请输入要加密的文本内容',
+      urlPlaceholder: '请输入网站网址',
 
       // Entry management
       emptySubtitle: '选择一个条目来查看详细信息',
@@ -116,6 +118,7 @@ export const zh = {
       copy: '复制',
       showPassword: '显示密码',
       hidePassword: '隐藏密码',
+      openUrl: '在浏览器中打开',
 
       // Favorite actions
       addToFavorites: '添加到收藏',

@@ -62,13 +62,15 @@ export const ja = {
       notes: 'メモ',
       title: 'タイトル',
       content: 'コンテンツ',
+      url: 'ウェブサイトURL',
 
       // フィールドプレースホルダー
       usernamePlaceholder: 'ユーザー名を入力',
       passwordPlaceholder: 'パスワードを入力',
-      notesPlaceholder: 'オプションのメモ...',
+      notesPlaceholder: 'メモを入力',
       titlePlaceholder: 'タイトルを入力',
-      contentPlaceholder: '暗号化するテキストを入力...',
+      contentPlaceholder: '暗号化するテキストを入力',
+      urlPlaceholder: 'ウェブサイトURLを入力',
 
       // エントリ管理
       emptySubtitle: 'エントリを選択して詳細を表示',
@@ -116,6 +118,7 @@ export const ja = {
       copy: 'コピー',
       showPassword: 'パスワードを表示',
       hidePassword: 'パスワードを非表示',
+      openUrl: 'ブラウザで開く',
 
       // お気に入りアクション
       addToFavorites: 'お気に入りに追加',

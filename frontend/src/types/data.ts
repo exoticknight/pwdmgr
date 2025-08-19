@@ -34,6 +34,7 @@ export interface PasswordData extends BasicData {
   username: string
   password: string
   notes?: string
+  url?: string // Service website URL
 }
 
 export interface EncryptedTextData extends BasicData {

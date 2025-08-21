@@ -3,19 +3,17 @@
   import {
     BrickWallShield,
     CircleX,
-    Clock,
-    FileText,
-    RectangleEllipsis,
     Settings,
-    ShieldUser,
-    Star,
-    WalletCards,
   } from '@lucide/svelte'
+  import { onDestroy, onMount } from 'svelte'
   import { app } from '@/stores/app.svelte'
+  import { autoLock } from '@/stores/auto-lock.svelte'
   import { database } from '@/stores/database.svelte'
   import { dialog } from '@/stores/dialog.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { navigation } from '@/stores/navigation.svelte'
   import { route, Routes } from '@/stores/route.svelte'
+  import { throttle } from '@/utils/throttle'
 
   const dialogControl: DialogControl = dialog
 
@@ -31,46 +29,36 @@
     database.close()
     route.navigate(Routes.LANDING)
   }
+
+  const throttledHandleActivity = throttle(() => autoLock.resetTimer(), 300)
+
+  onMount(() => {
+    ;['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach((event) => {
+      document.addEventListener(event, throttledHandleActivity, { passive: true })
+    })
+  })
+
+  onDestroy(() => {
+    ;['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach((event) => {
+      document.removeEventListener(event, throttledHandleActivity)
+    })
+  })
 </script>
 
 <nav class='navigation w-full h-full flex flex-col'>
   <ul class='menu w-full'>
-    <li>
-      <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.ITEMS_ALL} onclick={() => route.navigate(Routes.ITEMS_ALL)}>
-        <WalletCards size={16} />
-        {i18n.t('navigation.allItems')}
-      </button>
-    </li>
-    <li>
-      <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.ITEMS_FAVORITES} onclick={() => route.navigate(Routes.ITEMS_FAVORITES)}>
-        <Star size={16} />
-        {i18n.t('navigation.favorites')}
-      </button>
-    </li>
-    <li>
-      <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.ITEMS_RECENT} onclick={() => route.navigate(Routes.ITEMS_RECENT)}>
-        <Clock size={16} />
-        {i18n.t('navigation.recentlyUsed')}
-      </button>
-    </li>
-    <li>
-      <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.ITEMS_PASSWORD} onclick={() => route.navigate(Routes.ITEMS_PASSWORD)}>
-        <RectangleEllipsis size={16} />
-        {i18n.t('navigation.password')}
-      </button>
-    </li>
-    <li>
-      <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.ITEMS_TEXT} onclick={() => route.navigate(Routes.ITEMS_TEXT)}>
-        <FileText size={16} />
-        {i18n.t('navigation.text')}
-      </button>
-    </li>
-    <li>
-      <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.ITEMS_2FA} onclick={() => route.navigate(Routes.ITEMS_2FA)}>
-        <ShieldUser size={16} />
-        {i18n.t('navigation.twoFactorAuth')}
-      </button>
-    </li>
+    {#each navigation.visibleItems as item (item.id)}
+      <li>
+        <button
+          class='btn btn-ghost justify-start gap-3'
+          class:btn-active={route.route === item.route}
+          onclick={() => route.navigate(item.route)}
+        >
+          <item.icon size={16} />
+          {i18n.t(item.labelKey)}
+        </button>
+      </li>
+    {/each}
   </ul>
   <ul class='menu w-full'>
     <li>

@@ -237,6 +237,13 @@ export const ja = {
         themeAuto: 'システムに従う',
         themeLight: 'ライト',
         themeDark: 'ダーク',
+        navigation: 'ナビゲーション',
+        navigationDescription: 'ナビゲーション項目の順序と表示設定をカスタマイズ',
+        navigationResetButton: 'デフォルトに戻す',
+        navigationMoveUp: '上に移動',
+        navigationMoveDown: '下に移動',
+        navigationShow: '表示に切り替え',
+        navigationHide: '非表示に切り替え',
       },
 
       // 時間単位

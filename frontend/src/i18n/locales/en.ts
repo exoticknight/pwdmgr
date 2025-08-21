@@ -237,6 +237,13 @@ export const en = {
         themeAuto: 'Follow System',
         themeLight: 'Light',
         themeDark: 'Dark',
+        navigation: 'Navigation',
+        navigationDescription: 'Customize the order and visibility of navigation items',
+        navigationResetButton: 'Reset to Default',
+        navigationMoveUp: 'Move up',
+        navigationMoveDown: 'Move down',
+        navigationShow: 'Switch to show',
+        navigationHide: 'Switch to hide',
       },
 
       // Time units

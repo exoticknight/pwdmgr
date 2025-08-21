@@ -1,3 +1,4 @@
+import type { PartialDeep } from 'type-fest'
 import type { DeepPaths, DeepValue } from '@/types/deep-access'
 import type { Setting } from '@/types/setting'
 import { DEFAULT_SETTINGS } from '@/consts/setting'
@@ -21,7 +22,7 @@ class SettingStore {
     return this.#state.initialized
   }
 
-  initialize(settings?: Partial<Setting>): void {
+  initialize(settings?: PartialDeep<Setting>): void {
     if (settings) {
       this.#state.data = this.#deepMerge($state.snapshot(this.#state.data), settings)
     }

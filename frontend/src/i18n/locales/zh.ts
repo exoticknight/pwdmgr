@@ -237,6 +237,13 @@ export const zh = {
         themeAuto: '跟随系统',
         themeLight: '浅色',
         themeDark: '深色',
+        navigation: '导航栏',
+        navigationDescription: '自定义导航项的顺序和可见性',
+        navigationResetButton: '重置为默认',
+        navigationMoveUp: '向上移动',
+        navigationMoveDown: '向下移动',
+        navigationShow: '切换到显示',
+        navigationHide: '切换到隐藏',
       },
 
       // 时间单位

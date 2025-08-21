@@ -1,12 +1,13 @@
+import type { PartialDeep } from 'type-fest'
 import type { Datum } from '@/types/data'
 import type { DataFile } from '@/types/datafile'
+
 import type { Setting } from '@/types/setting'
 
 import typia from 'typia'
-
 import { DEFAULT_SETTINGS } from '@/consts/setting'
-import { VERSION } from '@/consts/version'
 
+import { VERSION } from '@/consts/version'
 import { i18n } from '@/stores/i18n.svelte'
 import { data } from './data.svelte'
 import { setting } from './setting.svelte'
@@ -42,7 +43,7 @@ class DatabaseStore {
     try {
       if (dataFile != null) {
         const rawData = typia.assert<Datum[]>(dataFile.data)
-        const settings = typia.assert<Partial<Setting>>(dataFile.setting ?? {})
+        const settings = typia.assert<PartialDeep<Setting>>(dataFile.setting ?? {})
 
         data.initialize(rawData)
         setting.initialize(settings)

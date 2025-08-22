@@ -10,9 +10,10 @@
 
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { navigation } from '@/stores/navigation.svelte'
   import { notification } from '@/stores/notification.svelte'
-  import { route, Routes } from '@/stores/route.svelte'
 
+  import { route, Routes } from '@/stores/route.svelte'
   import { userState } from '@/stores/user.svelte'
   import PasswordForm from './landing/password-form.svelte'
 
@@ -76,7 +77,7 @@
         userState.password = password
       }
 
-      route.navigate(Routes.ITEMS_ALL)
+      route.navigate(navigation.visibleItems.at(0)?.route || Routes.ITEMS_ALL)
     }
     catch (err) {
       console.error('Failed to process database:', err)

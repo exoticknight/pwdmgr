@@ -3,6 +3,7 @@
 
   import { FileLock, Plus } from '@lucide/svelte'
 
+  import LanguageSelector from '@/components/language-selector.svelte'
   import WailsFileSelect from '@/components/wails-file-select.svelte'
 
   import { getDataManager } from '@/services/data-manager'
@@ -160,6 +161,9 @@
     {/if}
   </div>
 </div>
+
+<!-- Language Selector - Fixed Position -->
+<LanguageSelector />
 
 <style>
   .landing-container {

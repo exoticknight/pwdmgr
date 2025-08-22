@@ -7,7 +7,6 @@
 
   import { getDataManager } from '@/services/data-manager'
 
-  import { autoLock } from '@/stores/auto-lock.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
@@ -75,8 +74,6 @@
         userState.dbPath = ''
         userState.password = password
       }
-
-      autoLock.startTimer()
 
       route.navigate(Routes.ITEMS_ALL)
     }

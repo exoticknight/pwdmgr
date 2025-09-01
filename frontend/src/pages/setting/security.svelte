@@ -1,11 +1,12 @@
 <script lang='ts'>
-  import ChangePasswordModal from '@/components/change-password-modal.svelte'
+  import { auth } from '@/stores/auth.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { setting } from '@/stores/setting.svelte'
+
+  import ChangePasswordModal from './change-password-modal.svelte'
+  import ChangeRecoveryModal from './change-recovery-modal.svelte'
   import SettingItem from './setting-item.svelte'
   import SettingSection from './setting-section.svelte'
-
-  let showChangePasswordModal = $state(false)
 
   function handleAutoLockChange(event: Event, markUnsaved: () => void) {
     const checkbox = event.target as HTMLInputElement
@@ -22,12 +23,20 @@
     markUnsaved()
   }
 
+  let showChangePasswordModal = $state(false)
   function openChangePasswordModal() {
     showChangePasswordModal = true
   }
-
   function closeChangePasswordModal() {
     showChangePasswordModal = false
+  }
+
+  let showRecoveryCodeModal = $state(false)
+  function handleRecoveryCodeOpen() {
+    showRecoveryCodeModal = true
+  }
+  function closeRecoveryCodeModal() {
+    showRecoveryCodeModal = false
   }
 </script>
 
@@ -84,10 +93,35 @@
         </button>
       {/snippet}
     </SettingItem>
+
+    <SettingItem
+      title={i18n.t('setting.security.recoveryCode')}
+      description={i18n.t('setting.security.recoveryCodeDescription')}
+    >
+      {#snippet control()}
+        <button
+          type='button'
+          class='btn btn-outline'
+          class:btn-error={auth.isRecoveryEnabled}
+          onclick={handleRecoveryCodeOpen}
+        >
+          {#if auth.isRecoveryEnabled}
+            {i18n.t('setting.security.recoveryCodeEnabledButtonText')}
+          {:else}
+            {i18n.t('setting.security.recoveryCodeButtonText')}
+          {/if}
+        </button>
+      {/snippet}
+    </SettingItem>
   {/snippet}
 </SettingSection>
 
 <ChangePasswordModal
   isOpen={showChangePasswordModal}
   onClose={closeChangePasswordModal}
+/>
+
+<ChangeRecoveryModal
+  isOpen={showRecoveryCodeModal}
+  onClose={closeRecoveryCodeModal}
 />

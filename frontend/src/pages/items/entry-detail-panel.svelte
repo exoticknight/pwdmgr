@@ -6,8 +6,10 @@
 
   import { dialog } from '@/stores/dialog.svelte'
   import { i18n } from '@/stores/i18n.svelte'
-
   import { notification } from '@/stores/notification.svelte'
+
+  import { copyTextToClipboard } from '@/utils/clipboard'
+
   import TwoFactorAuthDetailForm from './2fa/2fa-detail-form.svelte'
   import EncryptedTextDetailForm from './encrypted-text/encrypted-text-detail-form.svelte'
   import PasswordDetailForm from './password/password-detail-form.svelte'
@@ -57,9 +59,8 @@
     }
   }
 
-  function copyToClipboard(text: string) {
-    navigator.clipboard
-      .writeText(text)
+  function copy(text: string) {
+    copyTextToClipboard(text)
       .then(() => {
         notification.success(i18n.t('notifications.copied'))
 
@@ -137,8 +138,7 @@
 
       const shareText = data.join('\n')
 
-      navigator.clipboard
-        .writeText(shareText)
+      copyTextToClipboard(shareText)
         .then(() => {
           notification.success(i18n.t('notifications.shareSuccess'))
         })
@@ -165,7 +165,7 @@
     </div>
   </div>
 {:else}
-  <div class='detail h-full flex flex-col p-4 gap-2'>
+  <div class='detail h-full flex flex-col p-4 gap-4'>
     <div class='flex items-center justify-between gap-6'>
       <h2 class='detail-title flex-1 flex items-center overflow-hidden gap-2'>
         <span class='min-w-0 overflow-hidden text-lg font-semibold text-ellipsis text-nowrap'>
@@ -205,31 +205,28 @@
       </div>
     </div>
 
-    <!-- Content - Scrollable -->
-    <div class='detail-content'>
-      <fieldset class='fieldset w-full'>
-        {#if isPasswordEntry}
-          <PasswordDetailForm
-            entry={entry as PasswordData}
-            formData={formData as Partial<PasswordData>}
-            onFieldChange={handleFieldChange}
-            onCopyToClipboard={copyToClipboard}
-          />
-        {:else if isEncryptedTextEntry}
-          <EncryptedTextDetailForm
-            entry={entry as EncryptedTextData}
-            formData={formData as Partial<EncryptedTextData>}
-            onFieldChange={handleFieldChange}
-            onCopyToClipboard={copyToClipboard}
-          />
-        {:else if isTwoFactorAuthEntry}
-          <TwoFactorAuthDetailForm
-            entry={entry as TwoFactorAuthData}
-            onCopyToClipboard={copyToClipboard}
-          />
-        {/if}
-      </fieldset>
-
+    <!-- Content -->
+    <div class='flex flex-col overflow-y-auto gap-4'>
+      {#if isPasswordEntry}
+        <PasswordDetailForm
+          entry={entry as PasswordData}
+          formData={formData as Partial<PasswordData>}
+          onFieldChange={handleFieldChange}
+          onCopyToClipboard={copy}
+        />
+      {:else if isEncryptedTextEntry}
+        <EncryptedTextDetailForm
+          entry={entry as EncryptedTextData}
+          formData={formData as Partial<EncryptedTextData>}
+          onFieldChange={handleFieldChange}
+          onCopyToClipboard={copy}
+        />
+      {:else if isTwoFactorAuthEntry}
+        <TwoFactorAuthDetailForm
+          entry={entry as TwoFactorAuthData}
+          onCopyToClipboard={copy}
+        />
+      {/if}
       <!-- Time Information -->
       <div class='time-info'>
         <div class='time-item'>
@@ -267,11 +264,6 @@
 
   .star-btn {
     cursor: pointer;
-  }
-
-  .detail-content {
-    flex: 1;
-    overflow-y: auto;
   }
 
   .time-info {

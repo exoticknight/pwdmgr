@@ -1,41 +1,52 @@
 <script lang='ts'>
-  import type { DataFile } from '@/types/datafile'
-
   import { FileLock, Plus } from '@lucide/svelte'
 
   import LanguageSelector from '@/components/language-selector.svelte'
   import WailsFileSelect from '@/components/wails-file-select.svelte'
 
-  import { getDataManager } from '@/services/data-manager'
+  import { getFileService } from '@/services/file'
+  import { getIoService } from '@/services/io'
 
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+
   import { navigation } from '@/stores/navigation.svelte'
   import { notification } from '@/stores/notification.svelte'
-
   import { route, Routes } from '@/stores/route.svelte'
   import { userState } from '@/stores/user.svelte'
   import PasswordForm from './landing/password-form.svelte'
+  import RecoveryCodeModal from './landing/recovery-code-modal.svelte'
 
-  let showPasswordInput = $state(false)
-  let selectedFilePath = $state<string | null>(null)
-  let isNewDatabase = $state(false)
   let password = $state('')
   let confirmPassword = $state('')
   let isLoading = $state(false)
+  let isRecoverable = $state(false)
 
-  const dataManager = getDataManager()
-
-  function handleFileSelected(filePath: string) {
+  let showPasswordInput = $state(false)
+  let isNewDatabase = $state(false)
+  let selectedFilePath = $state<string | null>(null)
+  async function handleFileSelected(filePath: string) {
     isNewDatabase = false
-    showPasswordInput = true
     selectedFilePath = filePath
-  }
 
+    // proceed to show password input
+    showPasswordInput = true
+  }
   function handleFilesSelected(filePaths: string[]) {
     if (filePaths.length > 0) {
       handleFileSelected(filePaths[0])
     }
+  }
+
+  let isRecoveryCodeModalOpen = $state(false)
+  function handleRecoveryOpen() {
+    isRecoveryCodeModalOpen = true
+  }
+  function handleRecoveryClose() {
+    isRecoveryCodeModalOpen = false
+  }
+  function handleRecovery() {
+    isRecoveryCodeModalOpen = false
   }
 
   function createNewDatabase() {
@@ -64,24 +75,24 @@
       isLoading = true
 
       if (selectedFilePath) {
-        const databaseFile = await dataManager.loadFromFile<DataFile>(selectedFilePath, password)
-        database.close()
-        await database.initialize(databaseFile)
+        const content = await getIoService().readFile(selectedFilePath)
+        const file = await getFileService().load(content)
+        if (file.keyData.recoveryEncryptedMasterKey) {
+          isRecoverable = true
+        }
+        await database.loadFromFile(file, password)
         userState.dbPath = selectedFilePath
-        userState.password = password
       }
       else if (isNewDatabase) {
-        database.close()
-        await database.initialize()
+        await database.loadFromScratch(password)
         userState.dbPath = ''
-        userState.password = password
       }
 
       route.navigate(navigation.visibleItems.at(0)?.route || Routes.ITEMS_ALL)
     }
     catch (err) {
       console.error('Failed to process database:', err)
-      notification.error(String(err) || i18n.t('messages.loadDatabaseFileFailed'))
+      notification.error(i18n.t('messages.loadDatabaseFileFailed'))
     }
     finally {
       isLoading = false
@@ -89,11 +100,12 @@
   }
 
   function resetState() {
-    showPasswordInput = false
     selectedFilePath = null
     isNewDatabase = false
+    isRecoverable = false
     password = ''
     confirmPassword = ''
+    showPasswordInput = false
   }
 
   const displayFileName = $derived(selectedFilePath ? selectedFilePath.split(/[/\\]/).pop() || '' : '')
@@ -138,7 +150,7 @@
         </WailsFileSelect>
 
         <div class='divider-section'>
-          <span class='divider-text'>{i18n.t('actions.or')}</span>
+          <span class='divider-text'>{i18n.t('common.or')}</span>
         </div>
 
         <button
@@ -152,19 +164,27 @@
     {:else}
       <PasswordForm
         {isNewDatabase}
-        selectedFile={{ name: displayFileName } as File}
+        {isRecoverable}
+        selectedFile={displayFileName}
         bind:password
         bind:confirmPassword
         {isLoading}
         onSubmit={handlePasswordSubmit}
         onReset={resetState}
+        onRecover={handleRecoveryOpen}
       />
     {/if}
   </div>
 </div>
 
-<!-- Language Selector - Fixed Position -->
 <LanguageSelector />
+
+<RecoveryCodeModal
+  filePath={selectedFilePath!}
+  onEnd={handleRecovery}
+  isOpen={isRecoveryCodeModalOpen}
+  onClose={handleRecoveryClose}
+/>
 
 <style>
   .landing-container {

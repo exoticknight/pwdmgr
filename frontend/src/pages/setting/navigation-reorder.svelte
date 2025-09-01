@@ -34,7 +34,6 @@
 </script>
 
 <div class='space-y-4'>
-  <!-- Navigation items list -->
   <div class='space-y-1'>
     {#each allItems as item, index (item.id)}
       <div
@@ -44,7 +43,6 @@
             : 'border-base-300/70'
         }`}
       >
-        <!-- Column 1: Visibility toggle (Theme controller style with toggle and icons) -->
         <label class='swap tooltip tooltip-left' data-tip={item.visible ? i18n.t('setting.interface.navigationHide') : i18n.t('setting.interface.navigationShow')}>
           <input
             type='checkbox'

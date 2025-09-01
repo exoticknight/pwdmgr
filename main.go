@@ -17,7 +17,7 @@ func main() {
 	fileService := NewFileService()
 
 	err := wails.Run(&options.App{
-		Title:  "mat6maa5",
+		Title:  "bei3mat6",
 		Width:  1000,
 		Height: 800,
 		AssetServer: &assetserver.Options{

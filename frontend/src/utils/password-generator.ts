@@ -1,3 +1,13 @@
+import { randomInt } from 'mathjs'
+
+function fisherYatesShuffle<T>(array: T[]): T[] {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = randomInt(0, i + 1);
+    [array[i], array[j]] = [array[j], array[i]]
+  }
+  return array
+}
+
 // Password generator utility class
 export interface PasswordGeneratorOptions {
   length: number
@@ -10,44 +20,46 @@ export interface PasswordGeneratorOptions {
 }
 
 export class PasswordGenerator {
-  private static readonly UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  private static readonly LOWERCASE = 'abcdefghijklmnopqrstuvwxyz'
-  private static readonly NUMBERS = '0123456789'
-  private static readonly SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?'
-  private static readonly SIMILAR = 'il1Lo0O'
-  private static readonly AMBIGUOUS = '{}[]()/\\\'"`~,;.<>'
+  static #UPPERCASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  static #LOWERCASE = 'abcdefghijklmnopqrstuvwxyz'
+  static #NUMBERS = '0123456789'
+  static #SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?'
+  static #SIMILAR = 'il1Lo0O'
+  static #AMBIGUOUS = '{}[]()/\\\'"`~,;.<>'
 
   static generate(options: PasswordGeneratorOptions): string {
     let charset = ''
 
     if (options.includeUppercase) {
-      charset += this.UPPERCASE
+      charset += this.#UPPERCASE
     }
     if (options.includeLowercase) {
-      charset += this.LOWERCASE
+      charset += this.#LOWERCASE
     }
     if (options.includeNumbers) {
-      charset += this.NUMBERS
+      charset += this.#NUMBERS
     }
     if (options.includeSymbols) {
-      charset += this.SYMBOLS
+      charset += this.#SYMBOLS
     }
 
     if (options.excludeSimilar) {
-      charset = charset.replace(new RegExp(`[${this.SIMILAR}]`, 'g'), '')
+      charset = charset.replace(new RegExp(`[${this.#SIMILAR}]`, 'g'), '')
     }
     if (options.excludeAmbiguous) {
-      charset = charset.replace(new RegExp(`[${this.AMBIGUOUS.replace(/[[\]\\]/g, '\\$&')}]`, 'g'), '')
+      charset = charset.replace(new RegExp(`[${this.#AMBIGUOUS.replace(/[[\]\\]/g, '\\$&')}]`, 'g'), '')
     }
 
     if (charset.length === 0) {
       throw new Error('No character set selected')
     }
 
+    const shuffledCharset = fisherYatesShuffle(charset.split('')).join('')
+
     let password = ''
     for (let i = 0; i < options.length; i++) {
-      const randomIndex = Math.floor(Math.random() * charset.length)
-      password += charset[randomIndex]
+      const randomIndex = randomInt(0, shuffledCharset.length)
+      password += shuffledCharset[randomIndex]
     }
 
     return password

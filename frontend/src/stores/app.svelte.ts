@@ -1,6 +1,3 @@
-// Application-level state management
-// This store manages UI state and application-level concerns
-
 interface AppState {
   hasDataUnsavedChanges: boolean
   hasSettingUnsavedChanges?: boolean

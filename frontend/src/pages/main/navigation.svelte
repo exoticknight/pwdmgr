@@ -32,7 +32,7 @@
 
   autoLock.startTimer()
 
-  const throttledHandleActivity = throttle(() => autoLock.resetTimer(), 1000)
+  const throttledHandleActivity = throttle(() => autoLock.startTimer(), 1000)
 
   onMount(() => {
     ;['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach((event) => {

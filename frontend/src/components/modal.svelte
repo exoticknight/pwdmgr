@@ -6,6 +6,7 @@
   interface Props {
     isOpen: boolean
     title: string
+    overlayClose?: boolean
     onClose?: () => void
     showCloseButton?: boolean
     boxClass?: string
@@ -16,6 +17,7 @@
   const {
     isOpen,
     title,
+    overlayClose = false,
     onClose,
     showCloseButton = true,
     boxClass = '',
@@ -30,6 +32,10 @@
   }
 
   function handleOverlayClick(event: MouseEvent) {
+    if (!overlayClose) {
+      return
+    }
+
     if (event.target === event.currentTarget && onClose) {
       onClose()
     }

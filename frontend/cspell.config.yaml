@@ -5,16 +5,17 @@ dictionaries: []
 words:
   - daisyui
   - eslintcache
+  - hotp
+  - otpauth
+  - pnpm
+  - svelte
+  - totp
+  - tsconfig
+  - typia
   - vercel
   - vite
   - vitest
-  - svelte
   - wails
   - wailsjs
-  - pnpm
-  - tsconfig
-  - typia
-  - totp
-  - hotp
 ignoreWords: []
 import: []

@@ -2,7 +2,7 @@ export const en = {
   translation: {
     // Application branding
     app: {
-      title: 'mat6maa5',
+      title: 'bei3mat6',
       slogan: 'Secure • Simple • Local',
     },
 
@@ -11,6 +11,7 @@ export const en = {
       loading: 'Loading...',
       back: 'Back',
       file: 'File',
+      or: 'or',
     },
 
     // Navigation
@@ -82,12 +83,19 @@ export const en = {
       updatedAt: 'Modified',
       lastUsedAt: 'Last Used',
       neverUsed: 'Never Used',
+
+      // Card titles
+      loginCredentials: 'Login Credentials',
+      accountInformation: 'Account Information',
+      encryptedContent: 'Encrypted Content',
+      additionalInformation: 'Additional Information',
+      technicalParameters: 'Technical Parameters',
     },
 
     // Entry types
     entryTypes: {
       password: 'Password',
-      encryptedText: 'Encrypted Text',
+      encryptedText: 'Text',
       twoFactorAuth: '2FA',
     },
 
@@ -95,24 +103,25 @@ export const en = {
     password: {
       setTitle: 'Set Password',
       enterTitle: 'Enter Password',
-      newFile: 'New Password File',
-      label: 'Password',
+      newFile: 'New Secret File',
       placeholder: 'Enter password',
-      confirmLabel: 'Confirm Password',
       confirmPlaceholder: 'Confirm password',
+      forgetPassword: 'Forget Password?',
     },
 
     // Action buttons
     actions: {
       // General actions
+      ok: 'OK',
       back: 'Back',
       cancel: 'Cancel',
       create: 'Create',
       open: 'Open',
+      close: 'Close',
       save: 'Save',
       add: 'Add',
       update: 'Update',
-      or: 'or',
+      print: 'Print',
 
       // Password specific actions
       copy: 'Copy',
@@ -130,6 +139,10 @@ export const en = {
 
       // File actions
       createNew: 'Create New Password File',
+
+      // recovery actions
+      continueEnable: 'I understand, continue to generate recovery code',
+      continueDisable: 'I understand, continue to disable',
     },
 
     // Dialog content
@@ -138,24 +151,12 @@ export const en = {
       saveLocation: 'Choose save location for your password file',
       confirmDelete: 'Are you sure you want to delete this entry?',
       confirmShare: 'This action will copy plain text data to clipboard. Please be aware of information security. Do you want to continue?',
-      export: 'Export Data',
-      exportFormat: 'Export Format',
-      exportLocation: 'Save Location',
-      exportJsonDesc: 'Structured data format with complete information',
-      exportCsvDesc: 'Table format that can be opened in Excel',
-      selectSaveLocation: 'Click to select save location',
-      saveAsFormat: 'Will be saved as {{format}} format',
-      csvFiles: 'CSV Files (*.csv)',
-      jsonFiles: 'JSON Files (*.json)',
-      allFiles: 'All Files (*.*)',
-      cancel: 'Cancel',
-      ok: 'OK',
     },
 
     // Error messages
     errors: {
-      passwordRequired: 'Please enter password',
-      passwordMismatch: 'Passwords do not match',
+      passwordIncorrect: 'Password is incorrect',
+      changePasswordFailed: 'Failed to change password',
       databaseError: 'Database error occurred',
       updateError: 'Failed to update entry',
       deleteError: 'Failed to delete entry',
@@ -163,6 +164,8 @@ export const en = {
       unsavedChanges: 'You have unsaved changes. Are you sure you want to leave?',
       noPasswordAvailable: 'No password available',
       exportError: 'Failed to export data',
+      enableRecoveryError: 'Failed to generate recovery code',
+      disableRecoveryError: 'Failed to disable recovery code',
     },
 
     // System messages
@@ -216,6 +219,10 @@ export const en = {
         autoLockTimeDescription: 'Set the time interval for auto lock',
         changePassword: 'Change Password',
         changePasswordDescription: 'Change the master password used to access this password database',
+        recoveryCode: 'Recovery Code',
+        recoveryCodeDescription: 'Enable recovery code to reset password if forgotten',
+        recoveryCodeButtonText: 'Enable',
+        recoveryCodeEnabledButtonText: 'Disable',
       },
 
       // Data settings
@@ -271,24 +278,61 @@ export const en = {
       },
     },
 
-    // Auto lock functionality
+    // Auto lock modal
     autoLock: {
-      unlockTitle: 'Application Locked',
-      unlockMessage: 'Please enter your password to unlock the application.',
+      title: 'Application Locked',
+      message: 'Please enter your password to unlock the application.',
       unlock: 'Unlock',
       incorrectPassword: 'Incorrect password. Please try again.',
     },
 
-    // Change password functionality
+    // Change password modal
     changePassword: {
       title: 'Change Password',
-      oldPassword: 'Old Password',
+      oldPassword: 'Current Password',
       oldPasswordPlaceholder: 'Please enter current password',
       newPassword: 'New Password',
       newPasswordPlaceholder: 'Please enter new password',
       confirmPassword: 'Confirm New Password',
       confirmPasswordPlaceholder: 'Please enter new password again',
-      oldPasswordIncorrect: 'Old password is incorrect',
+      passwordMatch: 'Passwords match',
+      passwordMismatch: 'Passwords do not match',
+      passwordMatchUnknown: 'Please enter new password',
+    },
+
+    // Enable recovery modal
+    enableRecovery: {
+      enableTitle: 'Enable Recovery',
+      disableTitle: 'Disable Recovery',
+      disabled: 'Recovery is currently disabled',
+      tipBeforeEnable: 'The recovery code can only be used once',
+      tipAfterEnabled: 'After closing the window, you will NOT be able to obtain the recovery code again. Please save it properly',
+      warnBeforeDisable: 'Disabling recovery will prevent you from using it in the future. Are you sure you want to proceed?',
+    },
+
+    // Export modal
+    export: {
+      export: 'Export Data',
+      exportFormat: 'Export Format',
+      exportLocation: 'Save Location',
+      exportJsonDesc: 'Structured data format with complete information',
+      exportCsvDesc: 'Table format that can be opened in Excel',
+      selectSaveLocation: 'Click to select save location',
+      saveAsFormat: 'Will be saved as {{format}} format',
+      csvFiles: 'CSV Files (*.csv)',
+      jsonFiles: 'JSON Files (*.json)',
+      allFiles: 'All Files (*.*)',
+    },
+
+    // Two-Factor Authentication
+    twofa: {
+      new: 'Add Two-Factor Authentication',
+      selectQrCodeImage: 'Select QR Code Image',
+      dropHere: 'Drop image here',
+      clickToSelect: 'Click to select or drag & drop',
+      instructions: 'Select a QR code image from your device',
+      scanClipboard: 'Scan Image from Clipboard',
+      processing: 'Processing...',
     },
   },
 }

@@ -1,14 +1,12 @@
 <script lang='ts'>
-  import { getDataManager } from '@/services/data-manager'
+  import { getIoService } from '@/services/io'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { exportToCSV, exportToJSON } from '@/utils/export'
-  import ExportModal from '../items/export-modal.svelte'
+  import ExportModal from './export-modal.svelte'
   import SettingItem from './setting-item.svelte'
   import SettingSection from './setting-section.svelte'
-
-  const dataManager = getDataManager()
 
   let showExportDialog = $state(false)
 
@@ -34,7 +32,7 @@
         content = exportToJSON(databaseData)
       }
 
-      await dataManager.saveToFileWithoutPassword(filePath, content)
+      await getIoService().writeTextToFile(filePath, content)
 
       showExportDialog = false
       notification.success(i18n.t('notifications.exportSuccess'))

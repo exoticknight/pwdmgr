@@ -2,7 +2,7 @@
   import type { LanguageCode } from '@/types/setting'
   import { i18n } from '@/stores/i18n.svelte'
   import { setting } from '@/stores/setting.svelte'
-  import NavigationSettings from './navigation-settings.svelte'
+  import NavigationReorder from './navigation-reorder.svelte'
   import SettingItem from './setting-item.svelte'
   import SettingSection from './setting-section.svelte'
 
@@ -68,9 +68,7 @@
       description={i18n.t('setting.interface.navigationDescription')}
     >
       {#snippet control()}
-        <div class=''>
-          <NavigationSettings {markUnsaved} />
-        </div>
+        <NavigationReorder {markUnsaved} />
       {/snippet}
     </SettingItem>
   {/snippet}

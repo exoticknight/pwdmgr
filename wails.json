@@ -1,7 +1,7 @@
 {
   "$schema": "https://wails.io/schemas/config.v2.json",
-  "name": "mat6maa5",
-  "outputfilename": "mat6maa5",
+  "name": "bei3mat6",
+  "outputfilename": "bei3mat6",
   "frontend:install": "pnpm install",
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",

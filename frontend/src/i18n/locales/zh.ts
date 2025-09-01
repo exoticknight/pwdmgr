@@ -2,7 +2,7 @@ export const zh = {
   translation: {
     // Application branding
     app: {
-      title: 'mat6maa5',
+      title: 'bei3mat6',
       slogan: '安全 • 简单 • 本地',
     },
 
@@ -11,6 +11,7 @@ export const zh = {
       loading: '加载中...',
       back: '返回',
       file: '文件',
+      or: '或者',
     },
 
     // Navigation
@@ -82,12 +83,19 @@ export const zh = {
       updatedAt: '修改时间',
       lastUsedAt: '最近使用',
       neverUsed: '未使用',
+
+      // Card titles
+      loginCredentials: '登录凭证',
+      accountInformation: '账户信息',
+      encryptedContent: '加密内容',
+      additionalInformation: '附加信息',
+      technicalParameters: '技术参数',
     },
 
     // Entry types
     entryTypes: {
       password: '密码',
-      encryptedText: '加密文本',
+      encryptedText: '文本',
       twoFactorAuth: '双重认证',
     },
 
@@ -95,24 +103,25 @@ export const zh = {
     password: {
       setTitle: '设置密码',
       enterTitle: '输入密码',
-      newFile: '新密码文件',
-      label: '密码',
+      newFile: '新建秘密文件',
       placeholder: '请输入密码',
-      confirmLabel: '确认密码',
       confirmPlaceholder: '请确认密码',
+      forgetPassword: '忘记密码？',
     },
 
     // Action buttons
     actions: {
       // General actions
+      ok: '确定',
       back: '返回',
       cancel: '取消',
       create: '创建',
       open: '打开',
+      close: '关闭',
       save: '保存',
       add: '添加',
       update: '更新',
-      or: '或者',
+      print: '打印',
 
       // Password specific actions
       copy: '复制',
@@ -130,6 +139,10 @@ export const zh = {
 
       // File actions
       createNew: '创建新的密码文件',
+
+      // recovery actions
+      continueEnable: '我已知晓，生成恢复码',
+      continueDisable: '我已知晓，继续禁用',
     },
 
     // 对话框内容
@@ -138,24 +151,12 @@ export const zh = {
       saveLocation: '选择密码文件的保存位置',
       confirmDelete: '您确定要删除此条目吗？',
       confirmShare: '此操作将复制明文数据到剪贴板，请注意信息安全。确定要继续吗？',
-      export: '导出数据',
-      exportFormat: '导出格式',
-      exportLocation: '保存位置',
-      exportJsonDesc: '结构化数据格式，包含完整信息',
-      exportCsvDesc: '表格格式，可在Excel中打开',
-      selectSaveLocation: '点击选择保存位置',
-      saveAsFormat: '将保存为 {{format}} 格式',
-      csvFiles: 'CSV 文件 (*.csv)',
-      jsonFiles: 'JSON 文件 (*.json)',
-      allFiles: '所有文件 (*.*)',
-      cancel: '取消',
-      ok: '确定',
     },
 
     // 错误消息
     errors: {
-      passwordRequired: '请输入密码',
-      passwordMismatch: '密码确认不匹配',
+      passwordIncorrect: '密码不正确',
+      changePasswordFailed: '修改密码失败',
       databaseError: '数据库错误',
       updateError: '更新条目失败',
       deleteError: '删除条目失败',
@@ -163,6 +164,8 @@ export const zh = {
       unsavedChanges: '您有未保存的更改。您确定要离开而不保存吗？',
       noPasswordAvailable: '没有可用密码',
       exportError: '导出数据失败',
+      enableRecoveryError: '生成恢复码失败',
+      disableRecoveryError: '禁用恢复码失败',
     },
 
     // 系统消息
@@ -216,6 +219,10 @@ export const zh = {
         autoLockTimeDescription: '设置自动锁定的时间间隔',
         changePassword: '修改密码',
         changePasswordDescription: '更改用于访问此密码库的主密码',
+        recoveryCode: '恢复代码',
+        recoveryCodeDescription: '忘记密码时使用恢复代码重置密码',
+        recoveryCodeButtonText: '启用',
+        recoveryCodeEnabledButtonText: '禁用',
       },
 
       // 数据设置
@@ -273,8 +280,8 @@ export const zh = {
 
     // 自动锁定功能
     autoLock: {
-      unlockTitle: '应用程序已锁定',
-      unlockMessage: '请输入密码以解锁应用程序。',
+      title: '应用程序已锁定',
+      message: '请输入密码以解锁应用程序。',
       unlock: '解锁',
       incorrectPassword: '密码错误，请重试。',
     },
@@ -282,13 +289,50 @@ export const zh = {
     // 修改密码功能
     changePassword: {
       title: '修改密码',
-      oldPassword: '旧密码',
+      oldPassword: '当前密码',
       oldPasswordPlaceholder: '请输入当前密码',
       newPassword: '新密码',
       newPasswordPlaceholder: '请输入新密码',
       confirmPassword: '确认新密码',
       confirmPasswordPlaceholder: '请再次输入新密码',
-      oldPasswordIncorrect: '旧密码不正确',
+      passwordMatch: '密码匹配',
+      passwordMismatch: '密码不匹配',
+      passwordMatchUnknown: '请输入新密码',
+    },
+
+    // 启用恢复功能
+    enableRecovery: {
+      enableTitle: '启用恢复码',
+      disableTitle: '禁用恢复码',
+      disabled: '恢复功能已禁用',
+      tipBeforeEnable: '恢复码只能使用一次',
+      tipAfterEnabled: '关闭窗口后将无法再次获取恢复码，请妥善保存',
+      warnBeforeDisable: '禁用恢复将阻止您将来使用它。您确定要继续吗？',
+    },
+
+    // Export modal
+    export: {
+      export: '导出数据',
+      exportFormat: '导出格式',
+      exportLocation: '保存位置',
+      exportJsonDesc: '结构化数据格式，包含完整信息',
+      exportCsvDesc: '表格格式，可在Excel中打开',
+      selectSaveLocation: '点击选择保存位置',
+      saveAsFormat: '将保存为 {{format}} 格式',
+      csvFiles: 'CSV 文件 (*.csv)',
+      jsonFiles: 'JSON 文件 (*.json)',
+      allFiles: '所有文件 (*.*)',
+    },
+
+    // 2fa
+    twofa: {
+      new: '添加双重验证',
+      selectQrCodeImage: '选择QR码图像',
+      dropHere: '将图像拖放到此处',
+      clickToSelect: '点击选择或拖放',
+      instructions: '从设备中选择一个QR码图像',
+      scanClipboard: '从剪贴板扫描图像',
+      processing: '处理中...',
     },
   },
 }

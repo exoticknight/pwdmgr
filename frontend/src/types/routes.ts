@@ -2,7 +2,7 @@
 export const Routes = {
   // Landing/Auth routes
   LANDING: '',
-  
+
   // Navigation routes (items)
   ITEMS_ALL: '/home/items/all',
   ITEMS_FAVORITES: '/home/items/favorites',
@@ -10,7 +10,7 @@ export const Routes = {
   ITEMS_PASSWORD: '/home/items/password',
   ITEMS_TEXT: '/home/items/text',
   ITEMS_2FA: '/home/items/2fa',
-  
+
   // Other app routes
   AUDIT: '/home/audit',
   SETTING: '/home/setting',

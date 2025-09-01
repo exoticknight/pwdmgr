@@ -1,10 +1,13 @@
 <script lang='ts'>
+  import type { HOTP, TOTP } from 'otpauth'
   import type { OmitBasicDataExcept, TwoFactorAuthData } from '@/types/data'
   import { Link, QrCode } from '@lucide/svelte'
   import Modal from '@/components/modal.svelte'
   import WailsFileSelect from '@/components/wails-file-select.svelte'
-  import { getFile } from '@/services/file'
+  import { getIoService } from '@/services/io'
+  import { i18n } from '@/stores/i18n.svelte'
   import { createFrom2FAData, parseURI, validate2FAData } from '@/utils/2fa'
+  import { readFromClipboard } from '@/utils/clipboard'
   import { QRScannerService } from '@/utils/qr-scanner'
 
   interface Props {
@@ -28,14 +31,11 @@
     serviceUrl: '',
   })
 
-  // Error messages
   let errorMessage = $state('')
   let isLoading = $state(false)
 
-  // Input fields
   let urlInput = $state('')
 
-  // Reset form
   function resetForm() {
     formData = {
       title: '',
@@ -52,21 +52,18 @@
     urlInput = ''
   }
 
-  // Close modal
   function handleClose() {
     resetForm()
     onCancel()
   }
 
-  // Fill form from QR data
-  function fillForm(twoFAData: import('otpauth').TOTP | import('otpauth').HOTP) {
+  function fillForm(twoFAData: TOTP | HOTP) {
     const partial = createFrom2FAData(twoFAData)
     formData = { ...formData, ...partial }
 
     handleSave()
   }
 
-  // Handle image upload
   async function handleImageUpload(filePaths: string[]) {
     if (!filePaths || filePaths.length === 0) {
       return
@@ -78,34 +75,12 @@
 
     try {
       // Use file service to read file
-      const fileService = getFile()
-      const arrayBuffer = await fileService.readFile(filePath)
+      const content = await getIoService().readFile(filePath)
 
       // Convert ArrayBuffer to Blob
-      const blob = new Blob([arrayBuffer])
+      const blob = new Blob([new Uint8Array(content)])
 
-      // Get file extension to determine MIME type
-      const fileName = filePath.split(/[/\\]/).pop() || 'image'
-      const extension = fileName.split('.').pop()?.toLowerCase() || ''
-      let mimeType = 'image/jpeg' // Default type
-
-      if (extension === 'png') {
-        mimeType = 'image/png'
-      }
-      else if (extension === 'gif') {
-        mimeType = 'image/gif'
-      }
-      else if (extension === 'bmp') {
-        mimeType = 'image/bmp'
-      }
-      else if (extension === 'webp') {
-        mimeType = 'image/webp'
-      }
-
-      // Create File object
-      const file = new File([blob], fileName, { type: mimeType })
-
-      const qrResults = await QRScannerService.scanFromImage(file)
+      const qrResults = await QRScannerService.scanFromBlob(blob)
 
       if (qrResults.length === 0) {
         errorMessage = 'No QR code found in the image'
@@ -140,19 +115,29 @@
     }
   }
 
-  // Handle clipboard scanning
   async function handleClipboardScan() {
     isLoading = true
     errorMessage = ''
 
     try {
-      const qrResults = await QRScannerService.scanFromClipboard()
+      const clipboardItems = await readFromClipboard()
+      const results: (import('otpauth').TOTP | import('otpauth').HOTP)[] = []
 
-      if (qrResults.length === 0) {
+      for (const clipboardItem of clipboardItems) {
+        for (const type of clipboardItem.types) {
+          if (type.startsWith('image/')) {
+            const blob = await clipboardItem.getType(type)
+            const qrResults = await QRScannerService.scanFromBlob(blob)
+            results.push(...qrResults)
+          }
+        }
+      }
+
+      if (results.length === 0) {
         errorMessage = 'No QR code found in clipboard'
       }
       else {
-        fillForm(qrResults[0])
+        fillForm(results[0])
       }
     }
     catch (error) {
@@ -164,7 +149,6 @@
     }
   }
 
-  // Validate and save
   function handleSave() {
     try {
       validate2FAData(formData)
@@ -195,110 +179,98 @@
   }
 </script>
 
-{#if isOpen}
-  <Modal
-    {isOpen}
-    title='Add Two-Factor Authentication'
-    onClose={handleClose}
-    boxClass='max-w-2xl'
-  >
-    {#snippet children()}
-      <!-- 输入模式切换 -->
-      <div class='tabs tabs-lift mb-6'>
-        <label class='tab'>
-          <input type='radio' name='2fa_input_tabs' checked />
-          <QrCode class='w-4 h-4 mr-2' />
-          QR Code
-        </label>
-        <div class='tab-content bg-base-100 border-base-300 p-4'>
-          <div class='flex flex-col'>
-            <WailsFileSelect
-              title='Select QR Code Image'
-              filters={[
-                { displayName: 'Image Files', pattern: '*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.webp' },
-                { displayName: 'All Files', pattern: '*.*' },
-              ]}
-              onSelect={handleImageUpload}
-              disabled={isLoading}
-            >
-              {#snippet children({ isDragOver, isDisabled })}
-                <div class={`p-4 border-2 border-dashed rounded-lg transition-colors ${
-                  isDragOver ? 'border-primary bg-primary/10' : 'border-base-300'
-                } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-primary/50'}`}>
-                  <div class='flex flex-col items-center gap-2'>
-                    <QrCode class='w-8 h-8 text-base-content/60' />
-                    <div class='text-center'>
-                      <p class='font-medium'>
-                        {isDragOver ? 'Drop image here' : 'Click to select or drag & drop'}
-                      </p>
-                      <p class='text-sm text-base-content/60'>
-                        Select a QR code image from your device
-                      </p>
-                    </div>
+<Modal
+  {isOpen}
+  title={i18n.t('twofa.new')}
+  onClose={handleClose}
+  boxClass='max-w-2xl'
+>
+  {#snippet children()}
+    <div class='tabs tabs-lift mb-6'>
+      <label class='tab'>
+        <input type='radio' name='2fa_input_tabs' checked />
+        <QrCode class='w-4 h-4 mr-2' />
+        QR Code
+      </label>
+      <div class='tab-content bg-base-100 border-base-300 p-4'>
+        <div class='flex flex-col'>
+          <WailsFileSelect
+            title={i18n.t('twofa.selectQrCodeImage')}
+            filters={[
+              { displayName: 'Image Files', pattern: '*.jpg;*.jpeg;*.png;*.gif;*.bmp;*.webp' },
+              { displayName: 'All Files', pattern: '*.*' },
+            ]}
+            mode='open'
+            multiple={false}
+            enableDrop={true}
+            onSelect={handleImageUpload}
+            disabled={isLoading}
+          >
+            {#snippet children({ isDragOver, isDisabled })}
+              <div class={`p-4 border-2 border-dashed rounded-lg transition-colors ${
+                isDragOver ? 'border-primary bg-primary/10' : 'border-base-300'
+              } ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-primary/50'}`}>
+                <div class='flex flex-col items-center gap-2'>
+                  <QrCode class='w-8 h-8 text-base-content/60' />
+                  <div class='text-center'>
+                    <p class='font-medium'>
+                      {isDragOver ? i18n.t('twofa.dropHere') : i18n.t('twofa.clickToSelect')}
+                    </p>
+                    <p class='text-sm text-base-content/60'>
+                      {i18n.t('twofa.instructions')}
+                    </p>
                   </div>
                 </div>
-              {/snippet}
-            </WailsFileSelect>
+              </div>
+            {/snippet}
+          </WailsFileSelect>
 
-            <div class='divider'>OR</div>
+          <div class='divider'>{i18n.t('common.or')}</div>
 
-            <button
-              class='btn btn-outline'
-              onclick={handleClipboardScan}
-            >
-              Scan Image from Clipboard
-            </button>
-          </div>
-        </div>
-
-        <label class='tab'>
-          <input type='radio' name='2fa_input_tabs' />
-          <Link class='w-4 h-4 mr-2' />
-          OTP Auth URL
-        </label>
-        <div class='tab-content bg-base-100 border-base-300 p-4'>
-          <div class='flex gap-2'>
-            <input
-              type='text'
-              class='input input-bordered flex-1'
-              placeholder='otpauth://totp/...'
-              bind:value={urlInput}
-            />
-            <button
-              type='button'
-              class='btn btn-primary'
-              onclick={handleUrlSubmit}
-            >
-              Add
-            </button>
-          </div>
+          <button
+            class='btn btn-outline'
+            onclick={handleClipboardScan}
+          >
+            {i18n.t('twofa.scanClipboard')}
+          </button>
         </div>
       </div>
 
-      <!-- 错误信息 -->
-      {#if errorMessage}
-        <div class='alert alert-error mb-4'>
-          {errorMessage}
-        </div>
-      {/if}
-
-      <!-- 加载状态 -->
-      {#if isLoading}
-        <div class='flex items-center justify-center p-8'>
-          <span class='loading loading-spinner loading-lg'></span>
-          <span class='ml-4'>Processing...</span>
-        </div>
-      {:else}
-        <!-- 按钮 -->
-        <div class='modal-action'>
+      <label class='tab'>
+        <input type='radio' name='2fa_input_tabs' />
+        <Link class='w-4 h-4 mr-2' />
+        OTP Auth URL
+      </label>
+      <div class='tab-content bg-base-100 border-base-300 p-4'>
+        <div class='flex gap-2'>
+          <input
+            type='text'
+            class='input input-bordered flex-1'
+            placeholder='otpauth://totp/...'
+            bind:value={urlInput}
+          />
           <button
-            class='btn'
-            onclick={handleClose}
+            type='button'
+            class='btn btn-primary'
+            onclick={handleUrlSubmit}
           >
-            Cancel
+            {i18n.t('actions.add')}
           </button>
         </div>
-      {/if}
-    {/snippet}
-  </Modal>
-{/if}
+      </div>
+    </div>
+
+    {#if errorMessage}
+      <div class='alert alert-error mb-4'>
+        {errorMessage}
+      </div>
+    {/if}
+
+    {#if isLoading}
+      <div class='flex items-center justify-center p-8'>
+        <span class='loading loading-spinner loading-lg'></span>
+        <span class='ml-4'>{i18n.t('actions.processing')}</span>
+      </div>
+    {/if}
+  {/snippet}
+</Modal>

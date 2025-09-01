@@ -1,25 +1,32 @@
 import type { PartialDeep } from 'type-fest'
+
+import type { FileStructure } from '@/services/file'
 import type { Datum } from '@/types/data'
 import type { DataFile } from '@/types/datafile'
 
 import type { Setting } from '@/types/setting'
 
 import typia from 'typia'
-import { DEFAULT_SETTINGS } from '@/consts/setting'
 
+import { DEFAULT_SETTINGS } from '@/consts/setting'
 import { VERSION } from '@/consts/version'
-import { i18n } from '@/stores/i18n.svelte'
+import { getFileService } from '@/services/file'
+import { getIoService } from '@/services/io'
+
+import { auth } from './auth.svelte'
 import { data } from './data.svelte'
+import { i18n } from './i18n.svelte'
 import { setting } from './setting.svelte'
 
-// Database state interface
 interface DatabaseState {
   initialized: boolean
   error: string | null
 }
 
-// Database store implementation using Svelte 5 state
 class DatabaseStore {
+  #ioService = getIoService()
+  #fileService = getFileService()
+
   #exportedData: Datum[] | null = null
   #exportedSetting: Setting | null = null
 
@@ -32,7 +39,11 @@ class DatabaseStore {
     return this.#state.initialized
   }
 
-  initialize(dataFile?: DataFile) {
+  get error() {
+    return this.#state.error
+  }
+
+  #initialize(dataFile?: DataFile) {
     if (this.#state.initialized) {
       this.close()
       this.#state.initialized = false
@@ -58,7 +69,6 @@ class DatabaseStore {
         this.#exportedSetting = setting.export()
       }
       else {
-        // Create new empty database
         data.initialize([])
         setting.initialize(DEFAULT_SETTINGS)
       }
@@ -72,8 +82,60 @@ class DatabaseStore {
       console.error('Failed to parse database:', error)
       throw new Error('Failed to parse database. Data format is invalid.')
     }
+  }
 
-    return this
+  async loadFromFile(file: FileStructure, password: string) {
+    try {
+      await auth.auth(password, file.keyData)
+    }
+    catch (error) {
+      console.error('Authentication error:', error)
+      throw error
+    }
+
+    const decryptedData = await auth.decryptData(file.userData)
+    const dataFile = JSON.parse(decryptedData) as DataFile
+
+    this.#initialize(dataFile)
+  }
+
+  async loadFromRecovery(filePath: string, recoveryCode: string) {
+    const content = await this.#ioService.readFile(filePath)
+    const file = await this.#fileService.load(content)
+
+    try {
+      await auth.recover(recoveryCode, file.keyData)
+    }
+    catch (error) {
+      console.error('Authentication error:', error)
+      throw error
+    }
+
+    const decryptedData = await auth.decryptData(file.userData)
+    const dataFile = JSON.parse(decryptedData) as DataFile
+
+    this.#initialize(dataFile)
+  }
+
+  async saveToFile(filePath: string) {
+    if (!this.initialized) {
+      throw new Error('Database not initialized')
+    }
+
+    const dataFile = this.export()
+    const encryptedData = await auth.encryptData(JSON.stringify(dataFile))
+
+    const content = await this.#fileService.save({
+      userData: encryptedData,
+      keyData: auth.keyData,
+    })
+
+    await this.#ioService.writeFile(filePath, content)
+  }
+
+  async loadFromScratch(password: string) {
+    await auth.changeMasterKey(password)
+    this.#initialize()
   }
 
   commitSetting() {
@@ -109,6 +171,7 @@ class DatabaseStore {
   }
 
   close() {
+    auth.unauth()
     data.reset()
     setting.reset()
     this.#state.initialized = false

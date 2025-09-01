@@ -1,6 +1,5 @@
 <script lang='ts'>
   import { Info, Settings } from '@lucide/svelte'
-  import { getDataManager } from '@/services/data-manager'
   import { app } from '@/stores/app.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
@@ -14,27 +13,18 @@
     SecuritySection,
   } from './setting'
 
-  const dataManager = getDataManager()
-
   const hasDataFile = $derived(!!userState.dbPath)
 
   async function handleSaveSettings() {
     try {
-      const password = userState.password
-      if (!password) {
-        throw new Error(i18n.t('errors.noPasswordAvailable'))
-      }
-
-      if (!userState.dbPath) {
+      // throw error because setting only be shown when dbpath exists
+      if (!hasDataFile) {
         throw new Error('No database file path available')
       }
 
-      const databaseData = database.commitSetting().export()
+      database.commitSetting()
+      await database.saveToFile(userState.dbPath)
 
-      // Save to file
-      await dataManager.saveToFile(userState.dbPath, password, databaseData)
-
-      // Mark as saved and show success notification
       app.markSettingAsSaved()
       notification.success(i18n.t('notifications.saved'))
     }

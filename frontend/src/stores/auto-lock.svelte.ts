@@ -1,54 +1,55 @@
+import type { KeyData } from '@/types/crypto'
+import { auth } from './auth.svelte'
 import { setting } from './setting.svelte'
-import { userState } from './user.svelte'
 
-let isLocked = $state(false)
 let timerId = $state<number | null>(null)
-const shouldLock = $derived(setting.getSetting('security.autoLock'))
+const enableLock = $derived(setting.getSetting('security.autoLock'))
 const autoLockTime = $derived(setting.getSetting('security.autoLockTime'))
 
-export const autoLock = {
-  get isLocked() {
-    return isLocked
-  },
+class AutoLock {
+  shouldLock = $derived(!auth.isAuthed)
+  isLocked = $state(false)
+
+  #keyData: KeyData | null = null
 
   startTimer() {
     this.clearTimer()
 
-    if (!shouldLock || !userState.password || isLocked) {
+    if (!enableLock || this.shouldLock) {
       return
     }
 
     // in minutes
-    const timeoutMs = autoLockTime * 60 * 1000
+    const timeoutMs = autoLockTime * 1000
+
     timerId = window.setTimeout(() => {
-      isLocked = true
+      this.lock()
     }, timeoutMs)
-  },
+  }
 
   clearTimer() {
     if (timerId !== null) {
       clearTimeout(timerId)
       timerId = null
     }
-  },
+  }
 
-  resetTimer() {
-    if (!isLocked) {
+  async unlock(password: string) {
+    await auth.auth(password, this.#keyData!)
+    this.isLocked = false
+
+    this.clearTimer()
+    if (enableLock) {
       this.startTimer()
     }
-  },
-
-  unlock(password: string): boolean {
-    if (password === userState.password) {
-      isLocked = false
-      this.startTimer()
-      return true
-    }
-    return false
-  },
+  }
 
   lock() {
-    isLocked = true
     this.clearTimer()
-  },
+    this.#keyData = auth.keyData
+    auth.unauth()
+    this.isLocked = true
+  }
 }
+
+export const autoLock = new AutoLock()

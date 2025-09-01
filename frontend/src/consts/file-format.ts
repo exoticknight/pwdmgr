@@ -1,0 +1,9 @@
+export const FILE_FORMAT = {
+  MAGIC_BYTES: new Uint8Array([0x42, 0x33, 0x4D, 0x36]), // "B3M6"
+  HEADER_SIZE: 8,
+  CURRENT_VERSION: 1,
+  MAGIC_OFFSET: 0,
+  VERSION_OFFSET: 4,
+  RESERVED_OFFSET: 6,
+  KEY_DATA_SECTION_SIZE: 184,
+} as const

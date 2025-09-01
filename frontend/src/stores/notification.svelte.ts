@@ -7,20 +7,20 @@ import type {
 } from '@/types/notification'
 
 class Notification implements NotificationControl {
-  private notificationState = $state<NotificationState>({
+  #notificationState = $state<NotificationState>({
     notifications: [],
   })
 
-  private timers = new Map<string, number>()
+  #timers = new Map<string, number>()
 
   // Use getter to expose readonly state
   get state(): Readonly<NotificationState> {
-    return this.notificationState
+    return this.#notificationState
   }
 
   // Compatibility getter (maintain backward compatibility)
   get all(): NotificationItem[] {
-    return this.notificationState.notifications
+    return this.#notificationState.notifications
   }
 
   show(options: NotificationOptions): string
@@ -51,14 +51,14 @@ class Notification implements NotificationControl {
       duration: options.duration ?? 5000,
     }
 
-    this.notificationState.notifications.push(notification)
+    this.#notificationState.notifications.push(notification)
 
     // Auto dismiss if duration is set
     if (notification.duration > 0) {
       const timer = setTimeout(() => {
         this.dismiss(id)
       }, notification.duration) as unknown as number
-      this.timers.set(id, timer)
+      this.#timers.set(id, timer)
     }
 
     return id
@@ -82,26 +82,26 @@ class Notification implements NotificationControl {
 
   dismiss(id: string): void {
     // Clear timer if exists
-    const timer = this.timers.get(id)
+    const timer = this.#timers.get(id)
     if (timer !== undefined) {
       clearTimeout(timer)
-      this.timers.delete(id)
+      this.#timers.delete(id)
     }
 
     // Remove notification
-    const index = this.notificationState.notifications.findIndex(n => n.id === id)
+    const index = this.#notificationState.notifications.findIndex(n => n.id === id)
     if (index >= 0) {
-      this.notificationState.notifications.splice(index, 1)
+      this.#notificationState.notifications.splice(index, 1)
     }
   }
 
   clear(): void {
     // Clear all timers
-    this.timers.forEach(timer => clearTimeout(timer))
-    this.timers.clear()
+    this.#timers.forEach(timer => clearTimeout(timer))
+    this.#timers.clear()
 
     // Clear all notifications
-    this.notificationState.notifications.splice(0)
+    this.#notificationState.notifications.splice(0)
   }
 }
 

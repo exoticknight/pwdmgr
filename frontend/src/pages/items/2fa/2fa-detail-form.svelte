@@ -4,6 +4,7 @@
   import { BrowserOpenURL } from '@/../wailsjs/runtime/runtime'
   import BrandIcon from '@/components/brand-icon.svelte'
   import TotpDisplay from '@/components/totp-display.svelte'
+  import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     entry: TwoFactorAuthData
@@ -33,7 +34,7 @@
   <!-- 基本信息 -->
   <div class='card bg-base-200 shadow-sm'>
     <div class='card-body p-4'>
-      <h3 class='card-title text-lg mb-4'>Account Information</h3>
+      <h3 class='card-title text-lg mb-4'>{i18n.t('forms.accountInformation')}</h3>
 
       <div class='space-y-3'>
         <!-- 服务提供商 -->
@@ -102,7 +103,7 @@
   <!-- 技术参数 -->
   <div class='card bg-base-200 shadow-sm'>
     <div class='card-body p-4'>
-      <h3 class='card-title text-lg mb-4'>Technical Parameters</h3>
+      <h3 class='card-title text-lg mb-4'>{i18n.t('forms.technicalParameters')}</h3>
 
       <div class='grid grid-cols-2 gap-4'>
         <div class='flex flex-col'>

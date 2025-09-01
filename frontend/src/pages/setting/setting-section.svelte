@@ -8,7 +8,6 @@
 
   const { title, items }: Props = $props()
 
-  // 统一的标记未保存接口
   function markUnsaved() {
     app.markSettingAsUnsaved()
   }

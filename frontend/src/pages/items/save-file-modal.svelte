@@ -49,7 +49,7 @@
       onclick={onCancel}
     >
       <X class='w-4 h-4 mr-2' />
-      {i18n.t('dialogs.cancel')}
+      {i18n.t('actions.cancel')}
     </button>
   {/snippet}
 </Modal>

@@ -1,4 +1,7 @@
-export const userState = $state({
+interface UserState {
+  dbPath: string
+}
+
+export const userState = $state<UserState>({
   dbPath: '',
-  password: '',
 })

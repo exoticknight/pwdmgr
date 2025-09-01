@@ -6,9 +6,7 @@
   import Notification from '@/components/notification.svelte'
   import Landing from '@/pages/landing.svelte'
   import Main from '@/pages/main.svelte'
-  import { autoLock } from '@/stores/auto-lock.svelte'
   import { route } from '@/stores/route.svelte'
-  import { throttle } from '@/utils/throttle'
 
   const routes: RouteConfig[] = [
     {
@@ -25,16 +23,6 @@
       return route.canNavigate()
     },
   }
-
-  function handleActivity() {
-    autoLock.resetTimer()
-  }
-
-  const throttledHandleActivity = throttle(handleActivity, 300)
-
-  ;['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'].forEach((event) => {
-    document.addEventListener(event, throttledHandleActivity, { passive: true })
-  })
 </script>
 
 <Router {routes} {hooks} />

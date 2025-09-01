@@ -5,9 +5,7 @@
 
   import SplitPanel from '@/components/split-panel.svelte'
 
-  import { getDataManager } from '@/services/data-manager'
   import { app } from '@/stores/app.svelte'
-
   import { data } from '@/stores/data.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
@@ -26,20 +24,14 @@
 
   const { filter }: { filter: string } = $props()
 
-  // Dependencies
-  const dataManager = getDataManager()
-
-  // UI State
   let leftPanelWidth = $state(35) // percentage
   let searchTerm = $state('')
   let selectedEntry = $state<Datum | null>(null)
 
-  // Modal state
   let showModal = $state(false)
   let currentEntryType = $state<BasicData['_type']>('password')
   let showSaveDialog = $state(false)
 
-  // Computed filtered entries using the store
   const filteredEntries = $derived.by(() => {
     switch (filter) {
       case 'favorites':
@@ -70,15 +62,10 @@
     }
 
     try {
-      const password = userState.password
-      if (!password) {
-        throw new Error(i18n.t('errors.noPasswordAvailable'))
-      }
-
       // If there's a file path, save to file
       if (userState.dbPath) {
-        const databaseData = database.commitData().export()
-        await dataManager.saveToFile(userState.dbPath, password, databaseData)
+        database.commitData()
+        await database.saveToFile(userState.dbPath)
         app.markDataAsSaved()
         notification.success(i18n.t('notifications.saved'))
       }
@@ -116,7 +103,9 @@
     try {
       data.deleteEntry(entry.id)
       selectedEntry = null
+
       app.markDataAsUnsaved()
+
       notification.success(i18n.t('notifications.entryDeleted'))
     }
     catch {
@@ -139,6 +128,7 @@
       notification.success(i18n.t('notifications.entryAdded'))
 
       app.markDataAsUnsaved()
+
       showModal = false
     }
     catch {
@@ -156,18 +146,17 @@
     }
 
     const filePath = filePaths[0]
-    const password = userState.password
-    if (!password) {
-      notification.error(i18n.t('errors.noPasswordAvailable'))
-      return
-    }
 
     try {
-      const databaseData = database.commitData().export()
-      await dataManager.saveToFile(filePath, password, databaseData)
       userState.dbPath = filePath
+
+      database.commitData()
+      await database.saveToFile(filePath)
+
       app.markDataAsSaved()
+
       showSaveDialog = false
+
       notification.success(i18n.t('notifications.saved'))
     }
     catch (error) {

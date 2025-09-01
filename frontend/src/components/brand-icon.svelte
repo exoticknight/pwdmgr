@@ -9,7 +9,7 @@
   }
 
   const { name, class: className, size, style: customStyle, ...props }: Props = $props()
-  const c = $derived(`${name.length > 1 ? `fa-brands fa-${name.toLocaleLowerCase()}` : ''} ${className || ''}`)
+  const c = $derived(`${name.length > 1 ? `fa-brands fa-${name.toLocaleLowerCase().replace(/ /g, '-')}` : ''} ${className || ''}`)
 
   const style = $derived([
     'line-height:1',

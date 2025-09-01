@@ -2,6 +2,7 @@
   import type { LanguageCode } from '@/types/setting'
   import { i18n } from '@/stores/i18n.svelte'
   import { setting } from '@/stores/setting.svelte'
+  import NavigationReorder from './navigation-reorder.svelte'
   import SettingItem from './setting-item.svelte'
   import SettingSection from './setting-section.svelte'
 
@@ -59,6 +60,15 @@
           <option value='light'>{i18n.t('setting.interface.themeLight')}</option>
           <option value='dark'>{i18n.t('setting.interface.themeDark')}</option>
         </select>
+      {/snippet}
+    </SettingItem>
+
+    <SettingItem
+      title={i18n.t('setting.interface.navigation')}
+      description={i18n.t('setting.interface.navigationDescription')}
+    >
+      {#snippet control()}
+        <NavigationReorder {markUnsaved} />
       {/snippet}
     </SettingItem>
   {/snippet}

@@ -12,13 +12,17 @@ const localeMap: Record<LanguageCode, Locale> = {
   ja,
 }
 
-let lng = $state(setting.getSetting('language.code'))
+let lng = $state(setting.getSetting('language.code') || i18next.language)
 
 i18next.on('languageChanged', () => {
   lng = i18next.language as LanguageCode
 })
 
 const i18n = new class {
+  get currentLanguage() {
+    return lng
+  }
+
   t(key: string, options?: Record<string, any>): string {
     void lng
     return i18next.t(key, options)

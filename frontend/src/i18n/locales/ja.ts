@@ -2,7 +2,7 @@ export const ja = {
   translation: {
     // アプリケーションブランド
     app: {
-      title: 'mat6maa5',
+      title: 'bei3mat6',
       slogan: 'セキュア • シンプル • ローカル',
     },
 
@@ -11,6 +11,7 @@ export const ja = {
       loading: '読み込み中...',
       back: '戻る',
       file: 'ファイル',
+      or: 'または',
     },
 
     // ナビゲーション
@@ -82,12 +83,19 @@ export const ja = {
       updatedAt: '更新日時',
       lastUsedAt: '最終使用',
       neverUsed: '未使用',
+
+      // カードタイトル
+      loginCredentials: 'ログイン認証情報',
+      accountInformation: 'アカウント情報',
+      encryptedContent: '暗号化コンテンツ',
+      additionalInformation: '追加情報',
+      technicalParameters: '技術パラメータ',
     },
 
     // エントリタイプ
     entryTypes: {
       password: 'パスワード',
-      encryptedText: '暗号化テキスト',
+      encryptedText: 'テキスト',
       twoFactorAuth: '二段階認証',
     },
 
@@ -95,24 +103,25 @@ export const ja = {
     password: {
       setTitle: 'パスワード設定',
       enterTitle: 'パスワード入力',
-      newFile: '新しいパスワードファイル',
-      label: 'パスワード',
+      newFile: '新しいシークレットファイル',
       placeholder: 'パスワードを入力',
-      confirmLabel: 'パスワード確認',
       confirmPlaceholder: 'パスワードを確認',
+      forgetPassword: 'パスワードを忘れた？',
     },
 
     // アクションボタン
     actions: {
       // 一般的なアクション
+      ok: '確認',
       back: '戻る',
       cancel: 'キャンセル',
       create: '作成',
       open: '開く',
+      close: '閉じる',
       save: '保存',
       add: '追加',
       update: '更新',
-      or: 'または',
+      print: '印刷',
 
       // パスワード固有のアクション
       copy: 'コピー',
@@ -130,6 +139,10 @@ export const ja = {
 
       // ファイルアクション
       createNew: '新しいパスワードファイルを作成',
+
+      // recovery actions
+      continueEnable: '私は理解しています、リカバリーコードの生成を続行します',
+      continueDisable: '私は理解しています、続行して無効にします',
     },
 
     // ダイアログコンテンツ
@@ -138,24 +151,12 @@ export const ja = {
       saveLocation: 'パスワードファイルの保存場所を選択',
       confirmDelete: 'このエントリを削除してもよろしいですか？',
       confirmShare: 'この操作は平文データをクリップボードにコピーします。情報セキュリティにご注意ください。続行しますか？',
-      export: 'データをエクスポート',
-      exportFormat: 'エクスポート形式',
-      exportLocation: '保存場所',
-      exportJsonDesc: '構造化データ形式、完全な情報を含む',
-      exportCsvDesc: 'テーブル形式、Excelで開けます',
-      selectSaveLocation: 'クリックして保存場所を選択',
-      saveAsFormat: '{{format}}形式で保存されます',
-      csvFiles: 'CSVファイル (*.csv)',
-      jsonFiles: 'JSONファイル (*.json)',
-      allFiles: 'すべてのファイル (*.*)',
-      cancel: 'キャンセル',
-      ok: '確認',
     },
 
     // エラーメッセージ
     errors: {
-      passwordRequired: 'パスワードを入力してください',
-      passwordMismatch: 'パスワードが一致しません',
+      passwordIncorrect: 'パスワードが正しくありません',
+      changePasswordFailed: 'パスワードの変更に失敗しました',
       databaseError: 'データベースエラー',
       updateError: 'エントリの更新に失敗しました',
       deleteError: 'エントリの削除に失敗しました',
@@ -163,6 +164,8 @@ export const ja = {
       unsavedChanges: '保存されていない変更があります。保存せずに終了してもよろしいですか？',
       noPasswordAvailable: '利用可能なパスワードがありません',
       exportError: 'データのエクスポートに失敗しました',
+      enableRecoveryError: 'リカバリーコードの生成に失敗しました',
+      disableRecoveryError: 'リカバリーコードの無効化に失敗しました',
     },
 
     // システムメッセージ
@@ -216,6 +219,10 @@ export const ja = {
         autoLockTimeDescription: '自動ロックする時間間隔を設定',
         changePassword: 'パスワード変更',
         changePasswordDescription: 'このパスワードデータベースにアクセスするためのマスターパスワードを変更',
+        recoveryCode: 'リカバリーコード',
+        recoveryCodeDescription: 'パスワードを忘れた場合にリカバリーコードを使用してパスワードをリセットできます',
+        recoveryCodeButtonText: '有効にする',
+        recoveryCodeEnabledButtonText: '無効にする',
       },
 
       // データ設定
@@ -237,6 +244,13 @@ export const ja = {
         themeAuto: 'システムに従う',
         themeLight: 'ライト',
         themeDark: 'ダーク',
+        navigation: 'ナビゲーション',
+        navigationDescription: 'ナビゲーション項目の順序と表示設定をカスタマイズ',
+        navigationResetButton: 'デフォルトに戻す',
+        navigationMoveUp: '上に移動',
+        navigationMoveDown: '下に移動',
+        navigationShow: '表示に切り替え',
+        navigationHide: '非表示に切り替え',
       },
 
       // 時間単位
@@ -266,8 +280,8 @@ export const ja = {
 
     // 自動ロック機能
     autoLock: {
-      unlockTitle: 'アプリケーションがロックされています',
-      unlockMessage: 'アプリケーションのロックを解除するには、パスワードを入力してください。',
+      title: 'アプリケーションがロックされています',
+      message: 'アプリケーションのロックを解除するには、パスワードを入力してください。',
       unlock: 'ロック解除',
       incorrectPassword: 'パスワードが間違っています。再試行してください。',
     },
@@ -281,7 +295,44 @@ export const ja = {
       newPasswordPlaceholder: '新しいパスワードを入力してください',
       confirmPassword: '新しいパスワード（確認）',
       confirmPasswordPlaceholder: '新しいパスワードを再度入力してください',
-      oldPasswordIncorrect: '現在のパスワードが正しくありません',
+      passwordMatch: 'パスワードが一致します',
+      passwordMismatch: 'パスワードが一致しません',
+      passwordMatchUnknown: '新しいパスワードを入力してください',
+    },
+
+    // リカバリーを有効にする
+    enableRecovery: {
+      enableTitle: 'リカバリーを有効にする',
+      disableTitle: 'リカバリーを無効にする',
+      disabled: 'リカバリーは現在無効です',
+      tipBeforeEnable: 'リカバリーコードは一度だけ使用できます',
+      tipAfterEnabled: 'ウィンドウを閉じると、リカバリーコードを再取得することはできません。必ず保存してください',
+      warnBeforeDisable: 'リカバリーを無効にすると、将来的に使用できなくなります。本当に続行しますか？',
+    },
+
+    // Export modal
+    export: {
+      export: 'データをエクスポート',
+      exportFormat: 'エクスポート形式',
+      exportLocation: '保存場所',
+      exportJsonDesc: '構造化データ形式、完全な情報を含む',
+      exportCsvDesc: 'テーブル形式、Excelで開けます',
+      selectSaveLocation: 'クリックして保存場所を選択',
+      saveAsFormat: '{{format}}形式で保存されます',
+      csvFiles: 'CSVファイル (*.csv)',
+      jsonFiles: 'JSONファイル (*.json)',
+      allFiles: 'すべてのファイル (*.*)',
+    },
+
+    // 2fa
+    twofa: {
+      new: '二要素認証を追加',
+      selectQrCodeImage: 'QRコード画像を選択',
+      dropHere: 'ここに画像をドロップ',
+      clickToSelect: 'クリックして選択またはドラッグ＆ドロップ',
+      instructions: 'デバイスからQRコード画像を選択してください',
+      scanClipboard: 'クリップボードから画像をスキャン',
+      processing: '処理中...',
     },
   },
 }

@@ -1,76 +1,78 @@
 <script lang='ts'>
-  import { ArrowLeft, CheckCircle, FolderOpen, Plus } from '@lucide/svelte'
+  import { ArrowLeft, CircleQuestionMark, FolderOpen, Plus } from '@lucide/svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     isNewDatabase: boolean
-    selectedFile: File | null
+    isRecoverable: boolean
+    selectedFile: string
     password: string
     confirmPassword: string
     isLoading?: boolean
     onSubmit: (event: SubmitEvent) => void
     onReset: () => void
+    onRecover: () => void
   }
 
   let {
     isNewDatabase,
+    isRecoverable,
     selectedFile,
     password = $bindable(),
     confirmPassword = $bindable(),
     isLoading = false,
     onSubmit,
     onReset,
+    onRecover,
   }: Props = $props()
 </script>
 
 <div class='password-form'>
   <div class='form-header'>
     <div class='form-icon'>
-      <CheckCircle size={24} />
+      <CircleQuestionMark size={24} />
     </div>
     <h2 class='form-title'>
       {isNewDatabase ? i18n.t('password.setTitle') : i18n.t('password.enterTitle')}
     </h2>
     <p class='form-subtitle'>
-      {selectedFile ? `${i18n.t('common.file')}: ${selectedFile.name}` : i18n.t('password.newFile')}
+      {selectedFile ? `${i18n.t('common.file')}: ${selectedFile}` : i18n.t('password.newFile')}
     </p>
   </div>
 
-  <form onsubmit={onSubmit} class='form-content'>
-    <div class='form-field'>
-      <label class='field-label' for='password'>
-        {i18n.t('password.label')}
-      </label>
-      <input
-        id='password'
-        type='password'
-        class='field-input'
-        placeholder={i18n.t('password.placeholder')}
-        bind:value={password}
-        required
-      />
-    </div>
+  <form onsubmit={onSubmit} class='form-content gap-2'>
+    <input
+      id='password'
+      type='password'
+      class='input w-full'
+      placeholder={i18n.t('password.placeholder')}
+      bind:value={password}
+      required
+    />
 
     {#if isNewDatabase}
-      <div class='form-field'>
-        <label class='field-label' for='confirmPassword'>
-          {i18n.t('password.confirmLabel')}
-        </label>
-        <input
-          id='confirmPassword'
-          type='password'
-          class='field-input'
-          placeholder={i18n.t('password.confirmPlaceholder')}
-          bind:value={confirmPassword}
-          required
-        />
-      </div>
+      <input
+        id='confirmPassword'
+        type='password'
+        class='input w-full'
+        placeholder={i18n.t('password.confirmPlaceholder')}
+        bind:value={confirmPassword}
+        required
+      />
+    {:else if isRecoverable}
+      <button
+        type='button'
+        class='link min-w-0 self-end'
+        onclick={onRecover}
+      >
+        {i18n.t('password.forgetPassword')}
+      </button>
     {/if}
 
     <div class='form-actions'>
       <button
         type='button'
-        class='btn-secondary'
+        class='btn btn-outline flex-1'
         onclick={onReset}
         disabled={isLoading}
       >
@@ -79,7 +81,7 @@
       </button>
       <button
         type='submit'
-        class='btn-primary'
+        class='btn btn-primary flex-1'
         disabled={isLoading}
       >
         {#if isLoading}
@@ -140,86 +142,12 @@
   .form-content {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
-  }
-
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-
-  .field-label {
-    font-size: var(--font-size-base);
-    font-weight: 500;
-    color: var(--color-text-primary);
-  }
-
-  .field-input {
-    height: 36px;
-    padding: 0 var(--space-sm);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-    background-color: var(--color-bg-primary);
-    color: var(--color-text-primary);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .field-input:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px var(--color-focus);
-  }
-
-  .field-input::placeholder {
-    color: var(--color-text-muted);
   }
 
   .form-actions {
     display: flex;
     gap: var(--space-md);
     margin-top: var(--space-md);
-  }
-
-  .btn-primary, .btn-secondary {
-    flex: 1;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-sm);
-    border: none;
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .btn-primary {
-    background-color: var(--color-primary);
-    color: white;
-  }
-
-  .btn-primary:hover:not(:disabled) {
-    background-color: var(--color-primary-hover);
-  }
-
-  .btn-secondary {
-    background-color: transparent;
-    color: var(--color-text-secondary);
-    border: 1px solid var(--color-border);
-  }
-
-  .btn-secondary:hover:not(:disabled) {
-    background-color: var(--color-bg-tertiary);
-    color: var(--color-text-primary);
-  }
-
-  .btn-primary:disabled, .btn-secondary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
   }
 
   .loading-spinner {

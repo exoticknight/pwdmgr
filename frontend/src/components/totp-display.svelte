@@ -2,6 +2,7 @@
   import type { TOTPResult } from '@/types/2fa'
   import type { TwoFactorAuthData } from '@/types/data'
   import { onDestroy, onMount } from 'svelte'
+  import { copyTextToClipboard } from '@/utils/clipboard'
   import { generate } from '@/utils/totp'
   import Countdown from './countdown.svelte'
 
@@ -39,7 +40,7 @@
     }
 
     try {
-      await navigator.clipboard.writeText(totpResult.code)
+      await copyTextToClipboard(totpResult.code)
       copyText = 'Copied!'
       setTimeout(() => {
         copyText = 'Click to Copy'

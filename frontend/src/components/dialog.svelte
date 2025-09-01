@@ -72,14 +72,14 @@
       <div class='modal-action'>
         {#if showCancelButton}
           <button class='btn' onclick={handleCancel}>
-            {dialog.state.options.cancelText || i18n.t('dialogs.cancel')}
+            {dialog.state.options.cancelText || i18n.t('actions.cancel')}
           </button>
         {/if}
         <button
           class='btn btn-primary'
           onclick={handleConfirm}
         >
-          {dialog.state.options.confirmText || i18n.t('dialogs.ok')}
+          {dialog.state.options.confirmText || i18n.t('actions.ok')}
         </button>
       </div>
     </div>

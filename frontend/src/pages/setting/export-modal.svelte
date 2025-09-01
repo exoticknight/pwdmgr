@@ -33,20 +33,20 @@
   function getFileFilters() {
     if (selectedFormat === 'csv') {
       return [
-        { displayName: i18n.t('dialogs.csvFiles'), pattern: '*.csv' },
-        { displayName: i18n.t('dialogs.allFiles'), pattern: '*.*' },
+        { displayName: i18n.t('export.csvFiles'), pattern: '*.csv' },
+        { displayName: i18n.t('export.allFiles'), pattern: '*.*' },
       ]
     }
     return [
-      { displayName: i18n.t('dialogs.jsonFiles'), pattern: '*.json' },
-      { displayName: i18n.t('dialogs.allFiles'), pattern: '*.*' },
+      { displayName: i18n.t('export.jsonFiles'), pattern: '*.json' },
+      { displayName: i18n.t('export.allFiles'), pattern: '*.*' },
     ]
   }
 </script>
 
 <Modal
   {isOpen}
-  title={i18n.t('dialogs.export')}
+  title={i18n.t('export.export')}
   onClose={onCancel}
   showCloseButton={true}
   boxClass='max-w-xl'
@@ -55,7 +55,7 @@
     <div class='export-modal-content'>
       <!-- Export Format Selection -->
       <div class='format-section'>
-        <h3 class='section-title'>{i18n.t('dialogs.exportFormat')}</h3>
+        <h3 class='section-title'>{i18n.t('export.exportFormat')}</h3>
         <div class='format-options'>
           <button
             class={`format-option ${selectedFormat === 'json' ? 'selected' : ''}`}
@@ -64,7 +64,7 @@
             <Braces size={20} />
             <div class='format-info'>
               <div class='format-name'>JSON</div>
-              <div class='format-desc'>{i18n.t('dialogs.exportJsonDesc')}</div>
+              <div class='format-desc'>{i18n.t('export.exportJsonDesc')}</div>
             </div>
           </button>
 
@@ -75,7 +75,7 @@
             <FileText size={20} />
             <div class='format-info'>
               <div class='format-name'>CSV</div>
-              <div class='format-desc'>{i18n.t('dialogs.exportCsvDesc')}</div>
+              <div class='format-desc'>{i18n.t('export.exportCsvDesc')}</div>
             </div>
           </button>
         </div>
@@ -83,10 +83,10 @@
 
       <!-- File Save Location -->
       <div class='location-section'>
-        <h3 class='section-title'>{i18n.t('dialogs.exportLocation')}</h3>
+        <h3 class='section-title'>{i18n.t('export.exportLocation')}</h3>
         <WailsFileSelect
           class='border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer transition-colors hover:border-blue-500'
-          title={i18n.t('dialogs.export')}
+          title={i18n.t('export.export')}
           defaultFilename={getDefaultFilename()}
           filters={getFileFilters()}
           canCreateDirs={true}
@@ -100,10 +100,10 @@
                 <Download size={24} />
               </div>
               <p class='file-select-text'>
-                {i18n.t('dialogs.selectSaveLocation')}
+                {i18n.t('export.selectSaveLocation')}
               </p>
               <p class='file-select-subtext'>
-                {i18n.t('dialogs.saveAsFormat', { format: getFileExtension().toUpperCase() })}
+                {i18n.t('export.saveAsFormat', { format: getFileExtension().toUpperCase() })}
               </p>
             </div>
           {/snippet}

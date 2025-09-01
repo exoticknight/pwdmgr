@@ -1,17 +1,5 @@
-// Route enum - centralized management of all routes
-export const Routes = {
-  LANDING: '',
-  ITEMS_ALL: '/home/items/all',
-  ITEMS_FAVORITES: '/home/items/favorites',
-  ITEMS_RECENT: '/home/items/recent',
-  ITEMS_PASSWORD: '/home/items/password',
-  ITEMS_TEXT: '/home/items/text',
-  ITEMS_2FA: '/home/items/2fa',
-  AUDIT: '/home/audit',
-  SETTING: '/home/setting',
-} as const
-
-export type RouteType = typeof Routes[keyof typeof Routes]
+import type { RouteType } from '@/types/routes'
+import { Routes } from '@/types/routes'
 
 // Router store implementation using Svelte 5 state
 class Route {
@@ -53,5 +41,5 @@ class Route {
 // Create singleton instance
 const route = new Route()
 
-// Export the store instance
-export { route }
+// Export the store instance and routes for backward compatibility
+export { route, Routes, type RouteType }

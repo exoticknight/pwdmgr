@@ -4,6 +4,8 @@ import (
 	"context"
 	"embed"
 
+	"bei3mat6/internal"
+
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -13,8 +15,8 @@ import (
 var assets embed.FS
 
 func main() {
-	app := NewApp()
-	fileService := NewFileService()
+	app := internal.NewApp()
+	fileService := internal.NewFileService()
 
 	err := wails.Run(&options.App{
 		Title:  "bei3mat6",
@@ -25,8 +27,10 @@ func main() {
 		},
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup: func(ctx context.Context) {
-			app.startup(ctx)
+			app.Startup(ctx)
 			fileService.Startup(ctx)
+		},
+		OnShutdown: func(ctx context.Context) {
 		},
 		DisableResize: false,
 		Fullscreen:    false,

@@ -1,8 +1,8 @@
 <script lang='ts'>
   import type { Snippet } from 'svelte'
   import { onDestroy, onMount } from 'svelte'
-  import { OpenFileDialog, OpenMultipleFilesDialog, SaveFileDialog } from '../../wailsjs/go/main/FileService'
-  import { main } from '../../wailsjs/go/models'
+  import { OpenFileDialog, OpenMultipleFilesDialog, SaveFileDialog } from '../../wailsjs/go/internal/FileService'
+  import { internal } from '../../wailsjs/go/models'
   import { OnFileDrop, OnFileDropOff } from '../../wailsjs/runtime/runtime'
 
   // File filter type
@@ -98,9 +98,9 @@
     }
 
     try {
-      const dialogOptions: main.OpenDialogOptions = new main.OpenDialogOptions({
+      const dialogOptions: internal.OpenDialogOptions = new internal.OpenDialogOptions({
         title,
-        filters: filters!.map((f: FileFilter) => new main.FileFilter({
+        filters: filters!.map((f: FileFilter) => new internal.FileFilter({
           displayName: f.displayName,
           pattern: f.pattern,
         })),
@@ -114,9 +114,9 @@
       let filePaths: string[] = []
 
       if (mode === 'save') {
-        const saveOptions: main.SaveDialogOptions = new main.SaveDialogOptions({
+        const saveOptions: internal.SaveDialogOptions = new internal.SaveDialogOptions({
           title,
-          filters: filters!.map((f: FileFilter) => new main.FileFilter({
+          filters: filters!.map((f: FileFilter) => new internal.FileFilter({
             displayName: f.displayName,
             pattern: f.pattern,
           })),

@@ -280,27 +280,4 @@
     font-size: var(--font-size-sm);
     text-align: center;
   }
-
-  /* Scrollbar styling */
-  .detail-content {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-border) transparent;
-  }
-
-  .detail-content::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .detail-content::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .detail-content::-webkit-scrollbar-thumb {
-    background-color: var(--color-border);
-    border-radius: 3px;
-  }
-
-  .detail-content::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-text-muted);
-  }
 </style>

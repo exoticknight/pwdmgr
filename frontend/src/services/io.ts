@@ -1,4 +1,4 @@
-import { ReadFile, SaveFile } from '../../wailsjs/go/main/FileService'
+import { ReadFile, SaveFile } from '../../wailsjs/go/internal/FileService'
 
 export interface IoService {
   readFile: (filePath: string) => Promise<Uint8Array>

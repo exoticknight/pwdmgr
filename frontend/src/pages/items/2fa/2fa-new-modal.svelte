@@ -8,7 +8,7 @@
   import { i18n } from '@/stores/i18n.svelte'
   import { createFrom2FAData, parseURI, validate2FAData } from '@/utils/2fa'
   import { readFromClipboard } from '@/utils/clipboard'
-  import { QRScannerService } from '@/utils/qr-scanner'
+  import { scanFromBlob } from '@/utils/qrcode'
 
   interface Props {
     isOpen: boolean
@@ -80,7 +80,7 @@
       // Convert ArrayBuffer to Blob
       const blob = new Blob([new Uint8Array(content)])
 
-      const qrResults = await QRScannerService.scanFromBlob(blob)
+      const qrResults = await scanFromBlob(blob)
 
       if (qrResults.length === 0) {
         errorMessage = 'No QR code found in the image'
@@ -127,7 +127,7 @@
         for (const type of clipboardItem.types) {
           if (type.startsWith('image/')) {
             const blob = await clipboardItem.getType(type)
-            const qrResults = await QRScannerService.scanFromBlob(blob)
+            const qrResults = await scanFromBlob(blob)
             results.push(...qrResults)
           }
         }

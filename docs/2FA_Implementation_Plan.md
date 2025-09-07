@@ -144,7 +144,7 @@ frontend/src/
 │   └── 2fa.ts                           # 2FA相关类型定义
 └── utils/
     ├── totp.ts                          # TOTP算法实现
-    └── qr-scanner.ts                    # QR码扫描工具
+    └── qrcode.ts                        # QR码扫描工具
 ```
 
 ## 三、已实现的核心功能
@@ -341,21 +341,12 @@ export class Client2FAService {
 
 ### 5.4 QR扫描服务
 
-**文件位置：** `frontend/src/services/qr-scanner.service.ts`
+**文件位置：** `frontend/src/utils/qrcode.ts`
 
 ```typescript
-export class QRScannerService {
-  // 图片文件扫描
-  async scanFromImage(file: File): Promise<QRCodeData[]>
-
-  // 剪贴板扫描
-  async scanFromClipboard(): Promise<QRCodeData[]>
-
-  // 屏幕截图扫描（需要Wails支持）
-  async scanFromScreenshot(): Promise<QRCodeData[]>
-
-  // 拖拽文件扫描
-  async scanFromDragDrop(dataTransfer: DataTransfer): Promise<QRCodeData[]>
+// QR码扫描函数
+export async function scanFromBlob(blob: Blob): Promise<(OTPAuth.TOTP | OTPAuth.HOTP)[]>
+```
 
   // URL解析
   parseOtpauthURL(url: string): QRCodeData
@@ -572,7 +563,7 @@ export class Client2FAManager {
 - [x] 实现2FA新建模态框（pages/items/2fa/2fa-new-modal.svelte）
 - [x] 实现2FA详情页面（pages/items/2fa/2fa-detail.svelte）
 - [x] 创建客户端2FA服务（services/2fa-client.ts）
-- [x] 实现QR扫描工具（utils/qr-scanner.ts）
+- [x] 实现QR扫描工具（utils/qrcode.ts）
 - [x] 集成@lucide/svelte图标库
 
 **已实现的功能特性**

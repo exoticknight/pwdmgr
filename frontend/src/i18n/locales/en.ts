@@ -30,8 +30,6 @@ export const en = {
     // Buttons
     buttons: {
       newEntry: 'New Entry',
-      save: 'Save',
-      export: 'Export',
     },
 
     // Accessibility labels
@@ -184,6 +182,7 @@ export const en = {
       entryUpdated: 'Entry updated successfully',
       entryDeleted: 'Entry deleted successfully',
       exportSuccess: 'Data exported successfully',
+      featureComingSoon: 'Feature coming soon',
     },
 
     // Password generator
@@ -228,9 +227,15 @@ export const en = {
       // Data settings
       data: {
         title: 'Data',
-        export: {
+        exportData: {
           title: 'Export Data',
           description: 'Export your password data as CSV or JSON files',
+          buttonText: 'Export Data',
+        },
+        exportSettings: {
+          title: 'Export Settings',
+          description: 'Export application settings configuration',
+          buttonText: 'Export Settings',
         },
       },
 

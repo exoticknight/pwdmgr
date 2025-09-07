@@ -14,6 +14,11 @@
     showExportDialog = true
   }
 
+  function handleExportSettings() {
+    // TODO: Implement settings export functionality
+    notification.info(i18n.t('notifications.featureComingSoon'))
+  }
+
   async function handleExportData(format: 'csv' | 'json', filePaths: string[]) {
     if (filePaths.length === 0) {
       return
@@ -51,18 +56,33 @@
 <SettingSection title={i18n.t('setting.data.title')}>
   {#snippet items(_markUnsaved: () => void)}
     <SettingItem
-      title={i18n.t('setting.data.export.title')}
-      description={i18n.t('setting.data.export.description')}
+      title={i18n.t('setting.data.exportData.title')}
+      description={i18n.t('setting.data.exportData.description')}
     >
       {#snippet control()}
         <button
           class='btn btn-outline'
           onclick={handleExport}
         >
-          {i18n.t('buttons.export')}
+          {i18n.t('setting.data.exportData.buttonText')}
         </button>
       {/snippet}
     </SettingItem>
+
+    <SettingItem
+      title={i18n.t('setting.data.exportSettings.title')}
+      description={i18n.t('setting.data.exportSettings.description')}
+    >
+      {#snippet control()}
+        <button
+          class='btn btn-outline'
+          onclick={handleExportSettings}
+        >
+          {i18n.t('setting.data.exportSettings.buttonText')}
+        </button>
+      {/snippet}
+    </SettingItem>
+
   {/snippet}
 </SettingSection>
 

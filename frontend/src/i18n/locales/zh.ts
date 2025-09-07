@@ -30,8 +30,6 @@ export const zh = {
     // Buttons
     buttons: {
       newEntry: '新建条目',
-      save: '保存',
-      export: '导出',
     },
 
     // Accessibility labels
@@ -184,6 +182,7 @@ export const zh = {
       entryUpdated: '条目已成功更新',
       entryDeleted: '条目已成功删除',
       exportSuccess: '数据导出成功',
+      featureComingSoon: '功能即将推出',
     },
 
     // 密码生成器
@@ -228,9 +227,15 @@ export const zh = {
       // 数据设置
       data: {
         title: '数据',
-        export: {
+        exportData: {
           title: '导出数据',
           description: '将您的密码数据导出为 CSV 或 JSON 文件',
+          buttonText: '导出数据',
+        },
+        exportSettings: {
+          title: '导出设置',
+          description: '导出应用程序的设置配置',
+          buttonText: '导出设置',
         },
       },
 

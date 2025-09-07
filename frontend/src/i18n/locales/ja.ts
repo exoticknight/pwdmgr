@@ -30,8 +30,6 @@ export const ja = {
     // ボタン
     buttons: {
       newEntry: '新しいエントリ',
-      save: '保存',
-      export: 'エクスポート',
     },
 
     // アクセシビリティラベル
@@ -184,6 +182,7 @@ export const ja = {
       entryUpdated: 'エントリが正常に更新されました',
       entryDeleted: 'エントリが正常に削除されました',
       exportSuccess: 'データが正常にエクスポートされました',
+      featureComingSoon: '機能は近日公開予定',
     },
 
     // パスワード生成器
@@ -228,9 +227,15 @@ export const ja = {
       // データ設定
       data: {
         title: 'データ',
-        export: {
+        exportData: {
           title: 'データエクスポート',
           description: 'パスワードデータをCSVまたはJSONファイルとしてエクスポート',
+          buttonText: 'データをエクスポート',
+        },
+        exportSettings: {
+          title: '設定エクスポート',
+          description: 'アプリケーション設定をエクスポート',
+          buttonText: '設定をエクスポート',
         },
       },
 

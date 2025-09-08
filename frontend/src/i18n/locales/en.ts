@@ -22,6 +22,7 @@ export const en = {
       password: 'Password',
       text: 'Encrypted Text',
       twoFactorAuth: '2FA',
+      import: 'Import',
       audit: 'Audit',
       settings: 'Settings',
       close: 'Close',
@@ -202,6 +203,55 @@ export const en = {
         fair: 'Fair',
         good: 'Good',
         strong: 'Strong',
+      },
+    },
+
+    // Import functionality
+    import: {
+      title: 'Import Data',
+      description: 'Import password data from other password managers or files',
+      fileSelection: {
+        title: 'File Selection',
+        clickOrDrag: 'Click to select or drag & drop',
+        dropHere: 'Drop file here',
+        supportedFormats: 'Supported formats',
+      },
+      fileInfo: {
+        name: 'File Name',
+        size: 'File Size',
+      },
+      formats: {
+        csv: {
+          title: 'CSV File',
+          description: 'Import password data from generic CSV format',
+        },
+        json: {
+          title: 'JSON File',
+          description: 'Import password data from JSON format file',
+        },
+      },
+      mapping: {
+        title: 'Field Mapping',
+        description: 'Please specify the mapping between CSV column names and data fields',
+        name: 'Name',
+        username: 'Username',
+        password: 'Password',
+        url: 'URL',
+        notes: 'Notes',
+        columnName: 'Column name',
+      },
+      warning: {
+        title: 'Import Warning',
+        message: 'Import operation will add new data to the current database. Please ensure you have backed up your current database file.',
+      },
+      startImport: 'Start Import',
+      processing: 'Importing, please wait...',
+      success: 'Successfully imported {{count}} records',
+      errors: {
+        unsupportedFormat: 'Unsupported file format',
+        openFailed: 'Failed to open file',
+        invalidJsonFormat: 'Invalid JSON file format',
+        importFailed: 'Import failed',
       },
     },
 

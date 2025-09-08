@@ -3,9 +3,12 @@ ignorePaths: []
 dictionaryDefinitions: []
 dictionaries: []
 words:
+  - bitwarden
   - daisyui
   - eslintcache
   - hotp
+  - keepass
+  - lastpass
   - otpauth
   - pnpm
   - svelte

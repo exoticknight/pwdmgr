@@ -3,6 +3,7 @@
   import {
     BrickWallShield,
     CircleX,
+    Download,
     Settings,
   } from '@lucide/svelte'
   import { onDestroy, onMount } from 'svelte'
@@ -63,6 +64,12 @@
     {/each}
   </ul>
   <ul class='menu w-full'>
+    <li>
+      <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.IMPORT} onclick={() => route.navigate(Routes.IMPORT)}>
+        <Download size={16} />
+        {i18n.t('navigation.import')}
+      </button>
+    </li>
     <li>
       <button class='btn btn-ghost justify-start gap-3' class:btn-active={route.route === Routes.AUDIT} onclick={() => route.navigate(Routes.AUDIT)}>
         <BrickWallShield size={16} />

@@ -62,7 +62,6 @@
     }
 
     try {
-      // If there's a file path, save to file
       if (userState.dbPath) {
         database.commitData()
         await database.saveToFile(userState.dbPath)
@@ -70,7 +69,6 @@
         notification.success(i18n.t('notifications.saved'))
       }
       else {
-        // New file, show save dialog
         showSaveDialog = true
       }
     }

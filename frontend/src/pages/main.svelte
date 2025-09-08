@@ -2,8 +2,9 @@
   import { Router } from '@mateothegreat/svelte5-router'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
-  import { Routes } from '@/stores/route.svelte'
+  import { route, Routes } from '@/stores/route.svelte'
   import Audit from './audit.svelte'
+  import Import from './import.svelte'
   import Items from './items.svelte'
   import Navigation from './main/navigation.svelte'
   import Setting from './setting.svelte'
@@ -52,6 +53,10 @@
       },
     },
     {
+      path: Routes.IMPORT,
+      component: Import,
+    },
+    {
       path: Routes.AUDIT,
       component: Audit,
     },
@@ -67,6 +72,10 @@
     <div class='loading-content'>
       <span class='loading loading-spinner loading-xl'></span>
       <p class='loading-text'>{i18n.t('common.loading')}</p>
+      <button
+        class='btn btn-ghost btn-sm mt-4'
+        onclick={() => route.navigate(Routes.LANDING)}
+      >{i18n.t('common.back')}</button>
     </div>
   </div>
 {:else}

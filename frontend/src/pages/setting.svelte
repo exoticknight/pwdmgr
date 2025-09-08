@@ -38,7 +38,7 @@
 <div class='relative h-full'>
   {#if hasDataFile}
     <div class='overflow-y-auto h-full'>
-      <div class='setting-container gap-8 m-4'>
+      <div class='setting-container gap-8 m-6'>
         <SecuritySection />
         <DataSection />
         <InterfaceSection />

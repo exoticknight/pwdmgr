@@ -22,6 +22,7 @@ export const ja = {
       password: 'パスワード',
       text: '暗号化テキスト',
       twoFactorAuth: '二段階認証',
+      import: 'インポート',
       audit: '監査',
       settings: '設定',
       close: '閉じる',
@@ -202,6 +203,55 @@ export const ja = {
         fair: '普通',
         good: '良い',
         strong: '強い',
+      },
+    },
+
+    // インポート機能
+    import: {
+      title: 'データのインポート',
+      description: '他のパスワード管理ツールやファイルからパスワードデータをインポート',
+      fileSelection: {
+        title: 'ファイル選択',
+        clickOrDrag: 'クリックして選択またはドラッグ&ドロップ',
+        dropHere: 'ファイルをここにドロップ',
+        supportedFormats: 'サポート形式',
+      },
+      fileInfo: {
+        name: 'ファイル名',
+        size: 'ファイルサイズ',
+      },
+      formats: {
+        csv: {
+          title: 'CSVファイル',
+          description: '汎用CSV形式からパスワードデータをインポート',
+        },
+        json: {
+          title: 'JSONファイル',
+          description: 'JSON形式ファイルからパスワードデータをインポート',
+        },
+      },
+      mapping: {
+        title: 'フィールドマッピング',
+        description: 'CSVファイルの列名とデータフィールドの対応関係を指定してください',
+        name: '名前',
+        username: 'ユーザー名',
+        password: 'パスワード',
+        url: 'URL',
+        notes: 'メモ',
+        columnName: '列名',
+      },
+      warning: {
+        title: 'インポート警告',
+        message: 'インポート操作は現在のデータベースに新しいデータを追加します。現在のデータベースファイルをバックアップしていることを確認してください。',
+      },
+      startImport: 'インポート開始',
+      processing: 'インポート中、お待ちください...',
+      success: '{{count}}件のレコードを正常にインポートしました',
+      errors: {
+        unsupportedFormat: 'サポートされていないファイル形式',
+        openFailed: 'ファイルのオープンに失敗しました',
+        invalidJsonFormat: '無効なJSON形式',
+        importFailed: 'インポートに失敗しました',
       },
     },
 

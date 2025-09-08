@@ -12,6 +12,7 @@ export const Routes = {
   ITEMS_2FA: '/home/items/2fa',
 
   // Other app routes
+  IMPORT: '/home/import',
   AUDIT: '/home/audit',
   SETTING: '/home/setting',
 } as const

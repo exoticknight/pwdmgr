@@ -53,7 +53,6 @@
           <Eye size={16} class='swap-on' />
         </label>
 
-        <!-- Column 2: Title (auto-expanding) -->
         <div class='flex items-center gap-3 flex-1 min-w-46'>
           <item.icon
             size={16}
@@ -64,9 +63,7 @@
           >{i18n.t(item.labelKey)}</span>
         </div>
 
-        <!-- Column 3: Arrow controls (only visible on hover) -->
         <div class='flex items-center gap-0 opacity-0 group-hover:opacity-100 transition-opacity'>
-          <!-- Move up arrow -->
           <button
             class='btn btn-ghost btn-sm p-1 min-h-0 h-8 w-8 tooltip tooltip-left'
             class:invisible={index === 0}
@@ -77,7 +74,6 @@
             <ArrowBigUp size={16} />
           </button>
 
-          <!-- Move down arrow -->
           <button
             class='btn btn-ghost btn-sm p-1 min-h-0 h-8 w-8 tooltip tooltip-left'
             class:invisible={index === allItems.length - 1}
@@ -92,7 +88,6 @@
     {/each}
   </div>
 
-  <!-- Reset button -->
   <div class='flex justify-end'>
     <button
       class='btn btn-outline gap-2'

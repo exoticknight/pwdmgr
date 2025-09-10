@@ -208,49 +208,51 @@ export const ja = {
 
     // インポート機能
     import: {
-      title: 'データのインポート',
-      description: '他のパスワード管理ツールやファイルからパスワードデータをインポート',
+      importType: 'インポートタイプ',
+      supportedFormat: 'サポートファイル形式',
+      fileFormat: '{{extension}} ファイル',
+      instructions: 'インポート手順',
+      fileSelected: 'ファイル選択済み',
+      readyToImport: '{{type}} データのインポート準備完了',
+      selectDifferentFile: '別のファイルを選択',
+      processingFile: '{{type}} ファイルを処理中...',
+      warnings: 'インポート完了、{{count}}件の警告があります',
       fileSelection: {
-        title: 'ファイル選択',
+        selectFile: 'ファイル選択',
         clickOrDrag: 'クリックして選択またはドラッグ&ドロップ',
         dropHere: 'ファイルをここにドロップ',
         supportedFormats: 'サポート形式',
       },
       fileInfo: {
         name: 'ファイル名',
-        size: 'ファイルサイズ',
+        path: 'ファイルパス',
+        type: 'タイプ',
       },
-      formats: {
+      types: {
+        vendor: {
+          title: 'ベンダー固有',
+        },
         csv: {
-          title: 'CSVファイル',
-          description: '汎用CSV形式からパスワードデータをインポート',
-        },
-        json: {
-          title: 'JSONファイル',
-          description: 'JSON形式ファイルからパスワードデータをインポート',
+          title: 'CSV',
         },
       },
-      mapping: {
-        title: 'フィールドマッピング',
-        description: 'CSVファイルの列名とデータフィールドの対応関係を指定してください',
-        name: '名前',
-        username: 'ユーザー名',
-        password: 'パスワード',
-        url: 'URL',
-        notes: 'メモ',
-        columnName: '列名',
-      },
-      warning: {
-        title: 'インポート警告',
-        message: 'インポート操作は現在のデータベースに新しいデータを追加します。現在のデータベースファイルをバックアップしていることを確認してください。',
+      fileTypes: {
+        bitwarden: {
+          instructions: 'Bitwarden から暗号化されていないJSONファイルをエクスポートしてください。エクスポート手順: 設定 → 保管庫のエクスポート',
+        },
+        keepass: {
+          instructions: 'KeePass から CSVファイルをエクスポートしてください。エクスポート手順: ファイル → エクスポート → CSV',
+        },
+        lastpass: {
+          instructions: 'LastPass から CSVファイルをエクスポートしてください。エクスポート手順: その他のオプション → 詳細 → エクスポート',
+        },
       },
       startImport: 'インポート開始',
       processing: 'インポート中、お待ちください...',
-      success: '{{count}}件のレコードを正常にインポートしました',
+      success: '{{count}}件のレコードを正常にインポートしました、{{error}}個のエラー',
       errors: {
         unsupportedFormat: 'サポートされていないファイル形式',
         openFailed: 'ファイルのオープンに失敗しました',
-        invalidJsonFormat: '無効なJSON形式',
         importFailed: 'インポートに失敗しました',
       },
     },

@@ -2,15 +2,18 @@
   import { Braces, Download, FileText } from '@lucide/svelte'
   import Modal from '@/components/modal.svelte'
   import WailsFileSelect from '@/components/wails-file-select.svelte'
+  import { getIoService } from '@/services/io'
+  import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { notification } from '@/stores/notification.svelte'
+  import { exportToCSV, exportToJSON } from '@/utils/export'
 
   interface Props {
     isOpen: boolean
-    onExport: (format: 'csv' | 'json', filePaths: string[]) => void
-    onCancel: () => void
+    onClose: () => void
   }
 
-  const { isOpen, onExport, onCancel }: Props = $props()
+  const { isOpen, onClose }: Props = $props()
 
   let selectedFormat: 'csv' | 'json' = $state('json')
 
@@ -18,8 +21,33 @@
     selectedFormat = format
   }
 
-  function handleFileSave(filePaths: string[]) {
-    onExport(selectedFormat, filePaths)
+  async function handleFileSave(filePaths: string[]) {
+    if (filePaths.length === 0) {
+      return
+    }
+
+    try {
+      const filePath = filePaths[0]
+      let content: string
+
+      const databaseData = database.export()
+
+      if (selectedFormat === 'csv') {
+        content = exportToCSV(databaseData)
+      }
+      else {
+        content = exportToJSON(databaseData)
+      }
+
+      await getIoService().writeTextToFile(filePath, content)
+
+      onClose()
+      notification.success(i18n.t('notifications.exportSuccess'))
+    }
+    catch (err) {
+      console.error('Failed to export data:', err)
+      notification.error(i18n.t('errors.exportError'))
+    }
   }
 
   function getFileExtension() {
@@ -47,7 +75,7 @@
 <Modal
   {isOpen}
   title={i18n.t('export.export')}
-  onClose={onCancel}
+  onClose={onClose}
   showCloseButton={true}
   boxClass='max-w-xl'
 >

@@ -208,49 +208,51 @@ export const en = {
 
     // Import functionality
     import: {
-      title: 'Import Data',
-      description: 'Import password data from other password managers or files',
+      importType: 'Import Type',
+      supportedFormat: 'Supported File Format',
+      fileFormat: '{{extension}} files',
+      instructions: 'Import Instructions',
+      fileSelected: 'File Selected',
+      readyToImport: 'Ready to import {{type}} data',
+      selectDifferentFile: 'Select Different File',
+      processingFile: 'Processing {{type}} file...',
+      warnings: 'Import completed with {{count}} warnings',
       fileSelection: {
-        title: 'File Selection',
+        selectFile: 'Select File',
         clickOrDrag: 'Click to select or drag & drop',
         dropHere: 'Drop file here',
         supportedFormats: 'Supported formats',
       },
       fileInfo: {
         name: 'File Name',
-        size: 'File Size',
+        path: 'File Path',
+        type: 'Type',
       },
-      formats: {
+      types: {
+        vendor: {
+          title: 'Vendor Specific',
+        },
         csv: {
-          title: 'CSV File',
-          description: 'Import password data from generic CSV format',
-        },
-        json: {
-          title: 'JSON File',
-          description: 'Import password data from JSON format file',
+          title: 'CSV',
         },
       },
-      mapping: {
-        title: 'Field Mapping',
-        description: 'Please specify the mapping between CSV column names and data fields',
-        name: 'Name',
-        username: 'Username',
-        password: 'Password',
-        url: 'URL',
-        notes: 'Notes',
-        columnName: 'Column name',
-      },
-      warning: {
-        title: 'Import Warning',
-        message: 'Import operation will add new data to the current database. Please ensure you have backed up your current database file.',
+      fileTypes: {
+        bitwarden: {
+          instructions: 'Please export an unencrypted JSON file from Bitwarden. Export path: Settings → Export Vault',
+        },
+        keepass: {
+          instructions: 'Please export a CSV file from KeePass. Export path: File → Export → CSV',
+        },
+        lastpass: {
+          instructions: 'Please export a CSV file from LastPass. Export path: More Options → Advanced → Export',
+        },
       },
       startImport: 'Start Import',
       processing: 'Importing, please wait...',
-      success: 'Successfully imported {{count}} records',
+      success: 'Successfully imported {{count}} records, with {{error}} errors',
       errors: {
         unsupportedFormat: 'Unsupported file format',
         openFailed: 'Failed to open file',
-        invalidJsonFormat: 'Invalid JSON file format',
         importFailed: 'Import failed',
       },
     },

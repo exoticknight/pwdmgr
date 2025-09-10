@@ -63,31 +63,9 @@ export function exportToCSV(databaseData: DataFile): string {
  * Convert database to formatted JSON string
  */
 export function exportToJSON(databaseData: DataFile): string {
-  // Create a clean data structure with only necessary fields and readable keys
   const cleanData = databaseData.data.map((entry) => {
-    let username = ''
-    let password = ''
-
-    if (entry._type === 'password') {
-      username = entry.username || ''
-      password = entry.password || ''
-    }
-    else if (entry._type === 'two_factor_auth') {
-      username = entry.username || ''
-      password = '[2FA Entry]'
-    }
-
-    return {
-      title: entry.title,
-      username,
-      password,
-      notes: entry.notes ?? '',
-      type: entry._type,
-      isFavorite: entry._isFavorite,
-      createdAt: entry._createdAt,
-      updatedAt: entry._updatedAt,
-      lastUsedAt: entry._lastUsedAt ?? '',
-    }
+    const { _id, ...rest } = entry
+    return rest
   })
 
   return JSON.stringify(cleanData, null, 2)

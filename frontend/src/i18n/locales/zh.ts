@@ -208,49 +208,51 @@ export const zh = {
 
     // 导入功能
     import: {
-      title: '导入数据',
-      description: '从其他密码管理器或文件中导入密码数据',
+      importType: '导入类型',
+      supportedFormat: '支持的文件格式',
+      fileFormat: '{{extension}} 文件',
+      instructions: '导入说明',
+      fileSelected: '已选择文件',
+      readyToImport: '准备导入 {{type}} 数据',
+      selectDifferentFile: '选择其他文件',
+      processingFile: '正在处理 {{type}} 文件...',
+      warnings: '导入完成，有 {{count}} 个警告',
       fileSelection: {
-        title: '文件选择',
+        selectFile: '选择文件',
         clickOrDrag: '点击选择或拖放文件',
         dropHere: '拖放文件到这里',
         supportedFormats: '支持格式',
       },
       fileInfo: {
         name: '文件名称',
-        size: '文件大小',
+        path: '文件路径',
+        type: '类型',
       },
-      formats: {
+      types: {
+        vendor: {
+          title: '特定供应商',
+        },
         csv: {
-          title: 'CSV 文件',
-          description: '支持从通用CSV格式导入密码数据',
-        },
-        json: {
-          title: 'JSON 文件',
-          description: '支持从JSON格式文件导入密码数据',
+          title: 'CSV',
         },
       },
-      mapping: {
-        title: '字段映射',
-        description: '请指定CSV文件中的列名与数据字段的对应关系',
-        name: '名称',
-        username: '用户名',
-        password: '密码',
-        url: '网址',
-        notes: '备注',
-        columnName: '列名',
-      },
-      warning: {
-        title: '导入警告',
-        message: '导入操作会将新数据添加到当前数据库中。请确保您已备份当前数据库文件。',
+      fileTypes: {
+        bitwarden: {
+          instructions: '请从 Bitwarden 导出未加密的 JSON 文件。导出路径：设置 → 导出密码库',
+        },
+        keepass: {
+          instructions: '请从 KeePass 导出 CSV 文件。导出路径：文件 → 导出 → CSV',
+        },
+        lastpass: {
+          instructions: '请从 LastPass 导出 CSV 文件。导出路径：更多选项 → 高级 → 导出',
+        },
       },
       startImport: '开始导入',
       processing: '导入中，请稍候...',
-      success: '成功导入 {{count}} 条记录',
+      success: '成功导入 {{count}} 条记录，{{error}} 个错误',
       errors: {
         unsupportedFormat: '不支持的文件格式',
         openFailed: '文件打开失败',
-        invalidJsonFormat: 'JSON格式无效',
         importFailed: '导入失败',
       },
     },

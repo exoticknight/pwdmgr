@@ -61,6 +61,16 @@ class Data {
     return newEntry as Datum
   }
 
+  addEntries(entries: Omit<Datum, '_id'>[]) {
+    this.#state.entries.push(...entries.map(entry => ({
+      ...entry,
+      _id: crypto.randomUUID(),
+      _createdAt: new Date().toISOString(),
+      _updatedAt: new Date().toISOString(),
+    })) as Datum[])
+    this.#updateSearchIndex()
+  }
+
   updateEntry(id: string, updates: Partial<Omit<Datum, 'id'>>): Datum {
     if (!this.#state.initialized) {
       throw new Error('Data store not initialized')

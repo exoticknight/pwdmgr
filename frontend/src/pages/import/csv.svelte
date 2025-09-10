@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import type { ImportEntry } from './importers/types'
   import type { OmitBasicDataExcept, PasswordData } from '@/types/data'
   import { Upload } from '@lucide/svelte'
   import WailsFileSelect from '@/components/wails-file-select.svelte'
@@ -7,6 +8,12 @@
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
+
+  interface Props {
+    onData: (importedData: ImportEntry[], errorCount: number) => void
+  }
+
+  const { onData }: Props = $props()
 
   let selectedFile: File | null = $state(null)
   let fileContent: string = $state('')

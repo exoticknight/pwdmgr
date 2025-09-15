@@ -1,59 +1,100 @@
-import type { BaseImporter, ImportResult } from './types'
-import type { PasswordData } from '@/types/data'
+import type { BaseImporter, ImportEntry, ImportResult } from './types'
+
+import type { PasswordData, TwoFactorAuthData } from '@/types/data'
+import Papa from 'papaparse'
 import { DataMetaType } from '@/types/data'
+
+interface LastPassCSVRow {
+  url?: string
+  username?: string
+  password?: string
+  extra?: string
+  name?: string
+  grouping?: string
+  fav?: string
+  totp?: string
+}
 
 export class LastPassImporter implements BaseImporter {
   async process(fileContent: string): Promise<ImportResult> {
     try {
-      const lines = fileContent.split('\n').map(line => line.trim()).filter(line => line.length > 0)
+      const result = Papa.parse<LastPassCSVRow>(fileContent, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: (header: string) => header.trim().toLowerCase(),
+      })
 
-      if (lines.length < 2) {
+      if (result.errors.length > 0) {
+        const errors = result.errors.map(error => `Parse error: ${error.message}`)
         return {
           success: false,
           count: 0,
           entries: [],
-          errors: ['Invalid LastPass CSV format: insufficient data'],
+          errors,
         }
       }
 
-      const headers = this.parseCSVLine(lines[0])
-      const entries: PasswordData[] = []
+      if (result.data.length === 0) {
+        return {
+          success: false,
+          count: 0,
+          entries: [],
+          errors: ['No valid data found in CSV'],
+        }
+      }
+
+      const entries: ImportEntry[] = []
       const errors: string[] = []
 
-      // LastPass typical headers: url,username,password,extra,name,grouping,fav
-      const nameIndex = this.findColumnIndex(headers, ['name', 'title'])
-      const usernameIndex = this.findColumnIndex(headers, ['username', 'user'])
-      const passwordIndex = this.findColumnIndex(headers, ['password'])
-      const urlIndex = this.findColumnIndex(headers, ['url', 'website'])
-      const notesIndex = this.findColumnIndex(headers, ['extra', 'notes', 'note'])
-
-      for (let i = 1; i < lines.length; i++) {
+      for (const [index, row] of result.data.entries()) {
         try {
-          const values = this.parseCSVLine(lines[i])
-
-          if (values.length < headers.length) {
-            errors.push(`Line ${i + 1}: insufficient columns`)
-            continue
-          }
-
           const now = new Date().toISOString()
-          const importEntry: PasswordData = {
+
+          const title = row.name ?? row.grouping ?? row.url ?? `Imported Entry ${index + 1}`
+          const username = row.username ?? ''
+          const password = row.password ?? ''
+          const url = row.url ?? ''
+          const notes = row.extra ?? ''
+          const totpSecret = row.totp ?? ''
+
+          const passwordEntry: PasswordData = {
             _id: crypto.randomUUID(),
             _type: DataMetaType.PASSWORD,
             _isFavorite: false,
             _createdAt: now,
             _updatedAt: now,
-            title: values[nameIndex] ?? `Imported Entry ${i}`,
-            username: values[usernameIndex] ?? '',
-            password: values[passwordIndex] ?? '',
-            notes: values[notesIndex] ?? '',
-            url: values[urlIndex] ?? '',
+            title,
+            username,
+            password,
+            notes,
+            url,
           }
 
-          entries.push(importEntry)
+          entries.push(passwordEntry)
+
+          if (totpSecret && totpSecret.trim().length > 0) {
+            const totpEntry: TwoFactorAuthData = {
+              _id: crypto.randomUUID(),
+              _type: DataMetaType.TWO_FACTOR_AUTH,
+              _isFavorite: false,
+              _createdAt: now,
+              _updatedAt: now,
+              title: `${title} (TOTP)`,
+              issuer: this.extractIssuerFromTitle(title),
+              username,
+              secret: totpSecret.trim(),
+              algorithm: 'SHA1',
+              digits: 6,
+              period: 30,
+              notes,
+              serviceUrl: url,
+            }
+
+            entries.push(totpEntry)
+          }
         }
         catch (error) {
-          errors.push(`Line ${i + 1}: ${error instanceof Error ? error.message : 'parsing error'}`)
+          errors.push(`Row ${index + 1}: ${error instanceof Error ? error.message : 'parsing error'}`)
         }
       }
 
@@ -74,45 +115,30 @@ export class LastPassImporter implements BaseImporter {
     }
   }
 
-  private parseCSVLine(line: string): string[] {
-    const result: string[] = []
-    let current = ''
-    let inQuotes = false
+  private extractIssuerFromTitle(title: string): string {
+    // Try to extract a meaningful issuer from the title
+    // Common patterns: "Service Name", "Service - Account", "service.com"
+    const cleanTitle = title.trim()
 
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i]
-
-      if (char === '"') {
-        if (inQuotes && line[i + 1] === '"') {
-          current += '"'
-          i++ // Skip next quote
-        }
-        else {
-          inQuotes = !inQuotes
-        }
-      }
-      else if (char === ',' && !inQuotes) {
-        result.push(current.trim())
-        current = ''
-      }
-      else {
-        current += char
-      }
+    // If title contains a domain, extract it
+    const domainMatch = cleanTitle.match(/([a-z0-9-]+\.[a-z]{2,})/i)
+    if (domainMatch) {
+      return domainMatch[1]
     }
 
-    result.push(current.trim())
-    return result
-  }
-
-  private findColumnIndex(headers: string[], candidates: string[]): number {
-    for (const candidate of candidates) {
-      const index = headers.findIndex(header =>
-        header.toLowerCase().includes(candidate.toLowerCase()),
-      )
-      if (index !== -1) {
-        return index
-      }
+    // If title contains " - ", take the first part
+    const dashSplit = cleanTitle.split(' - ')
+    if (dashSplit.length > 1) {
+      return dashSplit[0].trim()
     }
-    return -1
+
+    // If title contains parentheses, take what's outside
+    const parenMatch = cleanTitle.match(/^([^(]+)/)
+    if (parenMatch) {
+      return parenMatch[1].trim()
+    }
+
+    // Otherwise use the title as-is, or fallback
+    return cleanTitle || 'Unknown'
   }
 }

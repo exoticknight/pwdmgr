@@ -1,5 +1,4 @@
-import type { BaseImporter, ImportResult } from './types'
-import type { PasswordData } from '@/types/data'
+import type { BaseImporter, ImportEntry, ImportResult } from './types'
 import { DataMetaType } from '@/types/data'
 
 interface BitwardenEntry {
@@ -27,7 +26,7 @@ export class BitwardenImporter implements BaseImporter {
         }
       }
 
-      const entries: PasswordData[] = []
+      const entries: ImportEntry[] = []
       const errors: string[] = []
 
       for (const [index, item] of jsonData.entries()) {
@@ -44,8 +43,7 @@ export class BitwardenImporter implements BaseImporter {
         }
 
         const now = new Date().toISOString()
-        const importEntry: PasswordData = {
-          _id: crypto.randomUUID(),
+        const importEntry = {
           _type: DataMetaType.PASSWORD,
           _isFavorite: false,
           _createdAt: now,

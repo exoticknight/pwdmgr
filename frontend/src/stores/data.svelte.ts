@@ -65,8 +65,6 @@ class Data {
     this.#state.entries.push(...entries.map(entry => ({
       ...entry,
       _id: crypto.randomUUID(),
-      _createdAt: new Date().toISOString(),
-      _updatedAt: new Date().toISOString(),
     })) as Datum[])
     this.#updateSearchIndex()
   }

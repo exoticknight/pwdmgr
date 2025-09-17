@@ -40,7 +40,7 @@
     {
       value: 'keepass',
       label: 'KeePass',
-      extension: '.csv',
+      extension: '.xml',
       importer: new KeePassImporter(),
     },
     {

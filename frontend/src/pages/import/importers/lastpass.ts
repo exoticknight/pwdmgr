@@ -1,6 +1,5 @@
 import type { BaseImporter, ImportEntry, ImportResult } from './types'
 
-import type { PasswordData, TwoFactorAuthData } from '@/types/data'
 import Papa from 'papaparse'
 import { DataMetaType } from '@/types/data'
 
@@ -57,8 +56,7 @@ export class LastPassImporter implements BaseImporter {
           const notes = row.extra ?? ''
           const totpSecret = row.totp ?? ''
 
-          const passwordEntry: PasswordData = {
-            _id: crypto.randomUUID(),
+          const passwordEntry = {
             _type: DataMetaType.PASSWORD,
             _isFavorite: false,
             _createdAt: now,
@@ -73,14 +71,13 @@ export class LastPassImporter implements BaseImporter {
           entries.push(passwordEntry)
 
           if (totpSecret && totpSecret.trim().length > 0) {
-            const totpEntry: TwoFactorAuthData = {
-              _id: crypto.randomUUID(),
+            const totpEntry = {
               _type: DataMetaType.TWO_FACTOR_AUTH,
               _isFavorite: false,
               _createdAt: now,
               _updatedAt: now,
               title: `${title} (TOTP)`,
-              issuer: this.extractIssuerFromTitle(title),
+              issuer: this.#extractIssuerFromTitle(title),
               username,
               secret: totpSecret.trim(),
               algorithm: 'SHA1',
@@ -115,7 +112,7 @@ export class LastPassImporter implements BaseImporter {
     }
   }
 
-  private extractIssuerFromTitle(title: string): string {
+  #extractIssuerFromTitle(title: string): string {
     // Try to extract a meaningful issuer from the title
     // Common patterns: "Service Name", "Service - Account", "service.com"
     const cleanTitle = title.trim()

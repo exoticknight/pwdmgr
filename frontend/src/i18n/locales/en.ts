@@ -241,7 +241,7 @@ export const en = {
           instructions: 'Please export an unencrypted JSON file from Bitwarden. Export path: Settings → Export Vault',
         },
         keepass: {
-          instructions: 'Please export a CSV file from KeePass. Export path: File → Export → CSV',
+          instructions: 'Please export an XML file from KeePass. Export path: File → Export → XML',
         },
         lastpass: {
           instructions: 'Please export a CSV file from LastPass. Export path: More Options → Advanced → Export',

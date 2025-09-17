@@ -241,7 +241,7 @@ export const ja = {
           instructions: 'Bitwarden から暗号化されていないJSONファイルをエクスポートしてください。エクスポート手順: 設定 → 保管庫のエクスポート',
         },
         keepass: {
-          instructions: 'KeePass から CSVファイルをエクスポートしてください。エクスポート手順: ファイル → エクスポート → CSV',
+          instructions: 'KeePass から XMLファイルをエクスポートしてください。エクスポート手順: ファイル → エクスポート → XML',
         },
         lastpass: {
           instructions: 'LastPass から CSVファイルをエクスポートしてください。エクスポート手順: その他のオプション → 詳細 → エクスポート',

@@ -241,7 +241,7 @@ export const zh = {
           instructions: '请从 Bitwarden 导出未加密的 JSON 文件。导出路径：设置 → 导出密码库',
         },
         keepass: {
-          instructions: '请从 KeePass 导出 CSV 文件。导出路径：文件 → 导出 → CSV',
+          instructions: '请从 KeePass 导出 XML 文件。导出路径：文件 → 导出 → XML',
         },
         lastpass: {
           instructions: '请从 LastPass 导出 CSV 文件。导出路径：更多选项 → 高级 → 导出',

@@ -1,58 +1,81 @@
-import type { BaseImporter, ImportResult } from './types'
-import type { PasswordData } from '@/types/data'
+import type { BaseImporter, ImportEntry, ImportResult } from './types'
+
 import { DataMetaType } from '@/types/data'
+
+interface KeePassEntry {
+  group?: string
+  title?: string
+  username?: string
+  url?: string
+  password?: string
+  notes?: string
+  uuid?: string
+  image?: string
+  creationTime?: string
+  lastModTime?: string
+  lastAccessTime?: string
+  expireTime?: string
+  expires?: boolean
+}
 
 export class KeePassImporter implements BaseImporter {
   async process(fileContent: string): Promise<ImportResult> {
     try {
-      const lines = fileContent.split('\n').map(line => line.trim()).filter(line => line.length > 0)
+      const parser = new DOMParser()
+      const xmlDoc = parser.parseFromString(fileContent, 'text/xml')
 
-      if (lines.length < 2) {
+      // Check for parsing errors
+      const parseError = xmlDoc.querySelector('parsererror')
+      if (parseError) {
         return {
           success: false,
           count: 0,
-          errors: ['Invalid KeePass CSV format: insufficient data'],
+          entries: [],
+          errors: ['Invalid XML format'],
         }
       }
 
-      const headers = this.parseCSVLine(lines[0])
-      const entries: PasswordData[] = []
+      const entryElements = xmlDoc.querySelectorAll('pwentry')
+
+      if (entryElements.length === 0) {
+        return {
+          success: false,
+          count: 0,
+          entries: [],
+          errors: ['No password entries found in XML file'],
+        }
+      }
+
+      const entries: ImportEntry[] = []
       const errors: string[] = []
 
-      // Find column indices
-      const titleIndex = this.findColumnIndex(headers, ['title', 'account', 'name'])
-      const usernameIndex = this.findColumnIndex(headers, ['username', 'user', 'login'])
-      const passwordIndex = this.findColumnIndex(headers, ['password', 'pass'])
-      const urlIndex = this.findColumnIndex(headers, ['url', 'website', 'site'])
-      const notesIndex = this.findColumnIndex(headers, ['notes', 'note', 'comments'])
-
-      for (let i = 1; i < lines.length; i++) {
+      for (const [index, entryElement] of Array.from(entryElements).entries()) {
         try {
-          const values = this.parseCSVLine(lines[i])
-
-          if (values.length < headers.length) {
-            errors.push(`Line ${i + 1}: insufficient columns`)
-            continue
-          }
-
+          const entry = this.#parseEntry(entryElement)
           const now = new Date().toISOString()
-          const importEntry: PasswordData = {
-            _id: crypto.randomUUID(),
+
+          const title = entry.title ?? entry.group ?? entry.url ?? `Imported Entry ${index + 1}`
+          const username = entry.username ?? ''
+          const password = entry.password ?? ''
+          const url = entry.url ?? ''
+          const notes = this.#buildNotes(entry)
+
+          const passwordEntry = {
             _type: DataMetaType.PASSWORD,
             _isFavorite: false,
-            _createdAt: now,
-            _updatedAt: now,
-            title: values[titleIndex] ?? `Imported Entry ${i}`,
-            username: values[usernameIndex] ?? '',
-            password: values[passwordIndex] ?? '',
-            notes: values[notesIndex] ?? '',
-            url: values[urlIndex] ?? '',
+            _createdAt: (entry.creationTime != null && entry.creationTime.length > 0) ? this.#parseDateTime(entry.creationTime) : now,
+            _updatedAt: (entry.lastModTime != null && entry.lastModTime.length > 0) ? this.#parseDateTime(entry.lastModTime) : now,
+            title,
+            username,
+            password,
+            notes,
+            url,
           }
 
-          entries.push(importEntry)
+          entries.push(passwordEntry)
         }
         catch (error) {
-          errors.push(`Line ${i + 1}: ${error instanceof Error ? error.message : 'parsing error'}`)
+          errors.push(`Entry ${index + 1}: ${error instanceof Error ? error.message : 'parsing error'}`)
         }
       }
 
@@ -67,50 +90,87 @@ export class KeePassImporter implements BaseImporter {
       return {
         success: false,
         count: 0,
-        errors: [`Failed to parse KeePass CSV: ${error instanceof Error ? error.message : 'Unknown error'}`],
+        entries: [],
+        errors: [`Failed to parse KeePass XML: ${error instanceof Error ? error.message : 'Unknown error'}`],
       }
     }
   }
 
-  private parseCSVLine(line: string): string[] {
-    const result: string[] = []
-    let current = ''
-    let inQuotes = false
+  #parseEntry(entryElement: Element): KeePassEntry {
+    const entry: KeePassEntry = {}
 
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i]
-
-      if (char === '"') {
-        if (inQuotes && line[i + 1] === '"') {
-          current += '"'
-          i++ // Skip next quote
-        }
-        else {
-          inQuotes = !inQuotes
-        }
-      }
-      else if (char === ',' && !inQuotes) {
-        result.push(current.trim())
-        current = ''
+    // Parse group - handle both simple and tree structure
+    const groupElement = entryElement.querySelector('group')
+    if (groupElement != null) {
+      const treeAttr = groupElement.getAttribute('tree')
+      if (treeAttr != null && treeAttr.length > 0) {
+        // Tree format: "General>Windows"
+        const groupText = groupElement.textContent?.trim() ?? ''
+        entry.group = `${treeAttr}>${groupText}`
       }
       else {
-        current += char
+        entry.group = groupElement.textContent?.trim() ?? ''
       }
     }
 
-    result.push(current.trim())
-    return result
+    // Parse other fields
+    entry.title = this.#getElementText(entryElement, 'title')
+    entry.username = this.#getElementText(entryElement, 'username')
+    entry.url = this.#getElementText(entryElement, 'url')
+    entry.password = this.#getElementText(entryElement, 'password')
+    entry.notes = this.#getElementText(entryElement, 'notes')
+    entry.uuid = this.#getElementText(entryElement, 'uuid')
+    entry.image = this.#getElementText(entryElement, 'image')
+    entry.creationTime = this.#getElementText(entryElement, 'creationtime')
+    entry.lastModTime = this.#getElementText(entryElement, 'lastmodtime')
+    entry.lastAccessTime = this.#getElementText(entryElement, 'lastaccesstime')
+
+    const expiretimeElement = entryElement.querySelector('expiretime')
+    if (expiretimeElement != null) {
+      entry.expireTime = expiretimeElement.textContent?.trim() ?? ''
+      entry.expires = (expiretimeElement.getAttribute('expires') ?? 'false') === 'true'
+    }
+
+    return entry
   }
 
-  private findColumnIndex(headers: string[], candidates: string[]): number {
-    for (const candidate of candidates) {
-      const index = headers.findIndex(header =>
-        header.toLowerCase().includes(candidate.toLowerCase()),
-      )
-      if (index !== -1) {
-        return index
-      }
+  #getElementText(parent: Element, tagName: string): string | undefined {
+    const element = parent.querySelector(tagName)
+    const text = element?.textContent?.trim()
+    return (text != null && text.length > 0) ? text : undefined
+  }
+
+  #buildNotes(entry: KeePassEntry): string {
+    const notes: string[] = []
+
+    if (entry.notes != null && entry.notes.length > 0) {
+      notes.push(entry.notes)
     }
-    return -1
+
+    if (entry.group != null && entry.group.length > 0) {
+      notes.push(`Group: ${entry.group}`)
+    }
+
+    if (entry.expires === true && (entry.expireTime != null && entry.expireTime.length > 0)) {
+      const expireDate = this.#parseDateTime(entry.expireTime)
+      notes.push(`Expires: ${new Date(expireDate).toLocaleDateString()}`)
+    }
+
+    if (entry.uuid != null && entry.uuid.length > 0) {
+      notes.push(`UUID: ${entry.uuid}`)
+    }
+
+    return notes.join('\n\n')
+  }
+
+  #parseDateTime(dateTimeString: string): string {
+    try {
+      // KeePass format: "2006-12-31T11:52:01"
+      const date = new Date(dateTimeString)
+      return date.toISOString()
+    }
+    catch {
+      return new Date().toISOString()
+    }
   }
 }

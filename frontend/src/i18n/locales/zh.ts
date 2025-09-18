@@ -209,6 +209,7 @@ export const zh = {
     // 导入功能
     import: {
       importType: '导入类型',
+      browserType: '浏览器类型',
       supportedFormat: '支持的文件格式',
       fileFormat: '{{extension}} 文件',
       instructions: '导入说明',
@@ -230,10 +231,13 @@ export const zh = {
       },
       types: {
         vendor: {
-          title: '特定供应商',
+          title: '来自供应商',
+        },
+        browser: {
+          title: '来自浏览器',
         },
         csv: {
-          title: 'CSV',
+          title: '来自CSV',
         },
       },
       fileTypes: {
@@ -254,6 +258,20 @@ export const zh = {
         unsupportedFormat: '不支持的文件格式',
         openFailed: '文件打开失败',
         importFailed: '导入失败',
+        notImplemented: '该浏览器导入功能尚未实现',
+      },
+      browser: {
+        chrome: {
+          description: 'CSV 格式的密码导出文件',
+          instructions: '打开 chrome://password-manager/settings，在 Export passwords 点击 Download file 按钮',
+        },
+        firefox: {
+          description: 'JSON 格式的密码导出文件 (待开发)',
+        },
+        edge: {
+          description: 'CSV 格式的密码导出文件 (待开发)',
+        },
+        comingSoon: '待开发',
       },
     },
 

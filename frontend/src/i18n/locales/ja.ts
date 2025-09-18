@@ -209,6 +209,7 @@ export const ja = {
     // インポート機能
     import: {
       importType: 'インポートタイプ',
+      browserType: 'ブラウザータイプ',
       supportedFormat: 'サポートファイル形式',
       fileFormat: '{{extension}} ファイル',
       instructions: 'インポート手順',
@@ -230,10 +231,13 @@ export const ja = {
       },
       types: {
         vendor: {
-          title: 'ベンダー固有',
+          title: 'ベンダーから',
+        },
+        browser: {
+          title: 'ブラウザーから',
         },
         csv: {
-          title: 'CSV',
+          title: 'CSVから',
         },
       },
       fileTypes: {
@@ -254,6 +258,20 @@ export const ja = {
         unsupportedFormat: 'サポートされていないファイル形式',
         openFailed: 'ファイルのオープンに失敗しました',
         importFailed: 'インポートに失敗しました',
+        notImplemented: 'このブラウザーインポート機能はまだ実装されていません',
+      },
+      browser: {
+        chrome: {
+          description: 'CSV形式のパスワードエクスポートファイル',
+          instructions: 'chrome://password-manager/settings を開き、Export passwords セクションの Download file ボタンをクリックしてください',
+        },
+        firefox: {
+          description: 'JSON形式のパスワードエクスポートファイル (開発予定)',
+        },
+        edge: {
+          description: 'CSV形式のパスワードエクスポートファイル (開発予定)',
+        },
+        comingSoon: '開発予定',
       },
     },
 

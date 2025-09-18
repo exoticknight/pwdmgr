@@ -209,6 +209,7 @@ export const en = {
     // Import functionality
     import: {
       importType: 'Import Type',
+      browserType: 'Browser Type',
       supportedFormat: 'Supported File Format',
       fileFormat: '{{extension}} files',
       instructions: 'Import Instructions',
@@ -230,10 +231,13 @@ export const en = {
       },
       types: {
         vendor: {
-          title: 'Vendor Specific',
+          title: 'From Vendor',
+        },
+        browser: {
+          title: 'From Browser',
         },
         csv: {
-          title: 'CSV',
+          title: 'From CSV',
         },
       },
       fileTypes: {
@@ -254,6 +258,20 @@ export const en = {
         unsupportedFormat: 'Unsupported file format',
         openFailed: 'Failed to open file',
         importFailed: 'Import failed',
+        notImplemented: 'This browser import feature is not yet implemented',
+      },
+      browser: {
+        chrome: {
+          description: 'CSV format password export file',
+          instructions: 'Open chrome://password-manager/settings, click Download file button in Export passwords section',
+        },
+        firefox: {
+          description: 'JSON format password export file (Coming Soon)',
+        },
+        edge: {
+          description: 'CSV format password export file (Coming Soon)',
+        },
+        comingSoon: 'Coming Soon',
       },
     },
 

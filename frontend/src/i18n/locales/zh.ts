@@ -269,7 +269,8 @@ export const zh = {
           description: 'JSON 格式的密码导出文件 (待开发)',
         },
         edge: {
-          description: 'CSV 格式的密码导出文件 (待开发)',
+          description: 'CSV 格式的密码导出文件',
+          instructions: '打开 edge://wallet/passwords，点击"导出密码"按钮并下载 CSV 文件',
         },
         comingSoon: '待开发',
       },

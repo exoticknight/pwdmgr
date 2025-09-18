@@ -30,6 +30,7 @@
       extension: '.csv',
       importer: new ChromeImporter(),
       description: i18n.t('import.browser.chrome.description'),
+      instructions: i18n.t('import.browser.chrome.instructions'),
     },
     {
       value: 'firefox',
@@ -45,7 +46,7 @@
       extension: '.csv',
       importer: new EdgeImporter(),
       description: i18n.t('import.browser.edge.description'),
-      disabled: true,
+      instructions: i18n.t('import.browser.edge.instructions'),
     },
   ])
 
@@ -141,11 +142,11 @@
       </p>
     </div>
 
-    {#if currentBrowserType.value === 'chrome'}
+    {#if currentBrowserType.instructions}
       <div class='p-4 bg-warning/10 rounded-lg border-l-4 border-warning'>
         <h4 class='font-medium text-warning mb-2'>{i18n.t('import.instructions')}</h4>
         <div class='text-sm text-base-content/70 space-y-2'>
-          <p>{i18n.t('import.browser.chrome.instructions')}</p>
+          <p>{currentBrowserType.instructions}</p>
         </div>
       </div>
     {/if}

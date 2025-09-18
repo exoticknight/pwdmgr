@@ -269,7 +269,8 @@ export const en = {
           description: 'JSON format password export file (Coming Soon)',
         },
         edge: {
-          description: 'CSV format password export file (Coming Soon)',
+          description: 'CSV format password export file',
+          instructions: 'Open edge://wallet/passwords, click "Export passwords" button and download the CSV file',
         },
         comingSoon: 'Coming Soon',
       },

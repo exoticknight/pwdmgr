@@ -269,7 +269,8 @@ export const ja = {
           description: 'JSON形式のパスワードエクスポートファイル (開発予定)',
         },
         edge: {
-          description: 'CSV形式のパスワードエクスポートファイル (開発予定)',
+          description: 'CSV形式のパスワードエクスポートファイル',
+          instructions: 'edge://wallet/passwords を開き、「パスワードのエクスポート」ボタンをクリックして CSV ファイルをダウンロードしてください',
         },
         comingSoon: '開発予定',
       },

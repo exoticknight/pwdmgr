@@ -6,7 +6,6 @@
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { ChromeImporter } from './importers/chrome'
-  import { EdgeImporter } from './importers/edge'
   import { FirefoxImporter } from './importers/firefox'
 
   interface Props {
@@ -44,7 +43,7 @@
       value: 'edge',
       label: 'Microsoft Edge',
       extension: '.csv',
-      importer: new EdgeImporter(),
+      importer: new ChromeImporter(),
       description: i18n.t('import.browser.edge.description'),
       instructions: i18n.t('import.browser.edge.instructions'),
     },

@@ -258,7 +258,6 @@ export const zh = {
         unsupportedFormat: '不支持的文件格式',
         openFailed: '文件打开失败',
         importFailed: '导入失败',
-        notImplemented: '该浏览器导入功能尚未实现',
       },
       browser: {
         chrome: {
@@ -266,13 +265,13 @@ export const zh = {
           instructions: '打开 chrome://password-manager/settings，在 Export passwords 点击 Download file 按钮',
         },
         firefox: {
-          description: 'JSON 格式的密码导出文件 (待开发)',
+          description: 'CSV 格式的密码导出文件',
+          instructions: '在 Firefox 中打开 about:logins，点击 ⋯ 菜单，选择"导出登录信息"下载 CSV 文件',
         },
         edge: {
           description: 'CSV 格式的密码导出文件',
           instructions: '打开 edge://wallet/passwords，点击"导出密码"按钮并下载 CSV 文件',
         },
-        comingSoon: '待开发',
       },
     },
 

@@ -35,10 +35,10 @@
     {
       value: 'firefox',
       label: 'Mozilla Firefox',
-      extension: '.json',
+      extension: '.csv',
       importer: new FirefoxImporter(),
       description: i18n.t('import.browser.firefox.description'),
-      disabled: true,
+      instructions: i18n.t('import.browser.firefox.instructions'),
     },
     {
       value: 'edge',
@@ -79,11 +79,6 @@
   }
 
   const processImport = async () => {
-    if (currentBrowserType.disabled) {
-      notification.error(i18n.t('import.errors.notImplemented'))
-      return
-    }
-
     try {
       isProcessing = true
 
@@ -125,11 +120,8 @@
         disabled={isProcessing}
       >
         {#each browserTypes as browserType}
-          <option value={browserType.value} disabled={browserType.disabled}>
+          <option value={browserType.value}>
             {browserType.label}
-            {#if browserType.disabled}
-              ({i18n.t('import.browser.comingSoon')})
-            {/if}
           </option>
         {/each}
       </select>
@@ -228,7 +220,6 @@
               <button
                 class='btn btn-primary'
                 onclick={processImport}
-                disabled={currentBrowserType.disabled}
               >
                 {i18n.t('import.startImport')}
               </button>

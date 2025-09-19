@@ -258,7 +258,6 @@ export const en = {
         unsupportedFormat: 'Unsupported file format',
         openFailed: 'Failed to open file',
         importFailed: 'Import failed',
-        notImplemented: 'This browser import feature is not yet implemented',
       },
       browser: {
         chrome: {
@@ -266,13 +265,13 @@ export const en = {
           instructions: 'Open chrome://password-manager/settings, click Download file button in Export passwords section',
         },
         firefox: {
-          description: 'JSON format password export file (Coming Soon)',
+          description: 'CSV format password export file',
+          instructions: 'Open about:logins in Firefox, click the ⋯ menu, and select "Export Logins" to download the CSV file',
         },
         edge: {
           description: 'CSV format password export file',
           instructions: 'Open edge://wallet/passwords, click "Export passwords" button and download the CSV file',
         },
-        comingSoon: 'Coming Soon',
       },
     },
 

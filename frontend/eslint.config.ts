@@ -17,4 +17,9 @@ export default antfu(
       '**/*.md',
     ],
   },
+  {
+    rules: {
+      'ts/strict-boolean-expressions': 'off',
+    },
+  },
 )

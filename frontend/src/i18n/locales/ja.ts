@@ -258,7 +258,6 @@ export const ja = {
         unsupportedFormat: 'サポートされていないファイル形式',
         openFailed: 'ファイルのオープンに失敗しました',
         importFailed: 'インポートに失敗しました',
-        notImplemented: 'このブラウザーインポート機能はまだ実装されていません',
       },
       browser: {
         chrome: {
@@ -266,13 +265,13 @@ export const ja = {
           instructions: 'chrome://password-manager/settings を開き、Export passwords セクションの Download file ボタンをクリックしてください',
         },
         firefox: {
-          description: 'JSON形式のパスワードエクスポートファイル (開発予定)',
+          description: 'CSV形式のパスワードエクスポートファイル',
+          instructions: 'Firefoxで about:logins を開き、⋯ メニューをクリックして「ログイン情報をエクスポート」を選択してCSVファイルをダウンロードしてください',
         },
         edge: {
           description: 'CSV形式のパスワードエクスポートファイル',
           instructions: 'edge://wallet/passwords を開き、「パスワードのエクスポート」ボタンをクリックして CSV ファイルをダウンロードしてください',
         },
-        comingSoon: '開発予定',
       },
     },
 

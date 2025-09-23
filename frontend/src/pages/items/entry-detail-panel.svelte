@@ -2,7 +2,7 @@
   import type { Datum, EncryptedTextData, PasswordData, TwoFactorAuthData } from '@/types/data'
   import type { DialogControl } from '@/types/dialog'
 
-  import { Share2, Star, Trash2 } from '@lucide/svelte'
+  import { Share2, SquarePen, Star, Trash2 } from '@lucide/svelte'
 
   import { dialog } from '@/stores/dialog.svelte'
   import { i18n } from '@/stores/i18n.svelte'
@@ -148,6 +148,27 @@
     }
   }
 
+  async function handleRename() {
+    if (entry && onUpdate) {
+      const newTitle = await dialogControl.prompt(
+        i18n.t('dialogs.renameTitle'),
+        entry.title,
+        i18n.t('actions.rename'),
+      )
+      if (newTitle && newTitle.trim() !== entry.title) {
+        onUpdate({
+          id: entry._id,
+          updates: {
+            title: newTitle.trim(),
+            _updatedAt: new Date().toISOString(),
+          },
+        })
+        onMarkDirty?.()
+        notification.success(i18n.t('notifications.entryRenamed'))
+      }
+    }
+  }
+
   async function handleDelete() {
     if (entry && onDelete) {
       const confirmed = await dialogControl.confirm(i18n.t('dialogs.confirmDelete'))
@@ -186,6 +207,14 @@
         </button>
       </h2>
       <div class='join'>
+        <button
+          type='button'
+          class='btn btn-sm join-item'
+          onclick={handleRename}
+          title={i18n.t('actions.rename')}
+        >
+          <SquarePen size={16} />
+        </button>
         <button
           type='button'
           class='btn btn-sm join-item'

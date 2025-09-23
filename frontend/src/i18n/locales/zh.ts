@@ -134,6 +134,7 @@ export const zh = {
 
       // Entry actions
       delete: '删除',
+      rename: '重命名',
       share: '分享',
 
       // File actions
@@ -150,6 +151,7 @@ export const zh = {
       saveLocation: '选择密码文件的保存位置',
       confirmDelete: '您确定要删除此条目吗？',
       confirmShare: '此操作将复制明文数据到剪贴板，请注意信息安全。确定要继续吗？',
+      renameTitle: '请输入新的标题名称',
     },
 
     // 错误消息
@@ -182,6 +184,7 @@ export const zh = {
       entryAdded: '条目已成功添加',
       entryUpdated: '条目已成功更新',
       entryDeleted: '条目已成功删除',
+      entryRenamed: '条目已成功重命名',
       exportSuccess: '数据导出成功',
       featureComingSoon: '功能即将推出',
     },

@@ -134,6 +134,7 @@ export const ja = {
 
       // エントリアクション
       delete: '削除',
+      rename: '名前変更',
       share: '共有',
 
       // ファイルアクション
@@ -150,6 +151,7 @@ export const ja = {
       saveLocation: 'パスワードファイルの保存場所を選択',
       confirmDelete: 'このエントリを削除してもよろしいですか？',
       confirmShare: 'この操作は平文データをクリップボードにコピーします。情報セキュリティにご注意ください。続行しますか？',
+      renameTitle: '新しいタイトル名を入力してください',
     },
 
     // エラーメッセージ
@@ -182,6 +184,7 @@ export const ja = {
       entryAdded: 'エントリが正常に追加されました',
       entryUpdated: 'エントリが正常に更新されました',
       entryDeleted: 'エントリが正常に削除されました',
+      entryRenamed: 'エントリが正常に名前変更されました',
       exportSuccess: 'データが正常にエクスポートされました',
       featureComingSoon: '機能は近日公開予定',
     },

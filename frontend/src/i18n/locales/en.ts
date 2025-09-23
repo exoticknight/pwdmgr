@@ -134,6 +134,7 @@ export const en = {
 
       // Entry actions
       delete: 'Delete',
+      rename: 'Rename',
       share: 'Share',
 
       // File actions
@@ -150,6 +151,7 @@ export const en = {
       saveLocation: 'Choose save location for your password file',
       confirmDelete: 'Are you sure you want to delete this entry?',
       confirmShare: 'This action will copy plain text data to clipboard. Please be aware of information security. Do you want to continue?',
+      renameTitle: 'Enter a new title name',
     },
 
     // Error messages
@@ -182,6 +184,7 @@ export const en = {
       entryAdded: 'Entry added successfully',
       entryUpdated: 'Entry updated successfully',
       entryDeleted: 'Entry deleted successfully',
+      entryRenamed: 'Entry renamed successfully',
       exportSuccess: 'Data exported successfully',
       featureComingSoon: 'Feature coming soon',
     },

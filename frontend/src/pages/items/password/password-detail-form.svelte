@@ -49,6 +49,11 @@
       BrowserOpenURL(url)
     }
   }
+
+  $effect(() => {
+    void entry
+    showPassword = false
+  })
 </script>
 
 <div class='flex flex-col space-y-6'>

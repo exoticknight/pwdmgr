@@ -4,6 +4,7 @@ export const DataMetaType = {
   PASSWORD: 'password',
   ENCRYPTED_TEXT: 'encrypted_text',
   TWO_FACTOR_AUTH: 'two_factor_auth',
+  PAYMENT: 'payment',
 } as const
 
 export interface BasicData {
@@ -60,4 +61,16 @@ export interface TwoFactorAuthData extends BasicData {
   iconUrl?: string // Service icon
 }
 
-export type Datum = PasswordData | EncryptedTextData | TwoFactorAuthData
+// Payment information (stores payment card details)
+export interface PaymentInfoData extends BasicData {
+  _type: typeof DataMetaType.PAYMENT
+  title: string
+  issuer: string // Card issuer (e.g. Visa, Mastercard, Bank name)
+  cardholderName: string // Name on card
+  cardNumber: string // Card number
+  expiryDate: string // Expiry date in MM/YY format
+  cvv: string // CVV/CVC code
+  notes?: string
+}
+
+export type Datum = PasswordData | EncryptedTextData | TwoFactorAuthData | PaymentInfoData

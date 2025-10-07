@@ -10,6 +10,7 @@ export const Routes = {
   ITEMS_PASSWORD: '/home/items/password',
   ITEMS_TEXT: '/home/items/text',
   ITEMS_2FA: '/home/items/2fa',
+  ITEMS_PAYMENT: '/home/items/payment',
 
   // Other app routes
   IMPORT: '/home/import',

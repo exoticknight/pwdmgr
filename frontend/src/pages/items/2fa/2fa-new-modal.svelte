@@ -6,6 +6,7 @@
   import WailsFileSelect from '@/components/wails-file-select.svelte'
   import { getIoService } from '@/services/io'
   import { i18n } from '@/stores/i18n.svelte'
+  import { DataMetaType } from '@/types/data'
   import { createFrom2FAData, parseURI, validate2FAData } from '@/utils/2fa'
   import { readFromClipboard } from '@/utils/clipboard'
   import { scanFromBlob } from '@/utils/qrcode'
@@ -161,7 +162,7 @@
 
     // Create entry that meets type requirements
     const entry: OmitBasicDataExcept<TwoFactorAuthData, 'TYPE'> = {
-      _type: 'two_factor_auth',
+      _type: DataMetaType.TWO_FACTOR_AUTH,
       title: formData.title!,
       issuer: formData.issuer!,
       username: formData.username!,

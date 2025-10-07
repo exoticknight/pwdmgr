@@ -22,6 +22,7 @@ export const en = {
       password: 'Password',
       text: 'Encrypted Text',
       twoFactorAuth: '2FA',
+      payment: 'Payment',
       import: 'Import',
       audit: 'Audit',
       settings: 'Settings',
@@ -63,6 +64,11 @@ export const en = {
       title: 'Title',
       content: 'Content',
       url: 'Website URL',
+      issuer: 'Issuer',
+      cardholderName: 'Cardholder Name',
+      cardNumber: 'Card Number',
+      expiryDate: 'Expiry Date',
+      cvv: 'CVV/CVC',
 
       // Field placeholders
       usernamePlaceholder: 'Enter username',
@@ -71,6 +77,11 @@ export const en = {
       titlePlaceholder: 'Enter title',
       contentPlaceholder: 'Enter text content to encrypt',
       urlPlaceholder: 'Enter website URL',
+      issuerPlaceholder: 'e.g., Visa, Mastercard, Bank Name',
+      cardholderNamePlaceholder: 'Name on card',
+      cardNumberPlaceholder: 'XXXX XXXX XXXX XXXX',
+      expiryDatePlaceholder: 'MM/YY',
+      cvvPlaceholder: 'XXX',
 
       // Entry management
       emptySubtitle: 'Select an entry to view details',
@@ -87,6 +98,7 @@ export const en = {
       loginCredentials: 'Login Credentials',
       accountInformation: 'Account Information',
       encryptedContent: 'Encrypted Content',
+      paymentInformation: 'Payment Information',
       additionalInformation: 'Additional Information',
       technicalParameters: 'Technical Parameters',
     },
@@ -96,6 +108,7 @@ export const en = {
       password: 'Password',
       encryptedText: 'Text',
       twoFactorAuth: '2FA',
+      payment: 'Payment',
     },
 
     // Password dialogs

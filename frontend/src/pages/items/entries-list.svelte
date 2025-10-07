@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { Datum, EncryptedTextData, PasswordData } from '@/types/data'
+  import type { BasicData, Datum, EncryptedTextData, PasswordData } from '@/types/data'
   import BrandIcon from '@/components/brand-icon.svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
@@ -37,12 +37,14 @@
         const content = (entry as EncryptedTextData).notes
         return content ? content.substring(0, 50) + (content.length > 50 ? '...' : '') : ''
       }
+      case 'payment':
+        return entry.issuer || ''
       default:
         return ''
     }
   }
 
-  function getEntryTypeLabel(type: string): string {
+  function getEntryTypeLabel(type: BasicData['_type']): string {
     switch (type) {
       case 'password':
         return i18n.t('entryTypes.password')
@@ -50,6 +52,8 @@
         return i18n.t('entryTypes.encryptedText')
       case 'two_factor_auth':
         return i18n.t('entryTypes.twoFactorAuth')
+      case 'payment':
+        return i18n.t('entryTypes.payment')
       default:
         return ''
     }

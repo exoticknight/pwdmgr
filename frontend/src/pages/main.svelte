@@ -53,6 +53,13 @@
       },
     },
     {
+      path: Routes.ITEMS_PAYMENT,
+      component: Items,
+      props: {
+        filter: 'payment',
+      },
+    },
+    {
       path: Routes.IMPORT,
       component: Import,
     },

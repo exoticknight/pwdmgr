@@ -1,19 +1,13 @@
 <script lang='ts'>
-  import type { OmitBasicDataExcept, PasswordData } from '@/types/data'
-
-  import { WandSparkles } from '@lucide/svelte'
-
+  import type { OmitBasicDataExcept, PaymentInfoData } from '@/types/data'
   import BrandIcon from '@/components/brand-icon.svelte'
   import Modal from '@/components/modal.svelte'
-  import PasswordGenerator from '@/components/password-generator.svelte'
-
-  import PasswordStrength from '@/components/password-strength.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { DataMetaType } from '@/types/data'
 
   interface Props {
     isOpen?: boolean
-    onSave: (entry: OmitBasicDataExcept<PasswordData, 'TYPE'>) => void
+    onSave: (entry: OmitBasicDataExcept<PaymentInfoData, 'TYPE'>) => void
     onCancel: () => void
   }
 
@@ -22,18 +16,24 @@
   // Form state
   const form = $state({
     title: '',
-    username: '',
-    password: '',
+    issuer: '',
+    cardholderName: '',
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
     notes: '',
-    url: '',
   })
-
-  // UI state
-  let showPasswordGenerator = $state(false)
 
   // Form validation
   const isValid = $derived(
-    form.title.trim() && form.username.trim() && form.password.trim(),
+    !!(
+      form.title.trim()
+      && form.issuer.trim()
+      && form.cardholderName.trim()
+      && form.cardNumber.trim()
+      && form.expiryDate.trim()
+      && form.cvv.trim()
+    ),
   )
 
   function handleSubmit() {
@@ -42,12 +42,14 @@
     }
 
     onSave({
-      _type: DataMetaType.PASSWORD,
+      _type: DataMetaType.PAYMENT,
       title: form.title.trim(),
-      username: form.username.trim(),
-      password: form.password.trim(),
+      issuer: form.issuer.trim(),
+      cardholderName: form.cardholderName.trim(),
+      cardNumber: form.cardNumber.trim(),
+      expiryDate: form.expiryDate.trim(),
+      cvv: form.cvv.trim(),
       notes: form.notes.trim(),
-      url: form.url.trim() || undefined,
     })
   }
 
@@ -58,15 +60,6 @@
 
   function handleCancel() {
     onCancel()
-  }
-
-  function handleOpenPasswordGenerator() {
-    showPasswordGenerator = true
-  }
-
-  function handleSelectPassword(password: string) {
-    form.password = password
-    showPasswordGenerator = false
   }
 </script>
 
@@ -101,54 +94,69 @@
               required
             />
 
-            <!-- Username -->
-            <label class='label' for='username'>
-              {i18n.t('forms.username')} *
+            <!-- Issuer -->
+            <label class='label' for='issuer'>
+              {i18n.t('forms.issuer')} *
             </label>
             <input
-              id='username'
+              id='issuer'
               type='text'
-              bind:value={form.username}
-              placeholder={i18n.t('forms.usernamePlaceholder')}
+              bind:value={form.issuer}
+              placeholder={i18n.t('forms.issuerPlaceholder')}
               class='input w-full font-mono'
               required
             />
 
-            <!-- Password -->
-            <label class='label' for='password'>
-              {i18n.t('forms.password')} *
-            </label>
-            <div class='join w-full'>
-              <input
-                id='password'
-                type='text'
-                bind:value={form.password}
-                placeholder={i18n.t('forms.passwordPlaceholder')}
-                class='input join-item flex-1 font-mono'
-                required
-              />
-              <button
-                type='button'
-                class='btn join-item'
-                onclick={handleOpenPasswordGenerator}
-                title={i18n.t('passwordGenerator.title')}
-              >
-                <WandSparkles size={16} />
-              </button>
-            </div>
-            <!-- Password strength indicator -->
-            <PasswordStrength alwaysShow={true} password={form.password} />
-
-            <!-- URL -->
-            <label class='label' for='url'>
-              {i18n.t('forms.url')}
+            <!-- Cardholder Name -->
+            <label class='label' for='cardholder-name'>
+              {i18n.t('forms.cardholderName')} *
             </label>
             <input
-              id='url'
-              type='url'
-              bind:value={form.url}
-              placeholder={i18n.t('forms.urlPlaceholder')}
+              id='cardholder-name'
+              type='text'
+              bind:value={form.cardholderName}
+              placeholder={i18n.t('forms.cardholderNamePlaceholder')}
               class='input w-full font-mono'
+              required
+            />
+
+            <!-- Card Number -->
+            <label class='label' for='card-number'>
+              {i18n.t('forms.cardNumber')} *
+            </label>
+            <input
+              id='card-number'
+              type='text'
+              bind:value={form.cardNumber}
+              placeholder={i18n.t('forms.cardNumberPlaceholder')}
+              class='input w-full font-mono'
+              required
+            />
+
+            <!-- Expiry Date -->
+            <label class='label' for='expiry-date'>
+              {i18n.t('forms.expiryDate')} *
+            </label>
+            <input
+              id='expiry-date'
+              type='text'
+              bind:value={form.expiryDate}
+              placeholder={i18n.t('forms.expiryDatePlaceholder')}
+              class='input w-full font-mono'
+              required
+            />
+
+            <!-- CVV/CVC -->
+            <label class='label' for='cvv'>
+              {i18n.t('forms.cvv')} *
+            </label>
+            <input
+              id='cvv'
+              type='text'
+              bind:value={form.cvv}
+              placeholder={i18n.t('forms.cvvPlaceholder')}
+              class='input w-full font-mono'
+              required
             />
 
             <!-- Notes -->
@@ -164,18 +172,6 @@
             ></textarea>
           </fieldset>
         </form>
-      </div>
-      <div class='flex-1 new-entry-panel-right' class:!hidden={!showPasswordGenerator}>
-        <PasswordGenerator
-          onSelect={handleSelectPassword}
-          length={16}
-          includeUppercase={true}
-          includeLowercase={true}
-          includeNumbers={true}
-          includeSymbols={true}
-          excludeSimilar={false}
-          excludeAmbiguous={false}
-        />
       </div>
     </div>
   {/snippet}
@@ -200,10 +196,6 @@
   }
 
   .new-entry-panel-left {
-    width: var(--panel-width);
-  }
-
-  .new-entry-panel-right {
     width: var(--panel-width);
   }
 </style>

@@ -3,6 +3,7 @@
 
   import { ChevronDown, Search } from '@lucide/svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { DataMetaType } from '@/types/data'
 
   interface Props {
     searchTerm?: string
@@ -13,15 +14,19 @@
   const { searchTerm = '', onNew, onSearch }: Props = $props()
 
   function handleNewPassword() {
-    onNew?.('password')
+    onNew?.(DataMetaType.PASSWORD)
   }
 
   function handleNewEncryptedText() {
-    onNew?.('encrypted_text')
+    onNew?.(DataMetaType.ENCRYPTED_TEXT)
   }
 
   function handleNewTwoFactorAuth() {
-    onNew?.('two_factor_auth')
+    onNew?.(DataMetaType.TWO_FACTOR_AUTH)
+  }
+
+  function handleNewPayment() {
+    onNew?.(DataMetaType.PAYMENT)
   }
 
   function handleSearchInput(event: Event) {
@@ -65,6 +70,11 @@
         <li>
           <button class='min-w-fit text-nowrap' onclick={handleNewTwoFactorAuth}>
             {i18n.t('entryTypes.twoFactorAuth')}
+          </button>
+        </li>
+        <li>
+          <button class='min-w-fit text-nowrap' onclick={handleNewPayment}>
+            {i18n.t('entryTypes.payment')}
           </button>
         </li>
       </ul>

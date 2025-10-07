@@ -3,6 +3,7 @@
   import BrandIcon from '@/components/brand-icon.svelte'
   import Modal from '@/components/modal.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { DataMetaType } from '@/types/data'
 
   interface Props {
     isOpen?: boolean
@@ -30,7 +31,7 @@
     }
 
     onSave({
-      _type: 'encrypted_text',
+      _type: DataMetaType.ENCRYPTED_TEXT,
       title: form.title.trim(),
       content: form.content.trim(),
       notes: form.notes.trim(),

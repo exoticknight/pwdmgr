@@ -32,7 +32,7 @@
         <textarea
           id='content-input'
           class='textarea join-item flex-1'
-          value={(formData as any).content || ''}
+          value={formData.content || ''}
           oninput={e => onFieldChange('content', e.currentTarget.value)}
           placeholder={i18n.t('forms.contentPlaceholder')}
           rows='8'

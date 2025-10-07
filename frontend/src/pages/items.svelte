@@ -12,6 +12,7 @@
   import { notification } from '@/stores/notification.svelte'
   import { userState } from '@/stores/user.svelte'
 
+  import { DataMetaType } from '@/types/data'
   import { compareISO8601String } from '@/utils/iso8601-compare'
 
   import TwoFactorNewModal from './items/2fa/2fa-new-modal.svelte'
@@ -19,6 +20,7 @@
   import EntriesList from './items/entries-list.svelte'
   import EntryDetailPanel from './items/entry-detail-panel.svelte'
   import PasswordNewModal from './items/password/password-new-modal.svelte'
+  import PaymentNewModal from './items/payment/payment-new-modal.svelte'
   import SaveFileModal from './items/save-file-modal.svelte'
   import TopToolbar from './items/top-toolbar.svelte'
 
@@ -41,11 +43,13 @@
           return compareISO8601String(b._lastUsedAt, a._lastUsedAt)
         })
       case 'password':
-        return data.searchEntries(searchTerm).filter(entry => entry._type === 'password')
+        return data.searchEntries(searchTerm).filter(entry => entry._type === DataMetaType.PASSWORD)
       case 'text':
-        return data.searchEntries(searchTerm).filter(entry => entry._type === 'encrypted_text')
+        return data.searchEntries(searchTerm).filter(entry => entry._type === DataMetaType.ENCRYPTED_TEXT)
       case '2fa':
-        return data.searchEntries(searchTerm).filter(entry => entry._type === 'two_factor_auth')
+        return data.searchEntries(searchTerm).filter(entry => entry._type === DataMetaType.TWO_FACTOR_AUTH)
+      case 'payment':
+        return data.searchEntries(searchTerm).filter(entry => entry._type === DataMetaType.PAYMENT)
       default:
         return data.searchEntries(searchTerm)
     }
@@ -220,7 +224,7 @@
 </div>
 
 <!-- Modals -->
-{#if showModal && currentEntryType === 'password'}
+{#if showModal && currentEntryType === DataMetaType.PASSWORD}
   <PasswordNewModal
     isOpen={showModal}
     onSave={handleNewModalSave}
@@ -228,7 +232,7 @@
   />
 {/if}
 
-{#if showModal && currentEntryType === 'encrypted_text'}
+{#if showModal && currentEntryType === DataMetaType.ENCRYPTED_TEXT}
   <EncryptedTextNewModal
     isOpen={showModal}
     onSave={handleNewModalSave}
@@ -236,11 +240,19 @@
   />
 {/if}
 
-{#if showModal && currentEntryType === 'two_factor_auth'}
+{#if showModal && currentEntryType === DataMetaType.TWO_FACTOR_AUTH}
   <TwoFactorNewModal
     isOpen={showModal}
     onCancel={handleNewModalCancel}
     onSave={handleNewModalSave}
+  />
+{/if}
+
+{#if showModal && currentEntryType === DataMetaType.PAYMENT}
+  <PaymentNewModal
+    isOpen={showModal}
+    onSave={handleNewModalSave}
+    onCancel={handleNewModalCancel}
   />
 {/if}
 

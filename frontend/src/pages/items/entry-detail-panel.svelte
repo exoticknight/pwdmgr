@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { Datum, EncryptedTextData, PasswordData, TwoFactorAuthData } from '@/types/data'
+  import type { Datum, EncryptedTextData, PasswordData, PaymentInfoData, TwoFactorAuthData } from '@/types/data'
   import type { DialogControl } from '@/types/dialog'
 
   import { Share2, SquarePen, Star, Trash2 } from '@lucide/svelte'
@@ -8,11 +8,13 @@
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
 
+  import { DataMetaType } from '@/types/data'
   import { copyTextToClipboard } from '@/utils/clipboard'
 
   import TwoFactorAuthDetailForm from './2fa/2fa-detail-form.svelte'
   import EncryptedTextDetailForm from './encrypted-text/encrypted-text-detail-form.svelte'
   import PasswordDetailForm from './password/password-detail-form.svelte'
+  import PaymentDetailForm from './payment/payment-detail-form.svelte'
 
   interface Props {
     entry: Datum | null
@@ -29,9 +31,10 @@
   let formData = $state<Partial<Datum>>({})
 
   // Derived state based on entry type
-  const isPasswordEntry = $derived(entry?._type === 'password')
-  const isEncryptedTextEntry = $derived(entry?._type === 'encrypted_text')
-  const isTwoFactorAuthEntry = $derived(entry?._type === 'two_factor_auth')
+  const isPasswordEntry = $derived(entry?._type === DataMetaType.PASSWORD)
+  const isEncryptedTextEntry = $derived(entry?._type === DataMetaType.ENCRYPTED_TEXT)
+  const isTwoFactorAuthEntry = $derived(entry?._type === DataMetaType.TWO_FACTOR_AUTH)
+  const isPaymentInfoEntry = $derived(entry?._type === DataMetaType.PAYMENT)
 
   // Update form data when entry changes
   $effect(() => {
@@ -105,7 +108,7 @@
       if (entry.title) {
         data.push(`Title:\n${entry.title}`)
       }
-      if (entry._type === 'password') {
+      if (entry._type === DataMetaType.PASSWORD) {
         const passwordEntry = entry as PasswordData
         if (passwordEntry.username) {
           data.push(`Username:\n${passwordEntry.username}`)
@@ -114,13 +117,13 @@
           data.push(`Password:\n${passwordEntry.password}`)
         }
       }
-      else if (entry._type === 'encrypted_text') {
+      else if (entry._type === DataMetaType.ENCRYPTED_TEXT) {
         const textEntry = entry as EncryptedTextData
         if (textEntry.content) {
           data.push(`Content:\n${textEntry.content}`)
         }
       }
-      else if (entry._type === 'two_factor_auth') {
+      else if (entry._type === DataMetaType.TWO_FACTOR_AUTH) {
         const twoFactorEntry = entry as TwoFactorAuthData
         if (twoFactorEntry.issuer) {
           data.push(`Service Provider:\n${twoFactorEntry.issuer}`)
@@ -130,6 +133,24 @@
         }
         if (twoFactorEntry.serviceUrl) {
           data.push(`Website:\n${twoFactorEntry.serviceUrl}`)
+        }
+      }
+      else if (entry._type === DataMetaType.PAYMENT) {
+        const paymentEntry = entry as PaymentInfoData
+        if (paymentEntry.issuer) {
+          data.push(`Issuer:\n${paymentEntry.issuer}`)
+        }
+        if (paymentEntry.cardholderName) {
+          data.push(`Cardholder Name:\n${paymentEntry.cardholderName}`)
+        }
+        if (paymentEntry.cardNumber) {
+          data.push(`Card Number:\n${paymentEntry.cardNumber}`)
+        }
+        if (paymentEntry.expiryDate) {
+          data.push(`Expiry Date:\n${paymentEntry.expiryDate}`)
+        }
+        if (paymentEntry.cvv) {
+          data.push(`CVV:\n${paymentEntry.cvv}`)
         }
       }
       if (entry.notes) {
@@ -253,6 +274,13 @@
       {:else if isTwoFactorAuthEntry}
         <TwoFactorAuthDetailForm
           entry={entry as TwoFactorAuthData}
+          onCopyToClipboard={copy}
+        />
+      {:else if isPaymentInfoEntry}
+        <PaymentDetailForm
+          entry={entry as PaymentInfoData}
+          formData={formData as Partial<PaymentInfoData>}
+          onFieldChange={handleFieldChange}
           onCopyToClipboard={copy}
         />
       {/if}

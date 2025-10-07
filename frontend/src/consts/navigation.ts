@@ -1,6 +1,7 @@
 import type { NavigationItemData } from '@/types/navigation'
 import {
   Clock,
+  CreditCard,
   FileText,
   RectangleEllipsis,
   ShieldUser,
@@ -45,5 +46,11 @@ export const DEFAULT_NAVIGATION_ITEMS = {
     route: Routes.ITEMS_2FA,
     labelKey: 'navigation.twoFactorAuth',
     icon: ShieldUser,
+  },
+  ITEMS_PAYMENT: {
+    id: 'ITEMS_PAYMENT',
+    route: Routes.ITEMS_PAYMENT,
+    labelKey: 'navigation.payment',
+    icon: CreditCard,
   },
 } as const satisfies Record<string, NavigationItemData>

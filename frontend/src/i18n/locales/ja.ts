@@ -22,6 +22,7 @@ export const ja = {
       password: 'パスワード',
       text: '暗号化テキスト',
       twoFactorAuth: '二段階認証',
+      payment: '支払い',
       import: 'インポート',
       audit: '監査',
       settings: '設定',
@@ -63,6 +64,11 @@ export const ja = {
       title: 'タイトル',
       content: 'コンテンツ',
       url: 'ウェブサイトURL',
+      issuer: '発行者',
+      cardholderName: 'カード名義人',
+      cardNumber: 'カード番号',
+      expiryDate: '有効期限',
+      cvv: 'CVV/CVC',
 
       // フィールドプレースホルダー
       usernamePlaceholder: 'ユーザー名を入力',
@@ -71,6 +77,11 @@ export const ja = {
       titlePlaceholder: 'タイトルを入力',
       contentPlaceholder: '暗号化するテキストを入力',
       urlPlaceholder: 'ウェブサイトURLを入力',
+      issuerPlaceholder: '例: Visa、Mastercard、銀行名',
+      cardholderNamePlaceholder: 'カードに記載の名義人',
+      cardNumberPlaceholder: 'XXXX XXXX XXXX XXXX',
+      expiryDatePlaceholder: 'MM/YY',
+      cvvPlaceholder: 'XXX',
 
       // エントリ管理
       emptySubtitle: 'エントリを選択して詳細を表示',
@@ -87,6 +98,7 @@ export const ja = {
       loginCredentials: 'ログイン認証情報',
       accountInformation: 'アカウント情報',
       encryptedContent: '暗号化コンテンツ',
+      paymentInformation: '支払い情報',
       additionalInformation: '追加情報',
       technicalParameters: '技術パラメータ',
     },
@@ -96,6 +108,7 @@ export const ja = {
       password: 'パスワード',
       encryptedText: 'テキスト',
       twoFactorAuth: '二段階認証',
+      payment: '支払い',
     },
 
     // パスワードダイアログ

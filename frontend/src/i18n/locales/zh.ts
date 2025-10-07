@@ -22,6 +22,7 @@ export const zh = {
       password: '密码',
       text: '加密文本',
       twoFactorAuth: '双重认证',
+      payment: '支付',
       import: '导入',
       audit: '审计',
       settings: '设置',
@@ -63,6 +64,11 @@ export const zh = {
       title: '标题',
       content: '内容',
       url: '网站网址',
+      issuer: '签发主体',
+      cardholderName: '持卡姓名',
+      cardNumber: '卡号',
+      expiryDate: '过期年月',
+      cvv: 'CVV/CVC',
 
       // Field placeholders
       usernamePlaceholder: '请输入用户名',
@@ -71,6 +77,11 @@ export const zh = {
       titlePlaceholder: '请输入标题',
       contentPlaceholder: '请输入要加密的文本内容',
       urlPlaceholder: '请输入网站网址',
+      issuerPlaceholder: '例如: Visa, Mastercard, 银行名称',
+      cardholderNamePlaceholder: '持卡人姓名',
+      cardNumberPlaceholder: 'XXXX XXXX XXXX XXXX',
+      expiryDatePlaceholder: 'MM/YY',
+      cvvPlaceholder: 'XXX',
 
       // Entry management
       emptySubtitle: '选择一个条目来查看详细信息',
@@ -87,6 +98,7 @@ export const zh = {
       loginCredentials: '登录凭证',
       accountInformation: '账户信息',
       encryptedContent: '加密内容',
+      paymentInformation: '支付信息',
       additionalInformation: '附加信息',
       technicalParameters: '技术参数',
     },
@@ -96,6 +108,7 @@ export const zh = {
       password: '密码',
       encryptedText: '文本',
       twoFactorAuth: '双重认证',
+      payment: '支付',
     },
 
     // Password dialog

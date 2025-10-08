@@ -47,57 +47,33 @@
 
       <!-- Issuer -->
       <label class='label' for='issuer-input'>
-        {i18n.t('forms.issuer')} *
+        {i18n.t('forms.issuer')}
       </label>
-      <div class='join w-full'>
-        <input
-          id='issuer-input'
-          type='text'
-          class='input join-item flex-1'
-          value={formData.issuer || ''}
-          oninput={e => onFieldChange('issuer', e.currentTarget.value)}
-          placeholder={i18n.t('forms.issuerPlaceholder')}
-        />
-        <div class='flex flex-col'>
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={() => onCopyToClipboard(entry.issuer || '')}
-            title={i18n.t('actions.copy')}
-          >
-            <Copy size={16} />
-          </button>
-        </div>
-      </div>
+      <input
+        id='issuer-input'
+        type='text'
+        class='input w-full'
+        value={formData.issuer || ''}
+        oninput={e => onFieldChange('issuer', e.currentTarget.value)}
+        placeholder={i18n.t('forms.issuerPlaceholder')}
+      />
 
       <!-- Cardholder Name -->
       <label class='label' for='cardholder-name-input'>
-        {i18n.t('forms.cardholderName')} *
+        {i18n.t('forms.cardholderName')}
       </label>
-      <div class='join w-full'>
-        <input
-          id='cardholder-name-input'
-          type='text'
-          class='input join-item flex-1'
-          value={formData.cardholderName || ''}
-          oninput={e => onFieldChange('cardholderName', e.currentTarget.value)}
-          placeholder={i18n.t('forms.cardholderNamePlaceholder')}
-        />
-        <div class='flex flex-col'>
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={() => onCopyToClipboard(entry.cardholderName || '')}
-            title={i18n.t('actions.copy')}
-          >
-            <Copy size={16} />
-          </button>
-        </div>
-      </div>
+      <input
+        id='cardholder-name-input'
+        type='text'
+        class='input w-full'
+        value={formData.cardholderName || ''}
+        oninput={e => onFieldChange('cardholderName', e.currentTarget.value)}
+        placeholder={i18n.t('forms.cardholderNamePlaceholder')}
+      />
 
       <!-- Card Number -->
       <label class='label' for='card-number-input'>
-        {i18n.t('forms.cardNumber')} *
+        {i18n.t('forms.cardNumber')}
       </label>
       <div class='join w-full'>
         <input
@@ -123,32 +99,20 @@
 
       <!-- Expiry Date -->
       <label class='label' for='expiry-date-input'>
-        {i18n.t('forms.expiryDate')} *
+        {i18n.t('forms.expiryDate')}
       </label>
-      <div class='join w-full'>
-        <input
-          id='expiry-date-input'
-          type='text'
-          class='input join-item flex-1 font-mono'
-          value={formData.expiryDate || ''}
-          oninput={e => onFieldChange('expiryDate', e.currentTarget.value)}
-          placeholder={i18n.t('forms.expiryDatePlaceholder')}
-        />
-        <div class='flex flex-col'>
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={() => onCopyToClipboard(entry.expiryDate || '')}
-            title={i18n.t('actions.copy')}
-          >
-            <Copy size={16} />
-          </button>
-        </div>
-      </div>
+      <input
+        id='expiry-date-input'
+        type='text'
+        class='input w-full font-mono'
+        value={formData.expiryDate || ''}
+        oninput={e => onFieldChange('expiryDate', e.currentTarget.value)}
+        placeholder={i18n.t('forms.expiryDatePlaceholder')}
+      />
 
       <!-- CVV/CVC -->
       <label class='label' for='cvv-input'>
-        {i18n.t('forms.cvv')} *
+        {i18n.t('forms.cvv')}
       </label>
       <div class='join w-full'>
         <input

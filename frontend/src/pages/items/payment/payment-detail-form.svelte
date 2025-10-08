@@ -18,6 +18,19 @@
     onFieldChange,
     onCopyToClipboard,
   }: Props = $props()
+
+  function formatCardNumber(value: string): string {
+    const digitsOnly = value.replace(/\D/g, '')
+    return digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ')
+  }
+
+  function handleCardNumberInput(e: Event) {
+    const input = e.currentTarget as HTMLInputElement
+    const digitsOnly = input.value.replace(/\D/g, '')
+    onFieldChange('cardNumber', digitsOnly)
+    input.value = formatCardNumber(digitsOnly)
+  }
+
 </script>
 
 <div class='flex flex-col space-y-6'>
@@ -83,9 +96,10 @@
         <input
           id='card-number-input'
           type='text'
+          inputmode='numeric'
           class='input join-item flex-1 font-mono'
-          value={formData.cardNumber || ''}
-          oninput={e => onFieldChange('cardNumber', e.currentTarget.value)}
+          value={formatCardNumber(formData.cardNumber || '')}
+          oninput={handleCardNumberInput}
           placeholder={i18n.t('forms.cardNumberPlaceholder')}
         />
         <div class='flex flex-col'>

@@ -27,14 +27,24 @@
   function handleCardNumberInput(e: Event) {
     const input = e.currentTarget as HTMLInputElement
     const digitsOnly = input.value.replace(/\D/g, '')
-    onFieldChange('cardNumber', digitsOnly)
+    const oldDigitsOnly = (formData.cardNumber || '').replace(/\D/g, '')
+
+    if (digitsOnly !== oldDigitsOnly) {
+      onFieldChange('cardNumber', digitsOnly)
+    }
+
     input.value = formatCardNumber(digitsOnly)
   }
 
   function handleCvvInput(e: Event) {
     const input = e.currentTarget as HTMLInputElement
     const digitsOnly = input.value.replace(/\D/g, '')
-    onFieldChange('cvv', digitsOnly)
+    const oldDigitsOnly = (formData.cvv || '').replace(/\D/g, '')
+
+    if (digitsOnly !== oldDigitsOnly) {
+      onFieldChange('cvv', digitsOnly)
+    }
+
     input.value = digitsOnly
   }
 

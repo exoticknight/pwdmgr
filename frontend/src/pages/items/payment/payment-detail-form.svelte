@@ -31,6 +31,13 @@
     input.value = formatCardNumber(digitsOnly)
   }
 
+  function handleCvvInput(e: Event) {
+    const input = e.currentTarget as HTMLInputElement
+    const digitsOnly = input.value.replace(/\D/g, '')
+    onFieldChange('cvv', digitsOnly)
+    input.value = digitsOnly
+  }
+
 </script>
 
 <div class='flex flex-col space-y-6'>
@@ -147,9 +154,10 @@
         <input
           id='cvv-input'
           type='text'
+          inputmode='numeric'
           class='input join-item flex-1 font-mono'
           value={formData.cvv || ''}
-          oninput={e => onFieldChange('cvv', e.currentTarget.value)}
+          oninput={handleCvvInput}
           placeholder={i18n.t('forms.cvvPlaceholder')}
         />
         <div class='flex flex-col'>

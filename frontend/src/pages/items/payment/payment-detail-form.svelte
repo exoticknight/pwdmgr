@@ -48,24 +48,51 @@
     input.value = digitsOnly
   }
 
+  let isDeletingExpiryDate = $state(false)
+
   function formatExpiryDate(value: string): string {
     const digitsOnly = value.replace(/\D/g, '')
-    if (digitsOnly.length <= 2) {
+    if (digitsOnly.length < 2) {
       return digitsOnly
+    }
+    if (digitsOnly.length === 2) {
+      return `${digitsOnly}/`
     }
     return `${digitsOnly.slice(0, 2)}/${digitsOnly.slice(2, 4)}`
   }
 
+  function handleExpiryDateKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      isDeletingExpiryDate = true
+    }
+    else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+      e.preventDefault()
+    }
+  }
+
   function handleExpiryDateInput(e: Event) {
     const input = e.currentTarget as HTMLInputElement
-    const digitsOnly = input.value.replace(/\D/g, '').slice(0, 4)
+    let digitsOnly = input.value.replace(/\D/g, '').slice(0, 4)
     const oldDigitsOnly = (formData.expiryDate || '').replace(/\D/g, '')
 
+    if (isDeletingExpiryDate && oldDigitsOnly.length === 2 && digitsOnly.length === 2) {
+      digitsOnly = digitsOnly.slice(0, 1)
+    }
+
     if (digitsOnly !== oldDigitsOnly) {
-      onFieldChange('expiryDate', digitsOnly.length === 4 ? formatExpiryDate(digitsOnly) : digitsOnly)
+      onFieldChange('expiryDate', digitsOnly)
     }
 
     input.value = formatExpiryDate(digitsOnly)
+
+    // 重置删除状态
+    isDeletingExpiryDate = false
+  }
+
+  function preventCursorMovement(e: KeyboardEvent) {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+      e.preventDefault()
+    }
   }
 
 </script>
@@ -113,6 +140,7 @@
           class='input join-item flex-1 font-mono'
           value={formatCardNumber(formData.cardNumber || '')}
           oninput={handleCardNumberInput}
+          onkeydown={preventCursorMovement}
           placeholder={i18n.t('forms.cardNumberPlaceholder')}
         />
         <div class='flex flex-col'>
@@ -138,6 +166,7 @@
         class='input w-full font-mono'
         value={formatExpiryDate(formData.expiryDate || '')}
         oninput={handleExpiryDateInput}
+        onkeydown={handleExpiryDateKeyDown}
         placeholder={i18n.t('forms.expiryDatePlaceholder')}
         maxlength='5'
       />

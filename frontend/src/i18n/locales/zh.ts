@@ -67,7 +67,7 @@ export const zh = {
       issuer: '签发主体',
       cardholderName: '持卡姓名',
       cardNumber: '卡号',
-      expiryDate: '过期年月',
+      expiryDate: '过期年月 (MM/YY)',
       cvv: 'CVV/CVC',
 
       // Field placeholders

@@ -67,7 +67,7 @@ export const ja = {
       issuer: '発行者',
       cardholderName: 'カード名義人',
       cardNumber: 'カード番号',
-      expiryDate: '有効期限',
+      expiryDate: '有効期限 (MM/YY)',
       cvv: 'CVV/CVC',
 
       // フィールドプレースホルダー

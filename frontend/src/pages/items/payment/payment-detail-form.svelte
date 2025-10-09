@@ -48,6 +48,26 @@
     input.value = digitsOnly
   }
 
+  function formatExpiryDate(value: string): string {
+    const digitsOnly = value.replace(/\D/g, '')
+    if (digitsOnly.length <= 2) {
+      return digitsOnly
+    }
+    return `${digitsOnly.slice(0, 2)}/${digitsOnly.slice(2, 4)}`
+  }
+
+  function handleExpiryDateInput(e: Event) {
+    const input = e.currentTarget as HTMLInputElement
+    const digitsOnly = input.value.replace(/\D/g, '').slice(0, 4)
+    const oldDigitsOnly = (formData.expiryDate || '').replace(/\D/g, '')
+
+    if (digitsOnly !== oldDigitsOnly) {
+      onFieldChange('expiryDate', digitsOnly.length === 4 ? formatExpiryDate(digitsOnly) : digitsOnly)
+    }
+
+    input.value = formatExpiryDate(digitsOnly)
+  }
+
 </script>
 
 <div class='flex flex-col space-y-6'>
@@ -114,10 +134,12 @@
       <input
         id='expiry-date-input'
         type='text'
+        inputmode='numeric'
         class='input w-full font-mono'
-        value={formData.expiryDate || ''}
-        oninput={e => onFieldChange('expiryDate', e.currentTarget.value)}
+        value={formatExpiryDate(formData.expiryDate || '')}
+        oninput={handleExpiryDateInput}
         placeholder={i18n.t('forms.expiryDatePlaceholder')}
+        maxlength='5'
       />
 
       <!-- CVV/CVC -->

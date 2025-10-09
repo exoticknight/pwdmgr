@@ -67,7 +67,7 @@ export const en = {
       issuer: 'Issuer',
       cardholderName: 'Cardholder Name',
       cardNumber: 'Card Number',
-      expiryDate: 'Expiry Date',
+      expiryDate: 'Expiry Date (MM/YY)',
       cvv: 'CVV/CVC',
 
       // Field placeholders

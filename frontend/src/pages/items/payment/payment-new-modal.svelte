@@ -36,6 +36,73 @@
     ),
   )
 
+  // Card number formatting and handling
+  function formatCardNumber(value: string): string {
+    const digitsOnly = value.replace(/\D/g, '')
+    return digitsOnly.replace(/(\d{4})(?=\d)/g, '$1 ')
+  }
+
+  function handleCardNumberInput(e: Event) {
+    const input = e.currentTarget as HTMLInputElement
+    const digitsOnly = input.value.replace(/\D/g, '')
+
+    form.cardNumber = digitsOnly
+    input.value = formatCardNumber(digitsOnly)
+  }
+
+  // CVV handling
+  function handleCvvInput(e: Event) {
+    const input = e.currentTarget as HTMLInputElement
+    const digitsOnly = input.value.replace(/\D/g, '')
+
+    form.cvv = digitsOnly
+    input.value = digitsOnly
+  }
+
+  // Expiry date formatting and handling
+  let isDeletingExpiryDate = $state(false)
+
+  function formatExpiryDate(value: string): string {
+    const digitsOnly = value.replace(/\D/g, '')
+    if (digitsOnly.length < 2) {
+      return digitsOnly
+    }
+    if (digitsOnly.length === 2) {
+      return `${digitsOnly}/`
+    }
+    return `${digitsOnly.slice(0, 2)}/${digitsOnly.slice(2, 4)}`
+  }
+
+  function handleExpiryDateKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Backspace' || e.key === 'Delete') {
+      isDeletingExpiryDate = true
+    }
+    else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+      e.preventDefault()
+    }
+  }
+
+  function handleExpiryDateInput(e: Event) {
+    const input = e.currentTarget as HTMLInputElement
+    let digitsOnly = input.value.replace(/\D/g, '').slice(0, 4)
+    const oldDigitsOnly = (form.expiryDate || '').replace(/\D/g, '')
+
+    if (isDeletingExpiryDate && oldDigitsOnly.length === 2 && digitsOnly.length === 2) {
+      digitsOnly = digitsOnly.slice(0, 1)
+    }
+
+    form.expiryDate = digitsOnly
+    input.value = formatExpiryDate(digitsOnly)
+
+    isDeletingExpiryDate = false
+  }
+
+  function preventCursorMovement(e: KeyboardEvent) {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+      e.preventDefault()
+    }
+  }
+
   function handleSubmit() {
     if (!isValid) {
       return
@@ -127,7 +194,10 @@
             <input
               id='card-number'
               type='text'
-              bind:value={form.cardNumber}
+              inputmode='numeric'
+              value={formatCardNumber(form.cardNumber || '')}
+              oninput={handleCardNumberInput}
+              onkeydown={preventCursorMovement}
               placeholder={i18n.t('forms.cardNumberPlaceholder')}
               class='input w-full font-mono'
               required
@@ -140,9 +210,13 @@
             <input
               id='expiry-date'
               type='text'
-              bind:value={form.expiryDate}
+              inputmode='numeric'
+              value={formatExpiryDate(form.expiryDate || '')}
+              oninput={handleExpiryDateInput}
+              onkeydown={handleExpiryDateKeyDown}
               placeholder={i18n.t('forms.expiryDatePlaceholder')}
               class='input w-full font-mono'
+              maxlength='5'
               required
             />
 
@@ -153,7 +227,10 @@
             <input
               id='cvv'
               type='text'
-              bind:value={form.cvv}
+              inputmode='numeric'
+              value={form.cvv || ''}
+              oninput={handleCvvInput}
+              onkeydown={preventCursorMovement}
               placeholder={i18n.t('forms.cvvPlaceholder')}
               class='input w-full font-mono'
               required

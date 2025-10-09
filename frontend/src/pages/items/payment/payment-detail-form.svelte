@@ -85,7 +85,6 @@
 
     input.value = formatExpiryDate(digitsOnly)
 
-    // 重置删除状态
     isDeletingExpiryDate = false
   }
 
@@ -183,6 +182,7 @@
           class='input join-item flex-1 font-mono'
           value={formData.cvv || ''}
           oninput={handleCvvInput}
+          onkeydown={preventCursorMovement}
           placeholder={i18n.t('forms.cvvPlaceholder')}
         />
         <div class='flex flex-col'>

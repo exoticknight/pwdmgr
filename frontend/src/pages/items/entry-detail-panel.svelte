@@ -226,16 +226,16 @@
             style={entry._isFavorite ? 'color: var(--color-warning); fill: var(--color-warning);' : ''}
           />
         </button>
-      </h2>
-      <div class='join'>
         <button
           type='button'
-          class='btn btn-sm join-item'
+          class='star-btn'
           onclick={handleRename}
           title={i18n.t('actions.rename')}
         >
           <SquarePen size={16} />
         </button>
+      </h2>
+      <div class='join'>
         <button
           type='button'
           class='btn btn-sm join-item'

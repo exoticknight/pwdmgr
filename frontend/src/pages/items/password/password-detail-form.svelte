@@ -50,9 +50,13 @@
     }
   }
 
+  let lastEntryId = $state(entry._id)
+
   $effect(() => {
-    void entry
-    showPassword = false
+    if (entry._id !== lastEntryId) {
+      lastEntryId = entry._id
+      showPassword = false
+    }
   })
 </script>
 

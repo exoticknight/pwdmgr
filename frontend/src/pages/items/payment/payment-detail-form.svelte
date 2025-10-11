@@ -1,7 +1,7 @@
 <script lang='ts'>
   import type { PaymentInfoData } from '@/types/data'
 
-  import { Copy } from '@lucide/svelte'
+  import { Copy, Eye, EyeOff } from '@lucide/svelte'
 
   import { i18n } from '@/stores/i18n.svelte'
 
@@ -18,6 +18,17 @@
     onFieldChange,
     onCopyToClipboard,
   }: Props = $props()
+
+  let showCardNumber = $state(false)
+  let showCvv = $state(false)
+
+  function toggleCardNumberVisibility() {
+    showCardNumber = !showCardNumber
+  }
+
+  function toggleCvvVisibility() {
+    showCvv = !showCvv
+  }
 
   function formatCardNumber(value: string): string {
     const digitsOnly = value.replace(/\D/g, '')
@@ -94,6 +105,16 @@
     }
   }
 
+  let lastEntryId = $state(entry._id)
+
+  $effect(() => {
+    if (entry._id !== lastEntryId) {
+      lastEntryId = entry._id
+      showCardNumber = false
+      showCvv = false
+    }
+  })
+
 </script>
 
 <div class='flex flex-col space-y-6'>
@@ -134,7 +155,7 @@
       <div class='join w-full'>
         <input
           id='card-number-input'
-          type='text'
+          type={showCardNumber ? 'text' : 'password'}
           inputmode='numeric'
           class='input join-item flex-1 font-mono'
           value={formatCardNumber(formData.cardNumber || '')}
@@ -142,16 +163,28 @@
           onkeydown={preventCursorMovement}
           placeholder={i18n.t('forms.cardNumberPlaceholder')}
         />
-        <div class='flex flex-col'>
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={() => onCopyToClipboard(entry.cardNumber || '')}
-            title={i18n.t('actions.copy')}
-          >
-            <Copy size={16} />
-          </button>
-        </div>
+        <button
+          type='button'
+          class='btn join-item'
+          onclick={toggleCardNumberVisibility}
+          title={showCardNumber
+            ? i18n.t('actions.hidePassword')
+            : i18n.t('actions.showPassword')}
+        >
+          {#if showCardNumber}
+            <EyeOff size={16} />
+          {:else}
+            <Eye size={16} />
+          {/if}
+        </button>
+        <button
+          type='button'
+          class='btn join-item'
+          onclick={() => onCopyToClipboard(entry.cardNumber || '')}
+          title={i18n.t('actions.copy')}
+        >
+          <Copy size={16} />
+        </button>
       </div>
 
       <!-- Expiry Date -->
@@ -177,7 +210,7 @@
       <div class='join w-full'>
         <input
           id='cvv-input'
-          type='text'
+          type={showCvv ? 'text' : 'password'}
           inputmode='numeric'
           class='input join-item flex-1 font-mono'
           value={formData.cvv || ''}
@@ -185,16 +218,28 @@
           onkeydown={preventCursorMovement}
           placeholder={i18n.t('forms.cvvPlaceholder')}
         />
-        <div class='flex flex-col'>
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={() => onCopyToClipboard(entry.cvv || '')}
-            title={i18n.t('actions.copy')}
-          >
-            <Copy size={16} />
-          </button>
-        </div>
+        <button
+          type='button'
+          class='btn join-item'
+          onclick={toggleCvvVisibility}
+          title={showCvv
+            ? i18n.t('actions.hidePassword')
+            : i18n.t('actions.showPassword')}
+        >
+          {#if showCvv}
+            <EyeOff size={16} />
+          {:else}
+            <Eye size={16} />
+          {/if}
+        </button>
+        <button
+          type='button'
+          class='btn join-item'
+          onclick={() => onCopyToClipboard(entry.cvv || '')}
+          title={i18n.t('actions.copy')}
+        >
+          <Copy size={16} />
+        </button>
       </div>
     </div>
   </div>

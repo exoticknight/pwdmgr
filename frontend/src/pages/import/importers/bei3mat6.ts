@@ -1,5 +1,4 @@
 import type { BaseImporter, ImportEntry, ImportResult } from './types'
-import type { Datum } from '@/types/data'
 import typia from 'typia'
 
 export class Bei3mat6Importer implements BaseImporter {

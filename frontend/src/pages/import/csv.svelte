@@ -69,7 +69,6 @@
       return item
     })
 
-    // 映射字段
     return items.map(item => ({
       title: item[mappings.title] || '',
       username: item[mappings.username] || '',

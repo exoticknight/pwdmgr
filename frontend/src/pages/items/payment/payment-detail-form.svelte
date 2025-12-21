@@ -5,6 +5,8 @@
 
   import { i18n } from '@/stores/i18n.svelte'
 
+  import DetailCard from '../detail-card.svelte'
+
   interface Props {
     entry: PaymentInfoData
     formData: Partial<PaymentInfoData>
@@ -114,152 +116,140 @@
       showCvv = false
     }
   })
-
 </script>
 
-<div class='flex flex-col space-y-6'>
-  <div class='card bg-base-200 shadow-sm'>
-    <div class='card-body p-4'>
-      <h3 class='card-title text-lg mb-4'>{i18n.t('forms.paymentInformation')}</h3>
+<DetailCard title={i18n.t('forms.paymentInformation')}>
+  <!-- Issuer -->
+  <label class='label' for='issuer-input'>
+    {i18n.t('forms.issuer')}
+  </label>
+  <input
+    id='issuer-input'
+    type='text'
+    class='input w-full'
+    value={formData.issuer || ''}
+    oninput={e => onFieldChange('issuer', e.currentTarget.value)}
+    placeholder={i18n.t('forms.issuerPlaceholder')}
+  />
 
-      <!-- Issuer -->
-      <label class='label' for='issuer-input'>
-        {i18n.t('forms.issuer')}
-      </label>
-      <input
-        id='issuer-input'
-        type='text'
-        class='input w-full'
-        value={formData.issuer || ''}
-        oninput={e => onFieldChange('issuer', e.currentTarget.value)}
-        placeholder={i18n.t('forms.issuerPlaceholder')}
-      />
+  <!-- Cardholder Name -->
+  <label class='label' for='cardholder-name-input'>
+    {i18n.t('forms.cardholderName')}
+  </label>
+  <input
+    id='cardholder-name-input'
+    type='text'
+    class='input w-full'
+    value={formData.cardholderName || ''}
+    oninput={e => onFieldChange('cardholderName', e.currentTarget.value)}
+    placeholder={i18n.t('forms.cardholderNamePlaceholder')}
+  />
 
-      <!-- Cardholder Name -->
-      <label class='label' for='cardholder-name-input'>
-        {i18n.t('forms.cardholderName')}
-      </label>
-      <input
-        id='cardholder-name-input'
-        type='text'
-        class='input w-full'
-        value={formData.cardholderName || ''}
-        oninput={e => onFieldChange('cardholderName', e.currentTarget.value)}
-        placeholder={i18n.t('forms.cardholderNamePlaceholder')}
-      />
-
-      <!-- Card Number -->
-      <label class='label' for='card-number-input'>
-        {i18n.t('forms.cardNumber')}
-      </label>
-      <div class='join w-full'>
-        <input
-          id='card-number-input'
-          type={showCardNumber ? 'text' : 'password'}
-          inputmode='numeric'
-          class='input join-item flex-1 font-mono'
-          value={formatCardNumber(formData.cardNumber || '')}
-          oninput={handleCardNumberInput}
-          onkeydown={preventCursorMovement}
-          placeholder={i18n.t('forms.cardNumberPlaceholder')}
-        />
-        <button
-          type='button'
-          class='btn join-item'
-          onclick={toggleCardNumberVisibility}
-          title={showCardNumber
-            ? i18n.t('actions.hidePassword')
-            : i18n.t('actions.showPassword')}
-        >
-          {#if showCardNumber}
-            <EyeOff size={16} />
-          {:else}
-            <Eye size={16} />
-          {/if}
-        </button>
-        <button
-          type='button'
-          class='btn join-item'
-          onclick={() => onCopyToClipboard(entry.cardNumber || '')}
-          title={i18n.t('actions.copy')}
-        >
-          <Copy size={16} />
-        </button>
-      </div>
-
-      <!-- Expiry Date -->
-      <label class='label' for='expiry-date-input'>
-        {i18n.t('forms.expiryDate')}
-      </label>
-      <input
-        id='expiry-date-input'
-        type='text'
-        inputmode='numeric'
-        class='input w-full font-mono'
-        value={formatExpiryDate(formData.expiryDate || '')}
-        oninput={handleExpiryDateInput}
-        onkeydown={handleExpiryDateKeyDown}
-        placeholder={i18n.t('forms.expiryDatePlaceholder')}
-        maxlength='5'
-      />
-
-      <!-- CVV/CVC -->
-      <label class='label' for='cvv-input'>
-        {i18n.t('forms.cvv')}
-      </label>
-      <div class='join w-full'>
-        <input
-          id='cvv-input'
-          type={showCvv ? 'text' : 'password'}
-          inputmode='numeric'
-          class='input join-item flex-1 font-mono'
-          value={formData.cvv || ''}
-          oninput={handleCvvInput}
-          onkeydown={preventCursorMovement}
-          placeholder={i18n.t('forms.cvvPlaceholder')}
-        />
-        <button
-          type='button'
-          class='btn join-item'
-          onclick={toggleCvvVisibility}
-          title={showCvv
-            ? i18n.t('actions.hidePassword')
-            : i18n.t('actions.showPassword')}
-        >
-          {#if showCvv}
-            <EyeOff size={16} />
-          {:else}
-            <Eye size={16} />
-          {/if}
-        </button>
-        <button
-          type='button'
-          class='btn join-item'
-          onclick={() => onCopyToClipboard(entry.cvv || '')}
-          title={i18n.t('actions.copy')}
-        >
-          <Copy size={16} />
-        </button>
-      </div>
-    </div>
+  <!-- Card Number -->
+  <label class='label' for='card-number-input'>
+    {i18n.t('forms.cardNumber')}
+  </label>
+  <div class='join w-full'>
+    <input
+      id='card-number-input'
+      type={showCardNumber ? 'text' : 'password'}
+      inputmode='numeric'
+      class='input join-item flex-1 font-mono'
+      value={formatCardNumber(formData.cardNumber || '')}
+      oninput={handleCardNumberInput}
+      onkeydown={preventCursorMovement}
+      placeholder={i18n.t('forms.cardNumberPlaceholder')}
+    />
+    <button
+      type='button'
+      class='btn join-item'
+      onclick={toggleCardNumberVisibility}
+      title={showCardNumber
+        ? i18n.t('actions.hidePassword')
+        : i18n.t('actions.showPassword')}
+    >
+      {#if showCardNumber}
+        <EyeOff size={16} />
+      {:else}
+        <Eye size={16} />
+      {/if}
+    </button>
+    <button
+      type='button'
+      class='btn join-item'
+      onclick={() => onCopyToClipboard(entry.cardNumber || '')}
+      title={i18n.t('actions.copy')}
+    >
+      <Copy size={16} />
+    </button>
   </div>
 
-  <div class='card bg-base-200 shadow-sm'>
-    <div class='card-body p-4'>
-      <h3 class='card-title text-lg mb-4'>{i18n.t('forms.additionalInformation')}</h3>
+  <!-- Expiry Date -->
+  <label class='label' for='expiry-date-input'>
+    {i18n.t('forms.expiryDate')}
+  </label>
+  <input
+    id='expiry-date-input'
+    type='text'
+    inputmode='numeric'
+    class='input w-full font-mono'
+    value={formatExpiryDate(formData.expiryDate || '')}
+    oninput={handleExpiryDateInput}
+    onkeydown={handleExpiryDateKeyDown}
+    placeholder={i18n.t('forms.expiryDatePlaceholder')}
+    maxlength='5'
+  />
 
-      <label class='label' for='notes-input'>
-        {i18n.t('forms.notes')}
-      </label>
-      <textarea
-        id='notes-input'
-        class='textarea w-full'
-        value={formData.notes || ''}
-        oninput={e => onFieldChange('notes', e.currentTarget.value)}
-        placeholder={i18n.t('forms.notesPlaceholder')}
-        rows='4'
-      ></textarea>
-    </div>
+  <!-- CVV/CVC -->
+  <label class='label' for='cvv-input'>
+    {i18n.t('forms.cvv')}
+  </label>
+  <div class='join w-full'>
+    <input
+      id='cvv-input'
+      type={showCvv ? 'text' : 'password'}
+      inputmode='numeric'
+      class='input join-item flex-1 font-mono'
+      value={formData.cvv || ''}
+      oninput={handleCvvInput}
+      onkeydown={preventCursorMovement}
+      placeholder={i18n.t('forms.cvvPlaceholder')}
+    />
+    <button
+      type='button'
+      class='btn join-item'
+      onclick={toggleCvvVisibility}
+      title={showCvv
+        ? i18n.t('actions.hidePassword')
+        : i18n.t('actions.showPassword')}
+    >
+      {#if showCvv}
+        <EyeOff size={16} />
+      {:else}
+        <Eye size={16} />
+      {/if}
+    </button>
+    <button
+      type='button'
+      class='btn join-item'
+      onclick={() => onCopyToClipboard(entry.cvv || '')}
+      title={i18n.t('actions.copy')}
+    >
+      <Copy size={16} />
+    </button>
   </div>
+</DetailCard>
 
-</div>
+<DetailCard title={i18n.t('forms.additionalInformation')}>
+  <label class='label' for='notes-input'>
+    {i18n.t('forms.notes')}
+  </label>
+  <textarea
+    id='notes-input'
+    class='textarea w-full'
+    value={formData.notes || ''}
+    oninput={e => onFieldChange('notes', e.currentTarget.value)}
+    placeholder={i18n.t('forms.notesPlaceholder')}
+    rows='4'
+  ></textarea>
+</DetailCard>

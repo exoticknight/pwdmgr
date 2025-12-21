@@ -6,7 +6,7 @@
   interface Props {
     entries: Datum[]
     selectedId?: string
-    onSelect?: (data: { entry: Datum }) => void
+    onSelect?: (entry: Datum) => void
   }
 
   const { entries, selectedId, onSelect }: Props = $props()
@@ -17,7 +17,7 @@
   })
 
   function handleEntryClick(entry: Datum) {
-    onSelect?.({ entry })
+    onSelect?.(entry)
   }
 
   function handleKeydown(event: KeyboardEvent, entry: Datum) {

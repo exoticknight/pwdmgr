@@ -82,8 +82,8 @@
     }
   }
 
-  function handleEntrySelect(data: { entry: Datum }) {
-    selectedEntry = data.entry
+  function handleEntrySelect(entry: Datum) {
+    selectedEntry = entry
   }
 
   function handleResize(leftWidth: number) {
@@ -203,6 +203,7 @@
               onUpdate={handleEntryUpdate}
               onMarkDirty={handleMarkDirty}
               onDelete={handleEntryDelete}
+              onSelect={handleEntrySelect}
             />
           </div>
         </div>

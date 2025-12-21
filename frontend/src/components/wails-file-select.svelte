@@ -1,9 +1,9 @@
 <script lang='ts'>
   import type { Snippet } from 'svelte'
+  import { OpenFileDialog, OpenMultipleFilesDialog, SaveFileDialog } from '@wails-gen/go/internal/FileService'
+  import { internal } from '@wails-gen/go/models'
+  import { OnFileDrop, OnFileDropOff } from '@wails-gen/runtime/runtime'
   import { onDestroy, onMount } from 'svelte'
-  import { OpenFileDialog, OpenMultipleFilesDialog, SaveFileDialog } from '../../wailsjs/go/internal/FileService'
-  import { internal } from '../../wailsjs/go/models'
-  import { OnFileDrop, OnFileDropOff } from '../../wailsjs/runtime/runtime'
 
   // File filter type
   interface FileFilter {

@@ -7,6 +7,7 @@ export default {
   kit: {
     alias: {
       '@/': 'src',
+      '@wails-gen/': 'wailsjs',
     },
   },
 }

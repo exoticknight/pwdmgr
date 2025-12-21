@@ -1,3 +1,4 @@
+/* eslint-disable svelte/indent */
 <script lang='ts'>
   import type { HOTP, TOTP } from 'otpauth'
   import type { OmitBasicDataExcept, TwoFactorAuthData } from '@/types/data'
@@ -124,22 +125,22 @@
       const clipboardItems = await readFromClipboard()
       const results: (import('otpauth').TOTP | import('otpauth').HOTP)[] = []
 
-      for (const clipboardItem of clipboardItems) {
-        for (const type of clipboardItem.types) {
-          if (type.startsWith('image/')) {
-            const blob = await clipboardItem.getType(type)
-            const qrResults = await scanFromBlob(blob)
-            results.push(...qrResults)
+        for (const clipboardItem of clipboardItems) {
+          for (const type of clipboardItem.types) {
+            if (type.startsWith('image/')) {
+              const blob = await clipboardItem.getType(type)
+              const qrResults = await scanFromBlob(blob)
+              results.push(...qrResults)
+            }
           }
         }
-      }
 
-      if (results.length === 0) {
-        errorMessage = 'No QR code found in clipboard'
-      }
-      else {
-        fillForm(results[0])
-      }
+        if (results.length === 0) {
+          errorMessage = 'No QR code found in clipboard'
+        }
+        else {
+          fillForm(results[0])
+        }
     }
     catch (error) {
       console.error('Failed to scan clipboard:', error)

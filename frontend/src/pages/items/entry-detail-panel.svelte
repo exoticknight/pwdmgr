@@ -12,6 +12,7 @@
   import { copyTextToClipboard } from '@/utils/clipboard'
 
   import TwoFactorAuthDetailForm from './2fa/2fa-detail-form.svelte'
+  import ClusterLinksCard from './cluster-links-card.svelte'
   import EncryptedTextDetailForm from './encrypted-text/encrypted-text-detail-form.svelte'
   import PasswordDetailForm from './password/password-detail-form.svelte'
   import PaymentDetailForm from './payment/payment-detail-form.svelte'
@@ -21,9 +22,10 @@
     onUpdate?: (data: { id: string, updates: Partial<Datum> }) => void
     onMarkDirty?: () => void
     onDelete?: (data: { id: string }) => void
+    onSelect?: (entry: Datum) => void
   }
 
-  const { entry, onUpdate, onMarkDirty, onDelete }: Props = $props()
+  const { entry, onUpdate, onMarkDirty, onDelete, onSelect }: Props = $props()
 
   // Use interface constraints to improve code portability
   const dialogControl: DialogControl = dialog
@@ -284,6 +286,9 @@
           onCopyToClipboard={copy}
         />
       {/if}
+
+      <ClusterLinksCard entry={entry as Datum} {onSelect} />
+
       <!-- Time Information -->
       <div class='time-info'>
         <div class='time-item'>

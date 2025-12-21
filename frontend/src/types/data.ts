@@ -14,6 +14,7 @@ export interface BasicData {
   _createdAt: string
   _updatedAt: string
   _lastUsedAt?: string
+  _clusterId?: string
 }
 
 export const BasicDataKey: {

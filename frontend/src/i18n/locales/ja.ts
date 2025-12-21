@@ -51,6 +51,7 @@ export const ja = {
     // 検索機能
     search: {
       placeholder: 'タイトル、ユーザー名、メモを検索',
+      searchToLink: 'リンクするアイテムを検索...',
       noResults: '一致するエントリが見つかりません',
     },
 
@@ -101,6 +102,8 @@ export const ja = {
       paymentInformation: '支払い情報',
       additionalInformation: '追加情報',
       technicalParameters: '技術パラメータ',
+      links: 'リンク',
+      noLinks: '関連アイテムはありません',
     },
 
     // エントリタイプ
@@ -149,6 +152,8 @@ export const ja = {
       delete: '削除',
       rename: '名前変更',
       share: '共有',
+      link: 'リンク',
+      unlink: 'リンク解除',
 
       // ファイルアクション
       createNew: '新しいパスワードファイルを作成',
@@ -165,6 +170,7 @@ export const ja = {
       confirmDelete: 'このエントリを削除してもよろしいですか？',
       confirmShare: 'この操作は平文データをクリップボードにコピーします。情報セキュリティにご注意ください。続行しますか？',
       renameTitle: '新しいタイトル名を入力してください',
+      linkItems: 'アイテムをリンク',
     },
 
     // エラーメッセージ

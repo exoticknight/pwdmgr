@@ -51,6 +51,7 @@ export const zh = {
     // Search functionality
     search: {
       placeholder: '搜索标题，用户名，备注',
+      searchToLink: '搜索要关联的条目...',
       noResults: '没有找到匹配的条目',
     },
 
@@ -101,6 +102,8 @@ export const zh = {
       paymentInformation: '支付信息',
       additionalInformation: '附加信息',
       technicalParameters: '技术参数',
+      links: '关联',
+      noLinks: '暂无关联条目',
     },
 
     // Entry types
@@ -149,6 +152,8 @@ export const zh = {
       delete: '删除',
       rename: '重命名',
       share: '分享',
+      link: '关联',
+      unlink: '取消关联',
 
       // File actions
       createNew: '创建新的密码文件',
@@ -165,6 +170,7 @@ export const zh = {
       confirmDelete: '您确定要删除此条目吗？',
       confirmShare: '此操作将复制明文数据到剪贴板，请注意信息安全。确定要继续吗？',
       renameTitle: '请输入新的标题名称',
+      linkItems: '关联条目',
     },
 
     // 错误消息

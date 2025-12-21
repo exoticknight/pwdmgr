@@ -51,6 +51,7 @@ export const en = {
     // Search functionality
     search: {
       placeholder: 'Search title, username, notes',
+      searchToLink: 'Search items to link...',
       noResults: 'No matching entries found',
     },
 
@@ -101,6 +102,8 @@ export const en = {
       paymentInformation: 'Payment Information',
       additionalInformation: 'Additional Information',
       technicalParameters: 'Technical Parameters',
+      links: 'Links',
+      noLinks: 'No associated items',
     },
 
     // Entry types
@@ -149,6 +152,8 @@ export const en = {
       delete: 'Delete',
       rename: 'Rename',
       share: 'Share',
+      link: 'Link',
+      unlink: 'Unlink',
 
       // File actions
       createNew: 'Create New Password File',
@@ -165,6 +170,7 @@ export const en = {
       confirmDelete: 'Are you sure you want to delete this entry?',
       confirmShare: 'This action will copy plain text data to clipboard. Please be aware of information security. Do you want to continue?',
       renameTitle: 'Enter a new title name',
+      linkItems: 'Link Items',
     },
 
     // Error messages

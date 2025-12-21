@@ -5,6 +5,8 @@
 
   import { i18n } from '@/stores/i18n.svelte'
 
+  import DetailCard from '../detail-card.svelte'
+
   interface Props {
     entry: EncryptedTextData
     formData: Partial<EncryptedTextData>
@@ -20,53 +22,42 @@
   }: Props = $props()
 </script>
 
-<div class='flex flex-col space-y-6'>
-  <div class='card bg-base-200 shadow-sm'>
-    <div class='card-body p-4'>
-      <h3 class='card-title text-lg mb-4'>{i18n.t('forms.encryptedContent')}</h3>
-
-      <label class='label' for='content-input'>
-        {i18n.t('forms.content')}
-      </label>
-      <div class='join w-full'>
-        <textarea
-          id='content-input'
-          class='textarea join-item flex-1'
-          value={formData.content || ''}
-          oninput={e => onFieldChange('content', e.currentTarget.value)}
-          placeholder={i18n.t('forms.contentPlaceholder')}
-          rows='8'
-        ></textarea>
-        <div class='flex flex-col'>
-          <button
-            type='button'
-            class='btn join-item'
-            onclick={() => onCopyToClipboard(entry.content || '')}
-            title={i18n.t('actions.copy')}
-          >
-            <Copy size={16} />
-          </button>
-        </div>
-      </div>
+<DetailCard title={i18n.t('forms.encryptedContent')}>
+  <label class='label' for='content-input'>
+    {i18n.t('forms.content')}
+  </label>
+  <div class='join w-full'>
+    <textarea
+      id='content-input'
+      class='textarea join-item flex-1'
+      value={formData.content || ''}
+      oninput={e => onFieldChange('content', e.currentTarget.value)}
+      placeholder={i18n.t('forms.contentPlaceholder')}
+      rows='8'
+    ></textarea>
+    <div class='flex flex-col'>
+      <button
+        type='button'
+        class='btn join-item'
+        onclick={() => onCopyToClipboard(entry.content || '')}
+        title={i18n.t('actions.copy')}
+      >
+        <Copy size={16} />
+      </button>
     </div>
   </div>
+</DetailCard>
 
-  <div class='card bg-base-200 shadow-sm'>
-    <div class='card-body p-4'>
-      <h3 class='card-title text-lg mb-4'>{i18n.t('forms.additionalInformation')}</h3>
-
-      <label class='label' for='notes-input'>
-        {i18n.t('forms.notes')}
-      </label>
-      <textarea
-        id='notes-input'
-        class='textarea w-full'
-        value={formData.notes || ''}
-        oninput={e => onFieldChange('notes', e.currentTarget.value)}
-        placeholder={i18n.t('forms.notesPlaceholder')}
-        rows='4'
-      ></textarea>
-    </div>
-  </div>
-
-</div>
+<DetailCard title={i18n.t('forms.additionalInformation')}>
+  <label class='label' for='notes-input'>
+    {i18n.t('forms.notes')}
+  </label>
+  <textarea
+    id='notes-input'
+    class='textarea w-full'
+    value={formData.notes || ''}
+    oninput={e => onFieldChange('notes', e.currentTarget.value)}
+    placeholder={i18n.t('forms.notesPlaceholder')}
+    rows='4'
+  ></textarea>
+</DetailCard>

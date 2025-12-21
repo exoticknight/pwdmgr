@@ -16,6 +16,15 @@
 
   const { isOpen, currentId, onClose, onLink }: Props = $props()
 
+  const excludeIds = $derived.by(() => {
+    const currentEntry = data.entries.find(e => e._id === currentId)
+    if (!currentEntry)
+      return [currentId]
+    if (!currentEntry._clusterId)
+      return [currentId]
+    return [currentId, ...data.getClusterItems(currentEntry._clusterId).map(e => e._id)]
+  })
+
   let searchTerm = $state('')
   let searchResults = $state<Datum[]>([])
 
@@ -24,7 +33,7 @@
     searchTerm = term
     if (term.trim().length > 0) {
       // Filter out current item from results
-      searchResults = data.searchEntries(term).filter(item => item._id !== currentId)
+      searchResults = data.searchEntries(term).filter(item => !excludeIds.includes(item._id))
     }
     else {
       searchResults = []

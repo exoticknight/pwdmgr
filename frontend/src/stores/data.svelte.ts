@@ -178,7 +178,7 @@ class Data {
     const targetIndex = this.#state.entries.findIndex(e => e._id === targetId)
 
     if (sourceIndex === -1 || targetIndex === -1)
-return
+      return
 
     const source = this.#state.entries[sourceIndex]
     const target = this.#state.entries[targetIndex]

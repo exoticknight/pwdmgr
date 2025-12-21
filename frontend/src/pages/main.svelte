@@ -1,5 +1,6 @@
 <script lang='ts'>
   import { Router } from '@mateothegreat/svelte5-router'
+  import { app } from '@/stores/app.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { route, Routes } from '@/stores/route.svelte'
@@ -72,6 +73,12 @@
       component: Setting,
     },
   ]
+
+  const handleClose = () => {
+    app.reset()
+    database.close()
+    route.navigate(Routes.LANDING)
+  }
 </script>
 
 {#if !database.initialized}
@@ -81,7 +88,7 @@
       <p class='loading-text'>{i18n.t('common.loading')}</p>
       <button
         class='btn btn-ghost btn-sm mt-4'
-        onclick={() => route.navigate(Routes.LANDING)}
+        onclick={handleClose}
       >{i18n.t('common.back')}</button>
     </div>
   </div>

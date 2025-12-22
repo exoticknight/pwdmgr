@@ -19,6 +19,8 @@ dist
 
 .env*.local
 
+.trae/
+
 build
 frontend/dist
 package.json.md5

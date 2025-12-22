@@ -14,7 +14,6 @@ export const zh = {
       or: '或者',
     },
 
-    // Navigation
     navigation: {
       allItems: '所有条目',
       favorites: '收藏',
@@ -152,7 +151,6 @@ export const zh = {
       delete: '删除',
       rename: '重命名',
       share: '分享',
-      link: '关联',
       unlink: '取消关联',
 
       // File actions

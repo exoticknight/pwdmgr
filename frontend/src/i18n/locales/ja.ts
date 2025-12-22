@@ -14,7 +14,6 @@ export const ja = {
       or: 'または',
     },
 
-    // ナビゲーション
     navigation: {
       allItems: 'すべてのアイテム',
       favorites: 'お気に入り',
@@ -152,7 +151,6 @@ export const ja = {
       delete: '削除',
       rename: '名前変更',
       share: '共有',
-      link: 'リンク',
       unlink: 'リンク解除',
 
       // ファイルアクション

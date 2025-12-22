@@ -1,7 +1,8 @@
 <script lang='ts'>
-  import type { BasicData, Datum, EncryptedTextData, PasswordData } from '@/types/data'
+  import type { Datum, EncryptedTextData, PasswordData } from '@/types/data'
   import BrandIcon from '@/components/brand-icon.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { getEntryTypeLabel } from '@/utils/entry-types'
 
   interface Props {
     entries: Datum[]
@@ -44,20 +45,6 @@
     }
   }
 
-  function getEntryTypeLabel(type: BasicData['_type']): string {
-    switch (type) {
-      case 'password':
-        return i18n.t('entryTypes.password')
-      case 'encrypted_text':
-        return i18n.t('entryTypes.encryptedText')
-      case 'two_factor_auth':
-        return i18n.t('entryTypes.twoFactorAuth')
-      case 'payment':
-        return i18n.t('entryTypes.payment')
-      default:
-        return ''
-    }
-  }
 </script>
 
 <div class='entries-list h-full w-full overflow-y-auto'>
@@ -84,7 +71,7 @@
             <div class='item-subtitle'>{getSubtitleForEntry(entry)}</div>
           </div>
           <div class='item-append'>
-            <div class='badge badge-ghost badge-outline'>{getEntryTypeLabel(entry._type)}</div>
+            <div class='badge badge-ghost badge-outline'>{getEntryTypeLabel(entry._type, i18n)}</div>
           </div>
         </div>
       {/each}

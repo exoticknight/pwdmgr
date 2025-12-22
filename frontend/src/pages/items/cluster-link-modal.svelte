@@ -6,6 +6,7 @@
   import Modal from '@/components/modal.svelte'
   import { data } from '@/stores/data.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { getEntryTypeLabel } from '@/utils/entry-types'
 
   interface Props {
     isOpen: boolean
@@ -86,9 +87,7 @@
                   <BrandIcon name={item.title} size='2rem' />
                   <div class='flex flex-col items-start overflow-hidden'>
                     <span class='font-medium truncate w-full text-left'>{item.title}</span>
-                    <span class='text-xs text-base-content/70 capitalize'>
-                      {i18n.t(`entryTypes.${item._type}` as any) || item._type}
-                    </span>
+                    <span class='text-xs text-base-content/70 capitalize'>{getEntryTypeLabel(item._type, i18n)}</span>
                   </div>
                 </button>
               </li>

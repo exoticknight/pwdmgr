@@ -14,7 +14,6 @@ export const en = {
       or: 'or',
     },
 
-    // Navigation
     navigation: {
       allItems: 'All Items',
       favorites: 'Favorites',
@@ -152,7 +151,6 @@ export const en = {
       delete: 'Delete',
       rename: 'Rename',
       share: 'Share',
-      link: 'Link',
       unlink: 'Unlink',
 
       // File actions

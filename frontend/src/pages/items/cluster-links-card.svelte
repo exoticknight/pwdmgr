@@ -1,10 +1,11 @@
 <script lang='ts'>
   import type { Datum } from '@/types/data'
-  import { Link, Trash2 } from '@lucide/svelte'
+  import { ChevronRight, Link, Trash2 } from '@lucide/svelte'
 
   import BrandIcon from '@/components/brand-icon.svelte'
   import { data } from '@/stores/data.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { getEntryTypeLabel } from '@/utils/entry-types'
 
   import ClusterLinkModal from './cluster-link-modal.svelte'
   import DetailCard from './detail-card.svelte'
@@ -49,26 +50,25 @@
 <DetailCard title={i18n.t('forms.links')}>
   <div class='flex flex-col gap-2'>
     {#if clusterItems.length > 0}
-      <ul class='menu bg-base-100 w-full p-0 rounded-box'>
+      <ul class='list bg-base-100 rounded-box'>
         {#each clusterItems as item (item._id)}
-          <li class='flex flex-row items-center gap-2 py-1'>
-            <!-- Navigation Button -->
+          <li class='list-row items-center'>
+            <div class='w-8 h-8 grid place-items-center rounded-box border border-base-300 bg-base-100'>
+              <BrandIcon name={item.title} size='1.25rem' />
+            </div>
+            <div>
+              <div class='truncate'>{item.title}</div>
+              <div class='font-medium uppercase font-semibold opacity-60'>{getEntryTypeLabel(item._type, i18n)}</div>
+            </div>
             <button
-              class='flex-1 flex items-center gap-3 text-left'
+              class='btn btn-square btn-ghost'
+              title={i18n.t('actions.open')}
               onclick={() => onSelect?.(item)}
             >
-              <BrandIcon name={item.title} size='1.5rem' />
-              <div class='flex flex-col overflow-hidden'>
-                <span class='font-medium truncate'>{item.title}</span>
-                <span class='text-xs text-base-content/70 capitalize'>
-                  {i18n.t(`entryTypes.${item._type}` as any) || item._type}
-                </span>
-              </div>
+              <ChevronRight size={16} />
             </button>
-
-            <!-- Unlink Button -->
             <button
-              class='btn btn-ghost btn-sm btn-square'
+              class='btn btn-square btn-ghost'
               title={i18n.t('actions.unlink')}
               onclick={() => handleUnlink(item)}
             >
@@ -84,9 +84,9 @@
     {/if}
 
     <div class='flex justify-end'>
-      <button class='btn btn-outline gap-2' title={i18n.t('actions.link')} onclick={openModal}>
+      <button class='btn btn-outline gap-2' title={i18n.t('actions.add')} onclick={openModal}>
         <Link size={14} />
-        {i18n.t('actions.link')}
+        {i18n.t('actions.add')}
       </button>
     </div>
   </div>

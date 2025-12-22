@@ -115,6 +115,26 @@
     }
   }
 
+  function handleLinkItems(sourceId: string, targetId: string) {
+    try {
+      data.linkItems(sourceId, targetId)
+      app.markDataAsUnsaved()
+    }
+    catch {
+      notification.error(i18n.t('errors.updateError'))
+    }
+  }
+
+  function handleUnlinkItem(id: string) {
+    try {
+      data.unlinkItem(id)
+      app.markDataAsUnsaved()
+    }
+    catch {
+      notification.error(i18n.t('errors.updateError'))
+    }
+  }
+
   function handleSearch(data: { term: string }) {
     searchTerm = data.term
   }
@@ -204,6 +224,8 @@
               onMarkDirty={handleMarkDirty}
               onDelete={handleEntryDelete}
               onSelect={handleEntrySelect}
+              onLinkItems={handleLinkItems}
+              onUnlinkItem={handleUnlinkItem}
             />
           </div>
         </div>

@@ -164,12 +164,6 @@ class Data {
       return []
     }
     const ids = this.#clusterIndex.get(clusterId)!
-    // Map IDs to entries. Since we don't have an ID index, we have to find them.
-    // Optimization: If we had an ID index map, this would be O(N_cluster).
-    // Currently O(N_cluster * N_total).
-    // Given the constraints, iterating entries is okay-ish if N is small, but maintaining an ID map is better.
-    // However, I will stick to iterating entries and checking ID set for correctness/simplicity unless performance is critical.
-    // Actually, `entries` is an array. I can just filter.
     return this.#state.entries.filter(e => ids.has(e._id))
   }
 
@@ -224,13 +218,8 @@ class Data {
   unlinkItem(id: string) {
     const index = this.#state.entries.findIndex(e => e._id === id)
     if (index === -1)
-return
+      return
 
-    // Just set clusterId to undefined/null
-    // Note: types/data.ts says _clusterId?: string.
-    // Partial update allows setting it to undefined?
-    // Typescript might complain if we pass undefined to a partial if exactOptionalPropertyTypes is on,
-    // but usually it's fine. I'll cast if needed.
     this.updateEntry(id, { _clusterId: undefined, _updatedAt: new Date().toISOString() })
   }
 

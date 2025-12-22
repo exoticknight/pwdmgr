@@ -13,9 +13,11 @@
   interface Props {
     entry: Datum
     onSelect?: (entry: Datum) => void
+    onLinkItems?: (sourceId: string, targetId: string) => void
+    onUnlinkItem?: (id: string) => void
   }
 
-  const { entry, onSelect }: Props = $props()
+  const { entry, onSelect, onLinkItems, onUnlinkItem }: Props = $props()
 
   let isModalOpen = $state(false)
 
@@ -31,11 +33,11 @@
   })
 
   function handleUnlink(item: Datum) {
-    data.unlinkItem(item._id)
+    onUnlinkItem?.(item._id)
   }
 
   function handleLink(target: Datum) {
-    data.linkItems(entry._id, target._id)
+    onLinkItems?.(entry._id, target._id)
   }
 
   function openModal() {

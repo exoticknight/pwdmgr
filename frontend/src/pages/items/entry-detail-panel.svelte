@@ -23,9 +23,11 @@
     onMarkDirty?: () => void
     onDelete?: (data: { id: string }) => void
     onSelect?: (entry: Datum) => void
+    onLinkItems?: (sourceId: string, targetId: string) => void
+    onUnlinkItem?: (id: string) => void
   }
 
-  const { entry, onUpdate, onMarkDirty, onDelete, onSelect }: Props = $props()
+  const { entry, onUpdate, onMarkDirty, onDelete, onSelect, onLinkItems, onUnlinkItem }: Props = $props()
 
   // Use interface constraints to improve code portability
   const dialogControl: DialogControl = dialog
@@ -287,7 +289,7 @@
         />
       {/if}
 
-      <ClusterLinksCard entry={entry as Datum} {onSelect} />
+      <ClusterLinksCard entry={entry as Datum} {onSelect} onLinkItems={onLinkItems} onUnlinkItem={onUnlinkItem} />
 
       <!-- Time Information -->
       <div class='time-info'>

@@ -183,29 +183,41 @@ class Data {
     const source = this.#state.entries[sourceIndex]
     const target = this.#state.entries[targetIndex]
 
-    let newClusterId = target._clusterId
+    const sourceCluster = source._clusterId
+    const targetCluster = target._clusterId
 
-    if (!newClusterId) {
-      if (source._clusterId) {
-        // If target has no cluster, but source does, target joins source's cluster?
-        // Prompt: "If associated item (B/Target) already has cluster, A joins it. If not, create new."
-        // So if B has NO cluster, we create a NEW one. Even if A has a cluster.
-        // Wait, if A has a cluster, and B doesn't. If we create a new one, A leaves its old cluster.
-        // This seems correct per prompt "If not (has cluster), create a new one".
-        newClusterId = crypto.randomUUID()
-      }
- else {
-        // Both have no cluster
-        newClusterId = crypto.randomUUID()
-      }
-    }
-
-    // Update both
-    if (source._clusterId !== newClusterId) {
+    // Case 1: both have no cluster -> create a new one and assign to both
+    if (!sourceCluster && !targetCluster) {
+      const newClusterId = crypto.randomUUID()
       this.updateEntry(sourceId, { _clusterId: newClusterId, _updatedAt: new Date().toISOString() })
-    }
-    if (target._clusterId !== newClusterId) {
       this.updateEntry(targetId, { _clusterId: newClusterId, _updatedAt: new Date().toISOString() })
+      return
+    }
+
+    // Case 2: source has cluster, target doesn't -> target joins source's cluster
+    if (sourceCluster && !targetCluster) {
+      this.updateEntry(targetId, { _clusterId: sourceCluster, _updatedAt: new Date().toISOString() })
+      return
+    }
+
+    // Case 3: target has cluster, source doesn't -> source joins target's cluster
+    if (!sourceCluster && targetCluster) {
+      this.updateEntry(sourceId, { _clusterId: targetCluster, _updatedAt: new Date().toISOString() })
+      return
+    }
+
+    // Case 4: both have the same cluster -> nothing to do
+    if (sourceCluster === targetCluster) {
+      return
+    }
+
+    // Case 5: both have different clusters -> merge target's cluster into source's cluster
+    // Choose source's cluster ID as the final cluster ID
+    const finalClusterId = sourceCluster!
+    const toMergeClusterId = targetCluster!
+    const membersToMerge = this.getClusterItems(toMergeClusterId).map(e => e._id)
+    for (const id of membersToMerge) {
+      this.updateEntry(id, { _clusterId: finalClusterId, _updatedAt: new Date().toISOString() })
     }
   }
 

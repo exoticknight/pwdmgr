@@ -22,6 +22,7 @@ export const ja = {
       text: '暗号化テキスト',
       twoFactorAuth: '二段階認証',
       payment: '支払い',
+      phone: '電話',
       import: 'インポート',
       audit: '監査',
       settings: '設定',
@@ -69,6 +70,9 @@ export const ja = {
       cardNumber: 'カード番号',
       expiryDate: '有効期限 (MM/YY)',
       cvv: 'CVV/CVC',
+      countryRegion: '国/地域',
+      phoneNumber: '電話番号',
+      carrier: 'キャリア',
 
       // フィールドプレースホルダー
       usernamePlaceholder: 'ユーザー名を入力',
@@ -82,6 +86,11 @@ export const ja = {
       cardNumberPlaceholder: 'XXXX XXXX XXXX XXXX',
       expiryDatePlaceholder: 'MM/YY',
       cvvPlaceholder: 'XXX',
+      phoneNumberPlaceholder: '電話番号を入力',
+      carrierPlaceholder: 'キャリア名を入力',
+      phoneTitlePlaceholder: '例: 個人、仕事',
+      selectCarrier: 'キャリアを選択',
+      countryRegionPlaceholder: '国/地域を検索',
 
       // エントリ管理
       emptySubtitle: 'エントリを選択して詳細を表示',
@@ -99,6 +108,7 @@ export const ja = {
       accountInformation: 'アカウント情報',
       encryptedContent: '暗号化コンテンツ',
       paymentInformation: '支払い情報',
+      phoneInformation: '電話情報',
       additionalInformation: '追加情報',
       technicalParameters: '技術パラメータ',
       links: 'リンク',
@@ -111,6 +121,7 @@ export const ja = {
       encryptedText: 'テキスト',
       twoFactorAuth: '二段階認証',
       payment: '支払い',
+      phone: '電話',
     },
 
     // パスワードダイアログ

@@ -29,6 +29,10 @@
     onNew?.(DataMetaType.PAYMENT)
   }
 
+  function handleNewPhone() {
+    onNew?.(DataMetaType.PHONE)
+  }
+
   function handleSearchInput(event: Event) {
     const target = event.target as HTMLInputElement
     onSearch?.({ term: target.value })
@@ -75,6 +79,11 @@
         <li>
           <button class='min-w-fit text-nowrap' onclick={handleNewPayment}>
             {i18n.t('entryTypes.payment')}
+          </button>
+        </li>
+        <li>
+          <button class='min-w-fit text-nowrap' onclick={handleNewPhone}>
+            {i18n.t('entryTypes.phone')}
           </button>
         </li>
       </ul>

@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import type { Datum, EncryptedTextData, PasswordData, PaymentInfoData, TwoFactorAuthData } from '@/types/data'
+  import type { Datum, EncryptedTextData, PasswordData, PaymentInfoData, PhoneData, TwoFactorAuthData } from '@/types/data'
   import type { DialogControl } from '@/types/dialog'
 
   import { Share2, SquarePen, Star, Trash2 } from '@lucide/svelte'
@@ -16,6 +16,7 @@
   import EncryptedTextDetailForm from './encrypted-text/encrypted-text-detail-form.svelte'
   import PasswordDetailForm from './password/password-detail-form.svelte'
   import PaymentDetailForm from './payment/payment-detail-form.svelte'
+  import PhoneDetailForm from './phone/phone-detail-form.svelte'
 
   interface Props {
     entry: Datum | null
@@ -39,6 +40,7 @@
   const isEncryptedTextEntry = $derived(entry?._type === DataMetaType.ENCRYPTED_TEXT)
   const isTwoFactorAuthEntry = $derived(entry?._type === DataMetaType.TWO_FACTOR_AUTH)
   const isPaymentInfoEntry = $derived(entry?._type === DataMetaType.PAYMENT)
+  const isPhoneEntry = $derived(entry?._type === DataMetaType.PHONE)
 
   // Update form data when entry changes
   $effect(() => {
@@ -155,6 +157,15 @@
         }
         if (paymentEntry.cvv) {
           data.push(`CVV:\n${paymentEntry.cvv}`)
+        }
+      }
+      else if (entry._type === DataMetaType.PHONE) {
+        const phoneEntry = entry as PhoneData
+        if (phoneEntry.dialCode && phoneEntry.phoneNumber) {
+          data.push(`Phone:\n+${phoneEntry.dialCode} ${phoneEntry.phoneNumber}`)
+        }
+        if (phoneEntry.carrier) {
+          data.push(`Carrier:\n${phoneEntry.carrier}`)
         }
       }
       if (entry.notes) {
@@ -284,6 +295,13 @@
         <PaymentDetailForm
           entry={entry as PaymentInfoData}
           formData={formData as Partial<PaymentInfoData>}
+          onFieldChange={handleFieldChange}
+          onCopyToClipboard={copy}
+        />
+      {:else if isPhoneEntry}
+        <PhoneDetailForm
+          entry={entry as PhoneData}
+          formData={formData as Partial<PhoneData>}
           onFieldChange={handleFieldChange}
           onCopyToClipboard={copy}
         />

@@ -22,6 +22,7 @@ export const en = {
       text: 'Encrypted Text',
       twoFactorAuth: '2FA',
       payment: 'Payment',
+      phone: 'Phone',
       import: 'Import',
       audit: 'Audit',
       settings: 'Settings',
@@ -69,6 +70,9 @@ export const en = {
       cardNumber: 'Card Number',
       expiryDate: 'Expiry Date (MM/YY)',
       cvv: 'CVV/CVC',
+      countryRegion: 'Country/Region',
+      phoneNumber: 'Phone Number',
+      carrier: 'Carrier',
 
       // Field placeholders
       usernamePlaceholder: 'Enter username',
@@ -82,6 +86,11 @@ export const en = {
       cardNumberPlaceholder: 'XXXX XXXX XXXX XXXX',
       expiryDatePlaceholder: 'MM/YY',
       cvvPlaceholder: 'XXX',
+      phoneNumberPlaceholder: 'Enter phone number',
+      carrierPlaceholder: 'Enter carrier name',
+      phoneTitlePlaceholder: 'e.g., Personal, Work',
+      selectCarrier: 'Select carrier',
+      countryRegionPlaceholder: 'Search country/region',
 
       // Entry management
       emptySubtitle: 'Select an entry to view details',
@@ -99,6 +108,7 @@ export const en = {
       accountInformation: 'Account Information',
       encryptedContent: 'Encrypted Content',
       paymentInformation: 'Payment Information',
+      phoneInformation: 'Phone Information',
       additionalInformation: 'Additional Information',
       technicalParameters: 'Technical Parameters',
       links: 'Links',
@@ -111,6 +121,7 @@ export const en = {
       encryptedText: 'Text',
       twoFactorAuth: '2FA',
       payment: 'Payment',
+      phone: 'Phone',
     },
 
     // Password dialogs

@@ -10,6 +10,8 @@ export function getEntryTypeLabel(type: BasicData['_type'], i18n: { t: (key: str
       return i18n.t('entryTypes.twoFactorAuth')
     case 'payment':
       return i18n.t('entryTypes.payment')
+    case 'phone':
+      return i18n.t('entryTypes.phone')
     default:
       return ''
   }

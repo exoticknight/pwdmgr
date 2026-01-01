@@ -11,6 +11,7 @@ export const Routes = {
   ITEMS_TEXT: '/home/items/text',
   ITEMS_2FA: '/home/items/2fa',
   ITEMS_PAYMENT: '/home/items/payment',
+  ITEMS_PHONE: '/home/items/phone',
 
   // Other app routes
   IMPORT: '/home/import',

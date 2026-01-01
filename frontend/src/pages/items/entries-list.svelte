@@ -40,6 +40,12 @@
       }
       case 'payment':
         return entry.issuer || ''
+      case 'phone': {
+        const phoneEntry = entry as any
+        const dialCode = phoneEntry.dialCode || ''
+        const phoneNumber = phoneEntry.phoneNumber || ''
+        return dialCode && phoneNumber ? `+${dialCode} ${phoneNumber}` : ''
+      }
       default:
         return ''
     }

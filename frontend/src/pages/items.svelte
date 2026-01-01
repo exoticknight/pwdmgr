@@ -21,6 +21,7 @@
   import EntryDetailPanel from './items/entry-detail-panel.svelte'
   import PasswordNewModal from './items/password/password-new-modal.svelte'
   import PaymentNewModal from './items/payment/payment-new-modal.svelte'
+  import PhoneNewModal from './items/phone/phone-new-modal.svelte'
   import SaveFileModal from './items/save-file-modal.svelte'
   import TopToolbar from './items/top-toolbar.svelte'
 
@@ -50,6 +51,8 @@
         return data.searchEntries(searchTerm).filter(entry => entry._type === DataMetaType.TWO_FACTOR_AUTH)
       case 'payment':
         return data.searchEntries(searchTerm).filter(entry => entry._type === DataMetaType.PAYMENT)
+      case 'phone':
+        return data.searchEntries(searchTerm).filter(entry => entry._type === DataMetaType.PHONE)
       default:
         return data.searchEntries(searchTerm)
     }
@@ -273,6 +276,14 @@
 
 {#if showModal && currentEntryType === DataMetaType.PAYMENT}
   <PaymentNewModal
+    isOpen={showModal}
+    onSave={handleNewModalSave}
+    onCancel={handleNewModalCancel}
+  />
+{/if}
+
+{#if showModal && currentEntryType === DataMetaType.PHONE}
+  <PhoneNewModal
     isOpen={showModal}
     onSave={handleNewModalSave}
     onCancel={handleNewModalCancel}

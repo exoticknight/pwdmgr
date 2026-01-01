@@ -22,6 +22,7 @@ export const zh = {
       text: '加密文本',
       twoFactorAuth: '双重认证',
       payment: '支付',
+      phone: '手机',
       import: '导入',
       audit: '审计',
       settings: '设置',
@@ -69,6 +70,9 @@ export const zh = {
       cardNumber: '卡号',
       expiryDate: '过期年月 (MM/YY)',
       cvv: 'CVV/CVC',
+      countryRegion: '国家/地区',
+      phoneNumber: '手机号码',
+      carrier: '运营商',
 
       // Field placeholders
       usernamePlaceholder: '请输入用户名',
@@ -82,6 +86,11 @@ export const zh = {
       cardNumberPlaceholder: 'XXXX XXXX XXXX XXXX',
       expiryDatePlaceholder: 'MM/YY',
       cvvPlaceholder: 'XXX',
+      phoneNumberPlaceholder: '请输入手机号码',
+      carrierPlaceholder: '请输入运营商名称',
+      phoneTitlePlaceholder: '例如: 个人、工作',
+      selectCarrier: '选择运营商',
+      countryRegionPlaceholder: '搜索国家/地区',
 
       // Entry management
       emptySubtitle: '选择一个条目来查看详细信息',
@@ -99,6 +108,7 @@ export const zh = {
       accountInformation: '账户信息',
       encryptedContent: '加密内容',
       paymentInformation: '支付信息',
+      phoneInformation: '手机信息',
       additionalInformation: '附加信息',
       technicalParameters: '技术参数',
       links: '关联',
@@ -111,6 +121,7 @@ export const zh = {
       encryptedText: '文本',
       twoFactorAuth: '双重认证',
       payment: '支付',
+      phone: '手机',
     },
 
     // Password dialog

@@ -61,6 +61,13 @@
       },
     },
     {
+      path: Routes.ITEMS_PHONE,
+      component: Items,
+      props: {
+        filter: 'phone',
+      },
+    },
+    {
       path: Routes.IMPORT,
       component: Import,
     },

@@ -2,7 +2,7 @@ import type { Component } from 'svelte'
 import type { Routes } from '@/types/routes'
 
 // Navigation item IDs are directly the route keys - perfect 1:1 mapping
-export type NavigationItemId = 'ITEMS_ALL' | 'ITEMS_FAVORITES' | 'ITEMS_RECENT' | 'ITEMS_PASSWORD' | 'ITEMS_TEXT' | 'ITEMS_2FA' | 'ITEMS_PAYMENT'
+export type NavigationItemId = 'ITEMS_ALL' | 'ITEMS_FAVORITES' | 'ITEMS_RECENT' | 'ITEMS_PASSWORD' | 'ITEMS_TEXT' | 'ITEMS_2FA' | 'ITEMS_PAYMENT' | 'ITEMS_PHONE'
 
 // Base navigation item interface with route key as ID
 export interface NavigationItemData<I extends NavigationItemId = NavigationItemId> {

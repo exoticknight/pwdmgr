@@ -5,6 +5,7 @@ import {
   FileText,
   RectangleEllipsis,
   ShieldUser,
+  Smartphone,
   Star,
   WalletCards,
 } from '@lucide/svelte'
@@ -52,5 +53,11 @@ export const DEFAULT_NAVIGATION_ITEMS = {
     route: Routes.ITEMS_PAYMENT,
     labelKey: 'navigation.payment',
     icon: CreditCard,
+  },
+  ITEMS_PHONE: {
+    id: 'ITEMS_PHONE',
+    route: Routes.ITEMS_PHONE,
+    labelKey: 'navigation.phone',
+    icon: Smartphone,
   },
 } as const satisfies Record<string, NavigationItemData>

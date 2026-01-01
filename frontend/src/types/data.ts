@@ -5,6 +5,7 @@ export const DataMetaType = {
   ENCRYPTED_TEXT: 'encrypted_text',
   TWO_FACTOR_AUTH: 'two_factor_auth',
   PAYMENT: 'payment',
+  PHONE: 'phone',
 } as const
 
 export interface BasicData {
@@ -74,4 +75,15 @@ export interface PaymentInfoData extends BasicData {
   notes?: string
 }
 
-export type Datum = PasswordData | EncryptedTextData | TwoFactorAuthData | PaymentInfoData
+// Phone number information (stores phone numbers with country code and carrier)
+export interface PhoneData extends BasicData {
+  _type: typeof DataMetaType.PHONE
+  title: string
+  countryCode: string // ISO 3166-1 alpha-2 country code (e.g. CN, US, JP)
+  dialCode: string // Country calling code without + (e.g. 86, 1, 81)
+  phoneNumber: string // Phone number without country code
+  carrier?: string // Mobile carrier/operator
+  notes?: string
+}
+
+export type Datum = PasswordData | EncryptedTextData | TwoFactorAuthData | PaymentInfoData | PhoneData

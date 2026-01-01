@@ -3,7 +3,7 @@
 
   import DatalistInput from '@/components/datalist-input.svelte'
   import Modal from '@/components/modal.svelte'
-  import { COUNTRIES_PHONE_INFO, getCarriersByCountryCode, getCountryByCode } from '@/consts/phone'
+  import { COUNTRIES_PHONE_INFO, getCarriersByCountryCode, getCountryByCode, getCountryByDialCode } from '@/consts/phone'
   import { i18n } from '@/stores/i18n.svelte'
   import { DataMetaType } from '@/types/data'
 
@@ -33,15 +33,9 @@
 
   // Country options for datalist
   const countryOptions = $derived(COUNTRIES_PHONE_INFO.map(c => ({
-    value: c.code,
+    value: `+${c.dialCode}`,
     label: `${c.emoji} ${c.nameNative} (+${c.dialCode})`,
   })))
-
-  // Country display value for input
-  const countryDisplayValue = $derived(() => {
-    const info = countryInfo
-    return info ? `${info.emoji} ${info.nameNative} (+${info.dialCode})` : ''
-  })
 
   // Carrier options for datalist
   const carrierOptions = $derived(carriers.map(c => ({
@@ -58,7 +52,9 @@
   )
 
   function handleCountrySelect(option: { value: string, label: string }) {
-    const country = getCountryByCode(option.value)
+    // value is in format "+XX", extract the dial code
+    const dialCode = option.value.replace(/^\+/, '')
+    const country = getCountryByDialCode(dialCode)
     if (country) {
       form.countryCode = country.code
       form.dialCode = country.dialCode
@@ -128,27 +124,25 @@
               required
             />
 
-            <!-- Country/Region -->
-            <label class='label' for='country-input-new'>
-              {i18n.t('forms.countryRegion')} *
-            </label>
-            <DatalistInput
-              id='country-input-new'
-              value={countryDisplayValue()}
-              placeholder={i18n.t('forms.countryRegionPlaceholder')}
-              options={countryOptions}
-              onselect={handleCountrySelect}
-              required
-            />
-
-            <!-- Phone Number -->
+            <!-- Country/Region + Phone Number -->
             <label class='label' for='phone-number'>
               {i18n.t('forms.phoneNumber')} *
             </label>
             <div class='join w-full'>
-              <span class='join-item flex items-center px-3 bg-base-200 border border-base-300 font-mono'>
-                {countryInfo?.emoji || '🌐'} +{form.dialCode}
+              <span class='join-item flex items-center px-2 bg-base-100 border border-base-300 text-lg'>
+                {countryInfo?.emoji || '🌐'}
               </span>
+              <div style='width: 5rem; flex-shrink: 0;'>
+                <DatalistInput
+                  id='country-input-new'
+                  value={countryInfo ? `+${countryInfo.dialCode}` : ''}
+                  placeholder='+86'
+                  options={countryOptions}
+                  onselect={handleCountrySelect}
+                  class='join-item'
+                  required
+                />
+              </div>
               <input
                 id='phone-number'
                 type='tel'

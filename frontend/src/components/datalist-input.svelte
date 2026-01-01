@@ -70,6 +70,6 @@
 />
 <datalist id={`${id}-suggestions`}>
   {#each options as option}
-    <option value={option.label}></option>
+    <option value={option.value}>{option.label}</option>
   {/each}
 </datalist>

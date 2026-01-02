@@ -128,9 +128,9 @@
     }
   }
 
-  function handleUnlinkItem(id: string) {
+  function handleUnlinkItem(sourceId: string, targetId: string) {
     try {
-      data.unlinkItem(id)
+      data.unlinkItems(sourceId, targetId)
       app.markDataAsUnsaved()
     }
     catch {

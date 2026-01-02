@@ -25,7 +25,7 @@
     onDelete?: (data: { id: string }) => void
     onSelect?: (entry: Datum) => void
     onLinkItems?: (sourceId: string, targetId: string) => void
-    onUnlinkItem?: (id: string) => void
+    onUnlinkItem?: (sourceId: string, targetId: string) => void
   }
 
   const { entry, onUpdate, onMarkDirty, onDelete, onSelect, onLinkItems, onUnlinkItem }: Props = $props()

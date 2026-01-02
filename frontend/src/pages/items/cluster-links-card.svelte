@@ -14,7 +14,7 @@
     entry: Datum
     onSelect?: (entry: Datum) => void
     onLinkItems?: (sourceId: string, targetId: string) => void
-    onUnlinkItem?: (id: string) => void
+    onUnlinkItem?: (sourceId: string, targetId: string) => void
   }
 
   const { entry, onSelect, onLinkItems, onUnlinkItem }: Props = $props()
@@ -22,18 +22,15 @@
   let isModalOpen = $state(false)
 
   // Use derived to reactively get items when entry or cluster changes
-  const clusterItems = $derived.by(() => {
+  const linkedItems = $derived.by(() => {
     // Look up the latest entry state from the store to ensure reactivity
     // when data.linkItems updates the store.
     const currentEntry = data.entries.find(e => e._id === entry._id) || entry
-
-    if (!currentEntry._clusterId)
-      return []
-    return data.getClusterItems(currentEntry._clusterId).filter(e => e._id !== currentEntry._id)
+    return data.getLinkedItems(currentEntry._id).filter(e => e._id !== currentEntry._id)
   })
 
   function handleUnlink(item: Datum) {
-    onUnlinkItem?.(item._id)
+    onUnlinkItem?.(entry._id, item._id)
   }
 
   function handleLink(target: Datum) {
@@ -51,9 +48,9 @@
 
 <DetailCard title={i18n.t('forms.links')}>
   <div class='flex flex-col gap-4'>
-    {#if clusterItems.length > 0}
+    {#if linkedItems.length > 0}
       <ul class='list bg-base-100 rounded-box'>
-        {#each clusterItems as item (item._id)}
+        {#each linkedItems as item (item._id)}
           <li class='list-row items-center'>
             <div class='w-8 h-8 grid place-items-center rounded-box border border-base-300 bg-base-100'>
               <BrandIcon name={item.title} size='1.25rem' />

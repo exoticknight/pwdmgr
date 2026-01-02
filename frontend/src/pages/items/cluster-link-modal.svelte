@@ -21,9 +21,8 @@
     const currentEntry = data.entries.find(e => e._id === currentId)
     if (!currentEntry)
       return [currentId]
-    if (!currentEntry._clusterId)
-      return [currentId]
-    return [currentId, ...data.getClusterItems(currentEntry._clusterId).map(e => e._id)]
+    const links = Array.isArray(currentEntry._links) ? currentEntry._links : []
+    return [currentId, ...links]
   })
 
   let searchTerm = $state('')

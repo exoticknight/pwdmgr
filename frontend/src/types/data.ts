@@ -15,7 +15,7 @@ export interface BasicData {
   _createdAt: string
   _updatedAt: string
   _lastUsedAt?: string
-  _clusterId?: string
+  _links?: string[]
 }
 
 export const BasicDataKey: {
@@ -27,6 +27,7 @@ export const BasicDataKey: {
   CREATED_AT: '_createdAt',
   UPDATED_AT: '_updatedAt',
   LAST_USED_AT: '_lastUsedAt',
+  LINKS: '_links',
 } as const
 
 export type OmitBasicDataExcept<T extends BasicData, K extends keyof typeof BasicDataKey> = Omit<T, Exclude<keyof BasicData, typeof BasicDataKey[K]>>

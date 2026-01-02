@@ -78,9 +78,6 @@
     {i18n.t('forms.phoneNumber')}
   </label>
   <div class='join w-full'>
-    <span class='join-item flex items-center px-2 bg-base-100 border border-base-300 text-lg'>
-      {countryInfo?.emoji || '🌐'}
-    </span>
     <div style='width: 5rem; flex-shrink: 0;'>
       <DatalistInput
         id='country-input'

@@ -50,7 +50,7 @@
 </script>
 
 <DetailCard title={i18n.t('forms.links')}>
-  <div class='flex flex-col gap-2'>
+  <div class='flex flex-col gap-4'>
     {#if clusterItems.length > 0}
       <ul class='list bg-base-100 rounded-box'>
         {#each clusterItems as item (item._id)}

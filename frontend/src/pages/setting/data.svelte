@@ -1,23 +1,34 @@
 <script lang='ts'>
   import { i18n } from '@/stores/i18n.svelte'
-  import { notification } from '@/stores/notification.svelte'
   import ExportModal from './export-modal.svelte'
   import SettingItem from './setting-item.svelte'
   import SettingSection from './setting-section.svelte'
+  import SettingsTransferModal from './settings-transfer-modal.svelte'
 
   let showExportDialog = $state(false)
+  let showSettingsTransferDialog = $state(false)
+  let transferMode: 'export' | 'import' = $state('export')
 
   function handleExport() {
     showExportDialog = true
   }
 
   function handleExportSettings() {
-    // TODO: Implement settings export functionality
-    notification.info(i18n.t('notifications.featureComingSoon'))
+    transferMode = 'export'
+    showSettingsTransferDialog = true
+  }
+
+  function handleImportSettings() {
+    transferMode = 'import'
+    showSettingsTransferDialog = true
   }
 
   function handleCloseExportModal() {
     showExportDialog = false
+  }
+
+  function handleCloseSettingsTransferModal() {
+    showSettingsTransferDialog = false
   }
 </script>
 
@@ -51,6 +62,20 @@
       {/snippet}
     </SettingItem>
 
+    <SettingItem
+      title={i18n.t('setting.data.importSettings.title')}
+      description={i18n.t('setting.data.importSettings.description')}
+    >
+      {#snippet control()}
+        <button
+          class='btn btn-outline'
+          onclick={handleImportSettings}
+        >
+          {i18n.t('setting.data.importSettings.buttonText')}
+        </button>
+      {/snippet}
+    </SettingItem>
+
   {/snippet}
 </SettingSection>
 
@@ -58,5 +83,13 @@
   <ExportModal
     isOpen={showExportDialog}
     onClose={handleCloseExportModal}
+  />
+{/if}
+
+{#if showSettingsTransferDialog}
+  <SettingsTransferModal
+    isOpen={showSettingsTransferDialog}
+    mode={transferMode}
+    onClose={handleCloseSettingsTransferModal}
   />
 {/if}

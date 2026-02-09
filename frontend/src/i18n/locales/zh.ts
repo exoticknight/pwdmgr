@@ -214,6 +214,8 @@ export const zh = {
       entryDeleted: '条目已成功删除',
       entryRenamed: '条目已成功重命名',
       exportSuccess: '数据导出成功',
+      settingsExportSuccess: '设置导出成功',
+      settingsImportSuccess: '设置导入成功',
       featureComingSoon: '功能即将推出',
     },
 
@@ -289,6 +291,8 @@ export const zh = {
         unsupportedFormat: '不支持的文件格式',
         openFailed: '文件打开失败',
         importFailed: '导入失败',
+        settingsExportError: '设置导出失败',
+        settingsImportError: '设置导入失败，请检查文件格式',
       },
       browser: {
         chrome: {
@@ -338,6 +342,11 @@ export const zh = {
           description: '导出应用程序的设置配置',
           buttonText: '导出设置',
         },
+        importSettings: {
+          title: '导入设置',
+          description: '从文件导入应用程序设置',
+          buttonText: '导入设置',
+        },
       },
 
       // 界面设置
@@ -363,6 +372,24 @@ export const zh = {
       time: {
         minutes: '分钟',
         hour: '小时',
+      },
+
+      // 设置导入导出
+      settingsTransfer: {
+        export: '导出',
+        exportTitle: '导出设置',
+        selectSaveLocation: '选择保存位置',
+        clickToSave: '点击选择保存位置',
+        saveAsJson: '保存为 JSON 文件',
+        exportNote: '导出的文件包含您的主题、语言、导航和安全偏好设置。请妥善保管！',
+        import: '导入',
+        importTitle: '导入设置',
+        selectFileToImport: '选择要导入的文件',
+        clickToSelect: '点击选择设置文件',
+        selectJsonFile: '选择 JSON 文件',
+        importNote: '导入设置将替换您当前的配置。此操作无法撤销。',
+        jsonFiles: 'JSON 文件',
+        allFiles: '所有文件',
       },
 
       // 关于

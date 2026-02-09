@@ -2,6 +2,7 @@ import { ReadFile, SaveFile } from '../../wailsjs/go/internal/FileService'
 
 export interface IoService {
   readFile: (filePath: string) => Promise<Uint8Array>
+  readFileAsText: (filePath: string) => Promise<string>
   writeFile: (filePath: string, data: Uint8Array) => Promise<void>
   writeTextToFile: (filePath: string, data: string) => Promise<void>
 }
@@ -37,6 +38,18 @@ class WailsIoImpl implements IoService {
     catch (error: unknown) {
       console.error('Failed to save text file:', error)
       throw new Error(`Failed to save text file: ${String(error)}`)
+    }
+  }
+
+  async readFileAsText(filePath: string): Promise<string> {
+    try {
+      const uint8Data = await this.readFile(filePath)
+      const decoder = new TextDecoder('utf-8')
+      return decoder.decode(uint8Data)
+    }
+    catch (error: unknown) {
+      console.error('Failed to read file as text:', error)
+      throw new Error(`Failed to read file as text: ${String(error)}`)
     }
   }
 }

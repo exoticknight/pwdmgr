@@ -214,6 +214,8 @@ export const ja = {
       entryDeleted: 'エントリが正常に削除されました',
       entryRenamed: 'エントリが正常に名前変更されました',
       exportSuccess: 'データが正常にエクスポートされました',
+      settingsExportSuccess: '設定が正常にエクスポートされました',
+      settingsImportSuccess: '設定が正常にインポートされました',
       featureComingSoon: '機能は近日公開予定',
     },
 
@@ -289,6 +291,8 @@ export const ja = {
         unsupportedFormat: 'サポートされていないファイル形式',
         openFailed: 'ファイルのオープンに失敗しました',
         importFailed: 'インポートに失敗しました',
+        settingsExportError: '設定のエクスポートに失敗しました',
+        settingsImportError: '設定のインポートに失敗しました。ファイル形式を確認してください。',
       },
       browser: {
         chrome: {
@@ -338,6 +342,11 @@ export const ja = {
           description: 'アプリケーション設定をエクスポート',
           buttonText: '設定をエクスポート',
         },
+        importSettings: {
+          title: '設定インポート',
+          description: 'ファイルからアプリケーション設定をインポート',
+          buttonText: '設定をインポート',
+        },
       },
 
       // インターフェース設定
@@ -363,6 +372,24 @@ export const ja = {
       time: {
         minutes: '分',
         hour: '時間',
+      },
+
+      // 設定の転送
+      settingsTransfer: {
+        export: 'エクスポート',
+        exportTitle: '設定をエクスポート',
+        selectSaveLocation: '保存場所を選択',
+        clickToSave: 'クリックして保存場所を選択',
+        saveAsJson: 'JSONファイルとして保存',
+        exportNote: 'エクスポートされたファイルには、テーマ、言語、ナビゲーション、セキュリティ設定が含まれます。大切に保管してください！',
+        import: 'インポート',
+        importTitle: '設定をインポート',
+        selectFileToImport: 'インポートするファイルを選択',
+        clickToSelect: 'クリックして設定ファイルを選択',
+        selectJsonFile: 'JSONファイルを選択',
+        importNote: '設定をインポートすると、現在の設定が置き換えられます。この操作は元に戻せません。',
+        jsonFiles: 'JSONファイル',
+        allFiles: 'すべてのファイル',
       },
 
       // アプリについて

@@ -214,6 +214,8 @@ export const en = {
       entryDeleted: 'Entry deleted successfully',
       entryRenamed: 'Entry renamed successfully',
       exportSuccess: 'Data exported successfully',
+      settingsExportSuccess: 'Settings exported successfully',
+      settingsImportSuccess: 'Settings imported successfully',
       featureComingSoon: 'Feature coming soon',
     },
 
@@ -289,6 +291,8 @@ export const en = {
         unsupportedFormat: 'Unsupported file format',
         openFailed: 'Failed to open file',
         importFailed: 'Import failed',
+        settingsExportError: 'Failed to export settings',
+        settingsImportError: 'Failed to import settings. Please check the file format.',
       },
       browser: {
         chrome: {
@@ -338,6 +342,11 @@ export const en = {
           description: 'Export application settings configuration',
           buttonText: 'Export Settings',
         },
+        importSettings: {
+          title: 'Import Settings',
+          description: 'Import application settings from a file',
+          buttonText: 'Import Settings',
+        },
       },
 
       // Interface settings
@@ -363,6 +372,24 @@ export const en = {
       time: {
         minutes: 'minutes',
         hour: 'hour',
+      },
+
+      // Settings transfer
+      settingsTransfer: {
+        export: 'Export',
+        exportTitle: 'Export Settings',
+        selectSaveLocation: 'Select Save Location',
+        clickToSave: 'Click to select save location',
+        saveAsJson: 'Save as JSON file',
+        exportNote: 'The exported file contains your theme, language, navigation, and security preferences. Keep it safe!',
+        import: 'Import',
+        importTitle: 'Import Settings',
+        selectFileToImport: 'Select File to Import',
+        clickToSelect: 'Click to select settings file',
+        selectJsonFile: 'Select JSON file',
+        importNote: 'Importing settings will replace your current configuration. This action cannot be undone.',
+        jsonFiles: 'JSON Files',
+        allFiles: 'All Files',
       },
 
       // About

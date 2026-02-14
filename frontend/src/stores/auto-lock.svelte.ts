@@ -34,6 +34,19 @@ class AutoLock {
     }
   }
 
+  async verifyPassword(password: string) {
+    await auth.auth(password, this.#keyData!)
+    // Don't set isLocked = false yet; wait for 2FA verification
+  }
+
+  completeLock() {
+    this.isLocked = false
+    this.clearTimer()
+    if (enableLock) {
+      this.startTimer()
+    }
+  }
+
   async unlock(password: string) {
     await auth.auth(password, this.#keyData!)
     this.isLocked = false

@@ -1,8 +1,12 @@
 <script lang='ts'>
+  import { app2FA } from '@/stores/app-2fa.svelte'
   import { auth } from '@/stores/auth.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { notification } from '@/stores/notification.svelte'
   import { setting } from '@/stores/setting.svelte'
 
+  import App2FADisable from './app-2fa-disable.svelte'
+  import App2FASetup from './app-2fa-setup.svelte'
   import ChangePasswordModal from './change-password-modal.svelte'
   import ChangeRecoveryModal from './change-recovery-modal.svelte'
   import SettingItem from './setting-item.svelte'
@@ -37,6 +41,30 @@
   }
   function closeRecoveryCodeModal() {
     showRecoveryCodeModal = false
+  }
+
+  let show2FASetupModal = $state(false)
+  function open2FASetup() {
+    show2FASetupModal = true
+  }
+  function close2FASetup() {
+    show2FASetupModal = false
+  }
+  function handle2FAComplete() {
+    show2FASetupModal = false
+    notification.success(i18n.t('app2fa.setup.enabledSuccess'))
+  }
+
+  let show2FADisableModal = $state(false)
+  function open2FADisable() {
+    show2FADisableModal = true
+  }
+  function close2FADisable() {
+    show2FADisableModal = false
+  }
+  function handle2FADisabled() {
+    show2FADisableModal = false
+    notification.success(i18n.t('app2fa.setup.disabledSuccess'))
   }
 </script>
 
@@ -113,6 +141,31 @@
         </button>
       {/snippet}
     </SettingItem>
+
+    <SettingItem
+      title={i18n.t('setting.security.twoFactorAuth')}
+      description={i18n.t('setting.security.twoFactorAuthDescription')}
+    >
+      {#snippet control()}
+        {#if app2FA.enabled}
+          <button
+            type='button'
+            class='btn btn-outline btn-error'
+            onclick={open2FADisable}
+          >
+            {i18n.t('setting.security.twoFactorAuthDisableButton')}
+          </button>
+        {:else}
+          <button
+            type='button'
+            class='btn btn-outline'
+            onclick={open2FASetup}
+          >
+            {i18n.t('setting.security.twoFactorAuthEnableButton')}
+          </button>
+        {/if}
+      {/snippet}
+    </SettingItem>
   {/snippet}
 </SettingSection>
 
@@ -124,4 +177,16 @@
 <ChangeRecoveryModal
   isOpen={showRecoveryCodeModal}
   onClose={closeRecoveryCodeModal}
+/>
+
+<App2FASetup
+  isOpen={show2FASetupModal}
+  onClose={close2FASetup}
+  onComplete={handle2FAComplete}
+/>
+
+<App2FADisable
+  isOpen={show2FADisableModal}
+  onClose={close2FADisable}
+  onComplete={handle2FADisabled}
 />

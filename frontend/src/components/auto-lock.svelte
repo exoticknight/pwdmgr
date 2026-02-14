@@ -1,11 +1,14 @@
 <script lang='ts'>
   import { Lock } from '@lucide/svelte'
 
+  import App2FAVerify from '@/pages/landing/app-2fa-verify.svelte'
+  import { app2FA } from '@/stores/app-2fa.svelte'
   import { autoLock } from '@/stores/auto-lock.svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
   let password = $state('')
   let error = $state('')
+  let show2FA = $state(false)
   let input = $state<HTMLInputElement>()
 
   $effect(() => {
@@ -17,15 +20,30 @@
   async function handleSubmit(event: Event) {
     event.preventDefault()
     try {
-      await autoLock.unlock(password)
-      password = ''
-      error = ''
+      if (app2FA.enabled) {
+        // Two-phase: verify password first, then show 2FA
+        await autoLock.verifyPassword(password)
+        password = ''
+        error = ''
+        show2FA = true
+      }
+      else {
+        // No 2FA: use regular unlock
+        await autoLock.unlock(password)
+        password = ''
+        error = ''
+      }
     }
     catch {
       password = ''
       error = i18n.t('autoLock.incorrectPassword')
       setTimeout(() => input?.focus(), 100)
     }
+  }
+
+  function handle2FASuccess() {
+    show2FA = false
+    autoLock.completeLock()
   }
 
   function clearError() {
@@ -51,38 +69,42 @@
           </p>
         </div>
 
-        <form onsubmit={handleSubmit} class='space-y-4'>
-          <div class='form-control'>
-            <label class='label' for='unlock-password'>
-              <span class='label-text'>{i18n.t('password.label')}</span>
-            </label>
-            <input
-              id='unlock-password'
-              bind:value={password}
-              bind:this={input}
-              type='password'
-              placeholder={i18n.t('password.placeholder')}
-              class='input input-bordered w-full'
-              class:input-error={error}
-              oninput={clearError}
-            />
-            {#if error}
-              <label class='label' for="">
-                <span class='label-text-alt text-error'>{error}</span>
+        {#if show2FA}
+          <App2FAVerify onSuccess={handle2FASuccess} />
+        {:else}
+          <form onsubmit={handleSubmit} class='space-y-4'>
+            <div class='form-control'>
+              <label class='label' for='unlock-password'>
+                <span class='label-text'>{i18n.t('password.label')}</span>
               </label>
-            {/if}
-          </div>
+              <input
+                id='unlock-password'
+                bind:value={password}
+                bind:this={input}
+                type='password'
+                placeholder={i18n.t('password.placeholder')}
+                class='input input-bordered w-full'
+                class:input-error={error}
+                oninput={clearError}
+              />
+              {#if error}
+                <label class='label' for="">
+                  <span class='label-text-alt text-error'>{error}</span>
+                </label>
+              {/if}
+            </div>
 
-          <div class='card-actions justify-center'>
-            <button
-              type='submit'
-              class='btn btn-primary btn-wide'
-              disabled={!password.trim()}
-            >
-              {i18n.t('autoLock.unlock')}
-            </button>
-          </div>
-        </form>
+            <div class='card-actions justify-center'>
+              <button
+                type='submit'
+                class='btn btn-primary btn-wide'
+                disabled={!password.trim()}
+              >
+                {i18n.t('autoLock.unlock')}
+              </button>
+            </div>
+          </form>
+        {/if}
       </div>
     </div>
   </div>

@@ -13,7 +13,9 @@
   import { navigation } from '@/stores/navigation.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { route, Routes } from '@/stores/route.svelte'
+  import { setting } from '@/stores/setting.svelte'
   import { userState } from '@/stores/user.svelte'
+  import App2FAVerify from './landing/app-2fa-verify.svelte'
   import PasswordForm from './landing/password-form.svelte'
   import RecoveryCodeModal from './landing/recovery-code-modal.svelte'
 
@@ -23,6 +25,7 @@
   let isRecoverable = $state(false)
 
   let showPasswordInput = $state(false)
+  let show2FAVerification = $state(false)
   let isNewDatabase = $state(false)
   let selectedFilePath = $state<string | null>(null)
   async function handleFileSelected(filePath: string) {
@@ -88,6 +91,13 @@
         userState.dbPath = ''
       }
 
+      // Check if 2FA is enabled
+      const twoFactorAuth = setting.getSetting('security.twoFactorAuth')
+      if (twoFactorAuth?.enabled) {
+        show2FAVerification = true
+        return
+      }
+
       route.navigate(navigation.visibleItems.at(0)?.route || Routes.ITEMS_ALL)
     }
     catch (err) {
@@ -99,6 +109,11 @@
     }
   }
 
+  function handle2FAVerified() {
+    show2FAVerification = false
+    route.navigate(navigation.visibleItems.at(0)?.route || Routes.ITEMS_ALL)
+  }
+
   function resetState() {
     selectedFilePath = null
     isNewDatabase = false
@@ -106,6 +121,7 @@
     password = ''
     confirmPassword = ''
     showPasswordInput = false
+    show2FAVerification = false
   }
 
   const displayFileName = $derived(selectedFilePath ? selectedFilePath.split(/[/\\]/).pop() || '' : '')
@@ -113,7 +129,9 @@
 
 <div class='landing-container'>
   <div class='landing-content'>
-    {#if !showPasswordInput}
+    {#if show2FAVerification}
+      <App2FAVerify onSuccess={handle2FAVerified} />
+    {:else if !showPasswordInput}
       <!-- Header Section -->
       <div class='landing-header'>
         <div class='app-icon'>

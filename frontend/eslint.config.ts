@@ -1,6 +1,6 @@
 import antfu from '@antfu/eslint-config'
 
-export default antfu(
+const config: ReturnType<typeof antfu> = antfu(
   {
     jsx: true,
     svelte: true,
@@ -23,3 +23,5 @@ export default antfu(
     },
   },
 )
+
+export default config

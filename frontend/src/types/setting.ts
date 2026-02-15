@@ -5,7 +5,7 @@ export type LanguageCode = 'en' | 'zh' | 'ja'
 
 export interface TwoFactorAuthConfig {
   enabled: boolean
-  secret: string // Base32 encoded TOTP secret
+  secretEnc: string
   algorithm: 'SHA1' | 'SHA256' | 'SHA512'
   digits: 6 | 8
   period: number // in seconds

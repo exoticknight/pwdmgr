@@ -158,6 +158,27 @@ export class KeyService {
   }
 }
 
+export async function decryptTextWithMasterKey(masterKey: Uint8Array, encryptedData: Uint8Array): Promise<string> {
+  const iv = encryptedData.slice(0, ENCRYPTION_CONFIG.ivLength)
+  const encrypted = encryptedData.slice(ENCRYPTION_CONFIG.ivLength)
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    masterKey.slice().buffer,
+    { name: ENCRYPTION_CONFIG.algorithm },
+    false,
+    ['decrypt'],
+  )
+
+  const decrypted = await crypto.subtle.decrypt(
+    { name: ENCRYPTION_CONFIG.algorithm, iv },
+    key,
+    encrypted,
+  )
+
+  return new TextDecoder().decode(decrypted)
+}
+
 let keyServiceInstance: KeyService | null = null
 
 export function getKeyService(): KeyService {

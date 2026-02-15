@@ -4,6 +4,7 @@
     BrickWallShield,
     CircleX,
     Download,
+    Lock,
     Settings,
   } from '@lucide/svelte'
   import { onDestroy, onMount } from 'svelte'
@@ -84,13 +85,31 @@
     </li>
   </ul>
   <div class='flex-grow-1'></div>
-  <ul class='menu w-full'>
-    <li>
-      <button class='btn btn-ghost justify-start gap-3' onclick={handleClose}>
-        <CircleX size={16} />
+  <div class='mt-auto w-full p-4'>
+    <div class='bg-base-200/50 grid grid-cols-2 gap-2 rounded-xl p-2'>
+      <button
+        class='btn btn-sm btn-ghost hover:bg-base-content/10'
+        class:text-primary={!!autoLock.formattedTime}
+        onclick={() => autoLock.lock()}
+        title={i18n.t('navigation.lock')}
+      >
+        <Lock size={16} />
+        {#if autoLock.formattedTime}
+          <span class='font-mono font-bold'>{autoLock.formattedTime}</span>
+        {:else}
+          <span class='text-xs'>{i18n.t('navigation.lock')}</span>
+        {/if}
       </button>
-    </li>
-  </ul>
+      <button
+        class='btn btn-sm btn-ghost text-error hover:bg-error/10'
+        onclick={handleClose}
+        title={i18n.t('common.exit') || 'Exit'}
+      >
+        <CircleX size={16} />
+        <span class='text-xs'>{i18n.t('common.exit') || 'Exit'}</span>
+      </button>
+    </div>
+  </div>
 </nav>
 
 <style scope>

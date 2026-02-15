@@ -10,6 +10,9 @@ import {
   verifyBackupCode,
   verifyCode,
 } from '@/services/app-2fa'
+import { decryptTextWithMasterKey } from '@/services/key'
+import { fromBase64, toBase64 } from '@/utils/uin8array'
+import { auth } from './auth.svelte'
 import { setting } from './setting.svelte'
 
 interface PendingSetup {
@@ -72,10 +75,13 @@ class App2FAStore {
     }
 
     const hashedCodes = await hashBackupCodes(this.#pendingSetup.backupCodes)
+    const encryptedSecret = await auth.encryptData(this.#pendingSetup.secret)
+    const secretEnc = toBase64(encryptedSecret)
+    encryptedSecret.fill(0)
 
     const config: TwoFactorAuthConfig = {
       enabled: true,
-      secret: this.#pendingSetup.secret,
+      secretEnc,
       algorithm: 'SHA1',
       digits: 6,
       period: 30,
@@ -84,6 +90,11 @@ class App2FAStore {
     }
 
     setting.updateSetting('security.twoFactorAuth', config)
+    this.#pendingSetup = {
+      ...this.#pendingSetup,
+      secret: '',
+      qrUri: '',
+    }
     // NOTE: pendingSetup is intentionally NOT cleared here
     // so backup codes remain visible in the setup wizard.
     return true
@@ -107,10 +118,10 @@ class App2FAStore {
   /**
    * Verify a TOTP code during login/unlock
    */
-  verify(code: string): boolean {
+  async verify(code: string): Promise<boolean> {
     const cfg = this.config
     if (!cfg?.enabled) {
-      return true // 2FA not enabled, pass through
+      return true
     }
 
     // Check lockout
@@ -124,20 +135,65 @@ class App2FAStore {
       return false
     }
 
-    const isValid = verifyCode(cfg.secret, code, cfg.algorithm, cfg.digits, cfg.period)
+    let secret = ''
+    try {
+      secret = await auth.decryptData(fromBase64(cfg.secretEnc))
+      const isValid = verifyCode(secret, code, cfg.algorithm, cfg.digits, cfg.period)
 
-    if (isValid) {
-      setting.updateSetting('security.twoFactorAuth', {
-        ...cfg,
-        lastUsedCode: code,
-        failedAttempts: 0,
-        lockedUntil: undefined,
-      })
+      if (isValid) {
+        setting.updateSetting('security.twoFactorAuth', {
+          ...cfg,
+          lastUsedCode: code,
+          failedAttempts: 0,
+          lockedUntil: undefined,
+        })
+        return true
+      }
+
+      this.#recordFailure()
+      return false
+    }
+    finally {
+      secret = ''
+    }
+  }
+
+  async verifyWithMasterKey(masterKey: Uint8Array, code: string): Promise<boolean> {
+    const cfg = this.config
+    if (!cfg?.enabled) {
       return true
     }
 
-    this.#recordFailure()
-    return false
+    if (isLockedOut(cfg.lockedUntil)) {
+      return false
+    }
+
+    if (isReplayCode(code, cfg.lastUsedCode)) {
+      this.#recordFailure()
+      return false
+    }
+
+    let secret = ''
+    try {
+      secret = await decryptTextWithMasterKey(masterKey, fromBase64(cfg.secretEnc))
+      const isValid = verifyCode(secret, code, cfg.algorithm, cfg.digits, cfg.period)
+
+      if (isValid) {
+        setting.updateSetting('security.twoFactorAuth', {
+          ...cfg,
+          lastUsedCode: code,
+          failedAttempts: 0,
+          lockedUntil: undefined,
+        })
+        return true
+      }
+
+      this.#recordFailure()
+      return false
+    }
+    finally {
+      secret = ''
+    }
   }
 
   /**
@@ -172,6 +228,10 @@ class App2FAStore {
     })
 
     return true
+  }
+
+  async verifyBackupWithMasterKey(_masterKey: Uint8Array, code: string): Promise<boolean> {
+    return this.verifyBackup(code)
   }
 
   /**

@@ -27,6 +27,7 @@ export const ja = {
       audit: '監査',
       settings: '設定',
       close: '閉じる',
+      lock: 'ロック',
     },
 
     // ボタン
@@ -375,8 +376,8 @@ export const ja = {
 
       // 時間単位
       time: {
+        minute: '分',
         minutes: '分',
-        hour: '時間',
       },
 
       // 設定の転送

@@ -98,11 +98,9 @@
           onchange={e => handleAutoLockTimeChange(e, markUnsaved)}
           disabled={!setting.data.security.autoLock}
         >
+          <option value={1}>1 {i18n.t('setting.time.minute')}</option>
           <option value={5}>5 {i18n.t('setting.time.minutes')}</option>
           <option value={10}>10 {i18n.t('setting.time.minutes')}</option>
-          <option value={15}>15 {i18n.t('setting.time.minutes')}</option>
-          <option value={30}>30 {i18n.t('setting.time.minutes')}</option>
-          <option value={60}>1 {i18n.t('setting.time.hour')}</option>
         </select>
       {/snippet}
     </SettingItem>

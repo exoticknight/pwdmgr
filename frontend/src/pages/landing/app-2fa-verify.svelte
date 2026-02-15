@@ -9,9 +9,14 @@
 
   interface Props {
     onSuccess: () => void
+    provider?: {
+      verify: (code: string) => Promise<boolean>
+      verifyBackup: (code: string) => Promise<boolean>
+    }
   }
 
-  const { onSuccess }: Props = $props()
+  const { onSuccess, provider }: Props = $props()
+  const providerImpl = $derived(provider ?? app2FA)
 
   let code = $state('')
   let error = $state('')
@@ -57,14 +62,17 @@
     try {
       let success: boolean
       if (isBackupMode) {
-        success = await app2FA.verifyBackup(code.trim())
+        success = await providerImpl.verifyBackup(code.trim())
       }
       else {
-        success = app2FA.verify(code.trim())
+        success = await providerImpl.verify(code.trim())
       }
 
       if (success) {
-        // Persist consumed backup code to disk so it can't be reused
+        code = ''
+        error = ''
+        onSuccess()
+
         if (isBackupMode) {
           try {
             database.commitSetting()
@@ -75,10 +83,6 @@
             console.error('Failed to persist backup code consumption:', err)
           }
         }
-
-        code = ''
-        error = ''
-        onSuccess()
       }
       else {
         code = ''

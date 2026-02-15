@@ -12,6 +12,7 @@ export const en = {
       back: 'Back',
       file: 'File',
       or: 'or',
+      exit: 'Exit',
     },
 
     navigation: {
@@ -27,7 +28,8 @@ export const en = {
       audit: 'Audit',
       settings: 'Settings',
       close: 'Close',
-      lock: 'Lock',
+      lock: 'Lock Now',
+      lockAfter: 'Lock after',
     },
 
     // Buttons

@@ -12,6 +12,7 @@ export const zh = {
       back: '返回',
       file: '文件',
       or: '或者',
+      exit: '退出',
     },
 
     navigation: {
@@ -27,7 +28,8 @@ export const zh = {
       audit: '审计',
       settings: '设置',
       close: '关闭',
-      lock: '锁定',
+      lock: '立刻锁定',
+      lockAfter: '锁定倒计时',
     },
 
     // Buttons

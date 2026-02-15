@@ -12,6 +12,7 @@ export const ja = {
       back: '戻る',
       file: 'ファイル',
       or: 'または',
+      exit: '終了',
     },
 
     navigation: {
@@ -27,7 +28,8 @@ export const ja = {
       audit: '監査',
       settings: '設定',
       close: '閉じる',
-      lock: 'ロック',
+      lock: '今すぐロック',
+      lockAfter: '自動ロックまで',
     },
 
     // ボタン

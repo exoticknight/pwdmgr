@@ -98,6 +98,22 @@ class Auth {
     }
   }
 
+  async decryptMasterKey(password: string, keyData: KeyData): Promise<Uint8Array> {
+    return this.#decrypt(password, keyData.passwordSalt, keyData.passwordIv, keyData.passwordEncryptedMasterKey)
+  }
+
+  authWithMasterKey(masterKey: Uint8Array, keyData: KeyData) {
+    this.#setMasterKey(masterKey)
+    this.#setKeyData({
+      ...keyData,
+    })
+    this.isAuthed = true
+
+    if (keyData.recoveryEncryptedMasterKey.some(b => b !== 0)) {
+      this.isRecoveryEnabled = true
+    }
+  }
+
   async recover(code: string, keyData: KeyData) {
     const masterKey = await this.#decrypt(code, keyData.recoverySalt, keyData.recoveryIv, keyData.recoveryEncryptedMasterKey)
     this.#setMasterKey(masterKey)

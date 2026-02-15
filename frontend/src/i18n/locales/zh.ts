@@ -27,6 +27,7 @@ export const zh = {
       audit: '审计',
       settings: '设置',
       close: '关闭',
+      lock: '锁定',
     },
 
     // Buttons
@@ -375,8 +376,8 @@ export const zh = {
 
       // 时间单位
       time: {
+        minute: '分钟',
         minutes: '分钟',
-        hour: '小时',
       },
 
       // 设置导入导出

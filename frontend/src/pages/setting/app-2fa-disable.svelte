@@ -70,7 +70,7 @@
     errorMessage = ''
 
     try {
-      const valid = app2FA.verify(totpCode.trim())
+      const valid = await app2FA.verify(totpCode.trim())
       if (!valid) {
         errorMessage = i18n.t('app2fa.disable.wrongCode')
         totpCode = ''

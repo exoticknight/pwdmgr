@@ -53,25 +53,31 @@
 
 {#if autoLock.isLocked}
   <div class='lock-overlay'>
-    <div class='card card-compact w-96 bg-base-100 shadow-2xl'>
-      <div class='card-body'>
-        <div class='text-center'>
-          <div class='mb-4'>
-            <Lock class='w-16 h-16 mx-auto text-primary' />
+    {#if show2FA}
+      <App2FAVerify
+        onSuccess={handle2FASuccess}
+        provider={{
+          verify: code => autoLock.verify2FA(code),
+          verifyBackup: code => autoLock.verify2FABackup(code),
+        }}
+      />
+    {:else}
+      <div class='card card-compact w-96 bg-base-100 shadow-2xl'>
+        <div class='card-body'>
+          <div class='text-center'>
+            <div class='mb-4'>
+              <Lock class='w-16 h-16 mx-auto text-primary' />
+            </div>
+
+            <h2 class='card-title text-xl mb-2 justify-center'>
+              {i18n.t('autoLock.title')}
+            </h2>
+
+            <p class='text-base-content/70 mb-6'>
+              {i18n.t('autoLock.message')}
+            </p>
           </div>
 
-          <h2 class='card-title text-xl mb-2 justify-center'>
-            {i18n.t('autoLock.title')}
-          </h2>
-
-          <p class='text-base-content/70 mb-6'>
-            {i18n.t('autoLock.message')}
-          </p>
-        </div>
-
-        {#if show2FA}
-          <App2FAVerify onSuccess={handle2FASuccess} />
-        {:else}
           <form onsubmit={handleSubmit} class='space-y-4'>
             <div class='form-control'>
               <label class='label' for='unlock-password'>
@@ -104,9 +110,9 @@
               </button>
             </div>
           </form>
-        {/if}
+        </div>
       </div>
-    </div>
+    {/if}
   </div>
 {/if}
 

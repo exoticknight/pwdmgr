@@ -27,6 +27,7 @@ export const en = {
       audit: 'Audit',
       settings: 'Settings',
       close: 'Close',
+      lock: 'Lock',
     },
 
     // Buttons
@@ -375,8 +376,8 @@ export const en = {
 
       // Time units
       time: {
+        minute: 'minute',
         minutes: 'minutes',
-        hour: 'hour',
       },
 
       // Settings transfer

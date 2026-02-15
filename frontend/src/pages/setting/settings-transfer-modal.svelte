@@ -26,7 +26,14 @@
     try {
       const filePath = filePaths[0]
       const settingsData = setting.export()
-      const content = JSON.stringify(settingsData, null, 2)
+      const exportData: Setting = {
+        ...settingsData,
+        security: {
+          ...settingsData.security,
+        },
+      }
+      delete exportData.security.twoFactorAuth
+      const content = JSON.stringify(exportData, null, 2)
 
       await getIoService().writeTextToFile(filePath, content)
 
@@ -46,6 +53,7 @@
 
     try {
       const filePath = filePaths[0]
+      const preservedTwoFactorAuth = setting.getSetting('security.twoFactorAuth')
       const content = await getIoService().readFileAsText(filePath)
       const importedSettings = JSON.parse(content) as Setting
 
@@ -57,9 +65,10 @@
       // Reset and re-initialize to ensure complete replacement
       setting.reset()
       setting.initialize(importedSettings)
+      setting.updateSetting('security.twoFactorAuth', preservedTwoFactorAuth)
 
       // Apply settings immediately
-      applySettings(importedSettings)
+      applySettings(setting.data)
 
       // Mark settings as unsaved to trigger save notification
       app.markSettingAsUnsaved()

@@ -1,21 +1,21 @@
 <script lang='ts'>
   import { FileLock, Plus } from '@lucide/svelte'
 
+  import App2FAVerifyForm from '@/components/app-2fa-verify-form.svelte'
   import LanguageSelector from '@/components/language-selector.svelte'
+
   import WailsFileSelect from '@/components/wails-file-select.svelte'
-
   import { getFileService } from '@/services/file'
+
   import { getIoService } from '@/services/io'
-
   import { database } from '@/stores/database.svelte'
-  import { i18n } from '@/stores/i18n.svelte'
 
+  import { i18n } from '@/stores/i18n.svelte'
   import { navigation } from '@/stores/navigation.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { route, Routes } from '@/stores/route.svelte'
   import { setting } from '@/stores/setting.svelte'
   import { userState } from '@/stores/user.svelte'
-  import App2FAVerify from './landing/app-2fa-verify.svelte'
   import PasswordForm from './landing/password-form.svelte'
   import RecoveryCodeModal from './landing/recovery-code-modal.svelte'
 
@@ -91,7 +91,7 @@
         userState.dbPath = ''
       }
 
-      // Check if 2FA is enabled
+      // Check if 2FA is enabled (after DB decrypted and settings loaded)
       const twoFactorAuth = setting.getSetting('security.twoFactorAuth')
       if (twoFactorAuth?.enabled) {
         show2FAVerification = true
@@ -130,7 +130,9 @@
 <div class='landing-container'>
   <div class='landing-content'>
     {#if show2FAVerification}
-      <App2FAVerify onSuccess={handle2FAVerified} />
+      <div class='verify-standalone'>
+        <App2FAVerifyForm onSuccess={handle2FAVerified} />
+      </div>
     {:else if !showPasswordInput}
       <!-- Header Section -->
       <div class='landing-header'>
@@ -334,5 +336,12 @@
 
   .btn-new-database:active {
     transform: translateY(1px);
+  }
+
+  .verify-standalone {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
   }
 </style>

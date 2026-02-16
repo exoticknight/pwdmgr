@@ -1,6 +1,7 @@
 <script lang='ts'>
   import type { RouteConfig, RouteResult, RouterInstanceConfig } from '@mateothegreat/svelte5-router'
   import { Router } from '@mateothegreat/svelte5-router'
+  import App2FAGate from '@/components/app-2fa-gate.svelte'
   import AutoLock from '@/components/auto-lock.svelte'
   import GlobalDialog from '@/components/dialog.svelte'
   import Notification from '@/components/notification.svelte'
@@ -35,6 +36,9 @@
 
 <!-- Global Dialog -->
 <GlobalDialog />
+
+<!-- Global 2FA Gate -->
+<App2FAGate />
 
 <style>
 </style>

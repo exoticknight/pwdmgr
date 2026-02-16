@@ -3,8 +3,9 @@
   import { auth } from '@/stores/auth.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
-  import { setting } from '@/stores/setting.svelte'
 
+  import { setting } from '@/stores/setting.svelte'
+  import { twoFAGate } from '@/stores/twofa-gate.svelte'
   import App2FADisable from './app-2fa-disable.svelte'
   import App2FASetup from './app-2fa-setup.svelte'
   import ChangePasswordModal from './change-password-modal.svelte'
@@ -28,9 +29,16 @@
   }
 
   let showChangePasswordModal = $state(false)
-  function openChangePasswordModal() {
+
+  async function openChangePasswordModal() {
+    if (app2FA.enabled) {
+      const ok = await twoFAGate.verify()
+      if (!ok)
+        return
+    }
     showChangePasswordModal = true
   }
+
   function closeChangePasswordModal() {
     showChangePasswordModal = false
   }

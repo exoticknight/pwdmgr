@@ -6,7 +6,9 @@
 
   import { app } from '@/stores/app.svelte'
   import { auth } from '@/stores/auth.svelte'
+  import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { userState } from '@/stores/user.svelte'
 
   interface Props {
     isOpen: boolean
@@ -23,6 +25,7 @@
 
   let showPasswordGenerator = $state(false)
   let errorMessage = $state('')
+  let isSubmitting = $state(false)
 
   const isValid = $derived(
     form.oldPassword.trim() && form.newPassword.trim() && form.confirmPassword.trim(),
@@ -41,6 +44,7 @@
     form.confirmPassword = ''
     showPasswordGenerator = false
     errorMessage = ''
+    isSubmitting = false
   }
 
   function closeModal() {
@@ -59,25 +63,33 @@
   }
 
   async function handleSubmit() {
-    if (!isValid) {
+    if (!isValid || isSubmitting) {
       return
     }
 
     errorMessage = ''
+    isSubmitting = true
 
     try {
       if (!await auth.validatePassword(form.oldPassword)) {
         errorMessage = i18n.t('errors.oldPasswordIncorrect')
+        isSubmitting = false
         return
       }
 
       await auth.changePassword(form.oldPassword, form.newPassword)
       app.markSettingAsUnsaved()
 
+      // Save database to persist any 2FA state changes
+      database.commitSetting()
+      await database.saveToFile(userState.dbPath)
+      app.markSettingAsSaved()
+
       closeModal()
     }
     catch {
       errorMessage = i18n.t('errors.changePasswordFailed')
+      isSubmitting = false
     }
   }
 
@@ -129,7 +141,7 @@
     <button
       type='submit'
       class='btn btn-primary'
-      disabled={!isValid || passwordsMatch === false}
+      disabled={!isValid || passwordsMatch === false || isSubmitting}
       onclick={handleSubmit}
     >
       {i18n.t('actions.ok')}

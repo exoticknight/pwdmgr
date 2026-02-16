@@ -6,9 +6,9 @@ import './global.css'
 
 import './i18n'
 
-document.addEventListener('contextmenu', (e) => {
-  e.preventDefault()
-})
+// document.addEventListener('contextmenu', (e) => {
+//   e.preventDefault()
+// })
 
 const app = mount(App, { target: document.getElementById('app')! })
 

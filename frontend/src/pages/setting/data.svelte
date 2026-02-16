@@ -1,34 +1,24 @@
 <script lang='ts'>
+  import { app2FA } from '@/stores/app-2fa.svelte'
   import { i18n } from '@/stores/i18n.svelte'
+  import { twoFAGate } from '@/stores/twofa-gate.svelte'
   import ExportModal from './export-modal.svelte'
   import SettingItem from './setting-item.svelte'
   import SettingSection from './setting-section.svelte'
-  import SettingsTransferModal from './settings-transfer-modal.svelte'
 
   let showExportDialog = $state(false)
-  let showSettingsTransferDialog = $state(false)
-  let transferMode: 'export' | 'import' = $state('export')
 
-  function handleExport() {
+  async function handleExport() {
+    if (app2FA.enabled) {
+      const ok = await twoFAGate.verify()
+      if (!ok)
+        return
+    }
     showExportDialog = true
-  }
-
-  function handleExportSettings() {
-    transferMode = 'export'
-    showSettingsTransferDialog = true
-  }
-
-  function handleImportSettings() {
-    transferMode = 'import'
-    showSettingsTransferDialog = true
   }
 
   function handleCloseExportModal() {
     showExportDialog = false
-  }
-
-  function handleCloseSettingsTransferModal() {
-    showSettingsTransferDialog = false
   }
 </script>
 
@@ -48,34 +38,6 @@
       {/snippet}
     </SettingItem>
 
-    <SettingItem
-      title={i18n.t('setting.data.exportSettings.title')}
-      description={i18n.t('setting.data.exportSettings.description')}
-    >
-      {#snippet control()}
-        <button
-          class='btn btn-outline'
-          onclick={handleExportSettings}
-        >
-          {i18n.t('setting.data.exportSettings.buttonText')}
-        </button>
-      {/snippet}
-    </SettingItem>
-
-    <SettingItem
-      title={i18n.t('setting.data.importSettings.title')}
-      description={i18n.t('setting.data.importSettings.description')}
-    >
-      {#snippet control()}
-        <button
-          class='btn btn-outline'
-          onclick={handleImportSettings}
-        >
-          {i18n.t('setting.data.importSettings.buttonText')}
-        </button>
-      {/snippet}
-    </SettingItem>
-
   {/snippet}
 </SettingSection>
 
@@ -83,13 +45,5 @@
   <ExportModal
     isOpen={showExportDialog}
     onClose={handleCloseExportModal}
-  />
-{/if}
-
-{#if showSettingsTransferDialog}
-  <SettingsTransferModal
-    isOpen={showSettingsTransferDialog}
-    mode={transferMode}
-    onClose={handleCloseSettingsTransferModal}
   />
 {/if}

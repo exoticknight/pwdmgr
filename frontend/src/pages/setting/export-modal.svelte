@@ -3,9 +3,11 @@
   import Modal from '@/components/modal.svelte'
   import WailsFileSelect from '@/components/wails-file-select.svelte'
   import { getIoService } from '@/services/io'
+  import { app } from '@/stores/app.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
+  import { userState } from '@/stores/user.svelte'
   import { exportToCSV, exportToJSON } from '@/utils/export'
 
   interface Props {
@@ -16,6 +18,7 @@
   const { isOpen, onClose }: Props = $props()
 
   let selectedFormat: 'csv' | 'json' = $state('json')
+  let isExporting = $state(false)
 
   function handleFormatChange(format: 'csv' | 'json') {
     selectedFormat = format
@@ -25,6 +28,8 @@
     if (filePaths.length === 0) {
       return
     }
+
+    isExporting = true
 
     try {
       const filePath = filePaths[0]
@@ -41,12 +46,20 @@
 
       await getIoService().writeTextToFile(filePath, content)
 
+      // Save database to persist any 2FA state changes
+      database.commitSetting()
+      await database.saveToFile(userState.dbPath)
+      app.markSettingAsSaved()
+
       onClose()
       notification.success(i18n.t('notifications.exportSuccess'))
     }
     catch (err) {
       console.error('Failed to export data:', err)
       notification.error(i18n.t('errors.exportError'))
+    }
+    finally {
+      isExporting = false
     }
   }
 
@@ -70,12 +83,19 @@
       { displayName: i18n.t('export.allFiles'), pattern: '*.*' },
     ]
   }
+
+  function resetState() {
+    isExporting = false
+  }
 </script>
 
 <Modal
   {isOpen}
   title={i18n.t('export.export')}
-  onClose={onClose}
+  onClose={() => {
+    resetState()
+    onClose()
+  }}
   showCloseButton={true}
   boxClass='max-w-xl'
 >
@@ -138,6 +158,18 @@
         </WailsFileSelect>
       </div>
     </div>
+  {/snippet}
+
+  {#snippet actions()}
+    {#if !isExporting}
+      <button
+        type='button'
+        class='btn btn-primary'
+        disabled={isExporting}
+      >
+        {i18n.t('export.export')}
+      </button>
+    {/if}
   {/snippet}
 </Modal>
 

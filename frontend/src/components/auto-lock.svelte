@@ -1,7 +1,7 @@
 <script lang='ts'>
   import { Lock } from '@lucide/svelte'
 
-  import App2FAVerify from '@/pages/landing/app-2fa-verify.svelte'
+  import App2FAVerifyForm from '@/components/app-2fa-verify-form.svelte'
   import { app2FA } from '@/stores/app-2fa.svelte'
   import { autoLock } from '@/stores/auto-lock.svelte'
   import { i18n } from '@/stores/i18n.svelte'
@@ -21,14 +21,12 @@
     event.preventDefault()
     try {
       if (app2FA.enabled) {
-        // Two-phase: verify password first, then show 2FA
         await autoLock.verifyPassword(password)
         password = ''
         error = ''
         show2FA = true
       }
       else {
-        // No 2FA: use regular unlock
         await autoLock.unlock(password)
         password = ''
         error = ''
@@ -41,26 +39,30 @@
     }
   }
 
+  function clearError() {
+    error = ''
+  }
+
   function handle2FASuccess() {
     show2FA = false
     autoLock.completeLock()
-  }
-
-  function clearError() {
-    error = ''
   }
 </script>
 
 {#if autoLock.isLocked}
   <div class='lock-overlay'>
     {#if show2FA}
-      <App2FAVerify
-        onSuccess={handle2FASuccess}
-        provider={{
-          verify: code => autoLock.verify2FA(code),
-          verifyBackup: code => autoLock.verify2FABackup(code),
-        }}
-      />
+      <div class='card card-compact w-96 bg-base-100 shadow-2xl'>
+        <div class='card-body'>
+          <App2FAVerifyForm
+            onSuccess={handle2FASuccess}
+            provider={{
+              verify: code => autoLock.verify2FA(code),
+              verifyBackup: code => autoLock.verify2FABackup(code),
+            }}
+          />
+        </div>
+      </div>
     {:else}
       <div class='card card-compact w-96 bg-base-100 shadow-2xl'>
         <div class='card-body'>

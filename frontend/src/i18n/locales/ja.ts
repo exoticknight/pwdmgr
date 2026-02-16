@@ -345,16 +345,6 @@ export const ja = {
           description: 'パスワードデータをCSVまたはJSONファイルとしてエクスポート',
           buttonText: 'データをエクスポート',
         },
-        exportSettings: {
-          title: '設定エクスポート',
-          description: 'アプリケーション設定をエクスポート',
-          buttonText: '設定をエクスポート',
-        },
-        importSettings: {
-          title: '設定インポート',
-          description: 'ファイルからアプリケーション設定をインポート',
-          buttonText: '設定をインポート',
-        },
       },
 
       // インターフェース設定

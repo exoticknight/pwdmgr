@@ -345,16 +345,6 @@ export const zh = {
           description: '将您的密码数据导出为 CSV 或 JSON 文件',
           buttonText: '导出数据',
         },
-        exportSettings: {
-          title: '导出设置',
-          description: '导出应用程序的设置配置',
-          buttonText: '导出设置',
-        },
-        importSettings: {
-          title: '导入设置',
-          description: '从文件导入应用程序设置',
-          buttonText: '导入设置',
-        },
       },
 
       // 界面设置

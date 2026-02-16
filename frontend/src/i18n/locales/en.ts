@@ -345,16 +345,6 @@ export const en = {
           description: 'Export your password data as CSV or JSON files',
           buttonText: 'Export Data',
         },
-        exportSettings: {
-          title: 'Export Settings',
-          description: 'Export application settings configuration',
-          buttonText: 'Export Settings',
-        },
-        importSettings: {
-          title: 'Import Settings',
-          description: 'Import application settings from a file',
-          buttonText: 'Import Settings',
-        },
       },
 
       // Interface settings

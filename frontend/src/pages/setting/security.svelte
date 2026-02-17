@@ -44,7 +44,12 @@
   }
 
   let showRecoveryCodeModal = $state(false)
-  function handleRecoveryCodeOpen() {
+  async function handleRecoveryCodeOpen() {
+    if (app2FA.enabled) {
+      const ok = await twoFAGate.verify()
+      if (!ok)
+        return
+    }
     showRecoveryCodeModal = true
   }
   function closeRecoveryCodeModal() {

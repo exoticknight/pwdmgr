@@ -1,6 +1,6 @@
 <script lang='ts'>
-  import { KeyRound, ShieldCheck } from '@lucide/svelte'
   import type { VerifyResult } from '@/services/app-2fa'
+  import { KeyRound, ShieldCheck } from '@lucide/svelte'
   import { app2FA } from '@/stores/app-2fa.svelte'
   import { i18n } from '@/stores/i18n.svelte'
 

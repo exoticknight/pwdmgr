@@ -70,9 +70,14 @@
     errorMessage = ''
 
     try {
-      const valid = await app2FA.verify(totpCode.trim())
-      if (!valid) {
-        errorMessage = i18n.t('app2fa.disable.wrongCode')
+      const result = await app2FA.verify(totpCode.trim())
+      if (!result.ok) {
+        if (result.reason === 'LOCKED') {
+          errorMessage = i18n.t('app2fa.verify.locked')
+        }
+        else {
+          errorMessage = i18n.t('app2fa.disable.wrongCode')
+        }
         totpCode = ''
         isSubmitting = false
         return

@@ -475,7 +475,7 @@ export const zh = {
         verifyButton: '验证',
         invalidCode: '验证码无效，请重试。',
         invalidBackupCode: '备用码无效，请重试。',
-        locked: '尝试失败次数过多，账户已被临时锁定。',
+        locked: '尝试失败次数过多，双重验证已被临时锁定。',
         lockedMessage: '尝试失败次数过多，请在 {{seconds}} 秒后重试。',
         attemptsRemaining: '锁定前还剩 {{count}} 次尝试',
         backupTitle: '使用备用码',

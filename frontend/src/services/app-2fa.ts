@@ -1,6 +1,10 @@
 import * as OTPAuth from 'otpauth'
 
 const APP_2FA_ISSUER = 'bei3mat6'
+
+export type VerifyResult =
+  | { ok: true }
+  | { ok: false; reason: 'INVALID_CODE' | 'LOCKED' }
 const BACKUP_CODE_LENGTH = 8
 const BACKUP_CODE_COUNT = 10
 const MAX_FAILED_ATTEMPTS = 5
@@ -107,6 +111,16 @@ export function isLockedOut(lockedUntil?: number): boolean {
     return false
   }
   return Date.now() < lockedUntil
+}
+
+/**
+ * Check if lockout has expired and should be cleared
+ */
+export function isLockoutExpired(lockedUntil?: number): boolean {
+  if (!lockedUntil) {
+    return false
+  }
+  return Date.now() >= lockedUntil
 }
 
 /**

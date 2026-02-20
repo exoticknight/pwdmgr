@@ -17,6 +17,13 @@
     }
   })
 
+  // Cleanup expired lockout when lock state changes
+  $effect(() => {
+    if (autoLock.isLocked) {
+      app2FA.cleanupExpiredLockout()
+    }
+  })
+
   async function handleSubmit(event: Event) {
     event.preventDefault()
     try {

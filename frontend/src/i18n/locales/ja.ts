@@ -475,7 +475,7 @@ export const ja = {
         verifyButton: '確認',
         invalidCode: '認証コードが無効です。もう一度お試しください。',
         invalidBackupCode: 'バックアップコードが無効です。もう一度お試しください。',
-        locked: '失敗回数が多すぎます。アカウントが一時的にロックされています。',
+        locked: '失敗回数が多すぎます。2FAが一時的にロックされています。',
         lockedMessage: '失敗回数が多すぎます。{{seconds}}秒後に再試行してください。',
         attemptsRemaining: 'ロックアウトまで残り{{count}}回の試行',
         backupTitle: 'バックアップコードを使用',

@@ -1,14 +1,18 @@
+import type { VerifyResult } from '@/services/app-2fa'
 import type { TwoFactorAuthConfig } from '@/types/setting'
 import {
   calculateLockout,
   generateBackupCodes,
   generateQRCodeUri,
   generateSecret,
+  getLockoutRemainingSeconds,
   hashBackupCodes,
+  isLockoutExpired,
   isLockedOut,
   isReplayCode,
   verifyBackupCode,
   verifyCode,
+
 } from '@/services/app-2fa'
 import { decryptTextWithMasterKey } from '@/services/key'
 import { fromBase64, toBase64 } from '@/utils/uin8array'
@@ -24,6 +28,20 @@ interface PendingSetup {
 class App2FAStore {
   #pendingSetup = $state<PendingSetup | null>(null)
 
+  // 响应式锁定状态
+  #lockoutState = $state({
+    isLocked: false,
+    remainingSeconds: 0,
+    failedAttempts: 0,
+  })
+
+  // 倒计时定时器
+  #countdownTimer: number | null = null
+
+  constructor() {
+    this.#initLockoutState()
+  }
+
   get pendingSetup() {
     return this.#pendingSetup
   }
@@ -36,16 +54,93 @@ class App2FAStore {
     return setting.getSetting('security.twoFactorAuth')
   }
 
-  get failedAttempts(): number {
-    return this.config?.failedAttempts ?? 0
-  }
-
-  get lockedUntil(): number | undefined {
-    return this.config?.lockedUntil
-  }
-
+  // 响应式属性
   get isLocked(): boolean {
-    return isLockedOut(this.config?.lockedUntil)
+    return this.#lockoutState.isLocked
+  }
+
+  get remainingSeconds(): number {
+    return this.#lockoutState.remainingSeconds
+  }
+
+  get failedAttempts(): number {
+    return this.#lockoutState.failedAttempts
+  }
+
+  // 初始化锁定状态
+  #initLockoutState() {
+    const cfg = this.config
+    if (!cfg) return
+
+    if (isLockedOut(cfg.lockedUntil)) {
+      // 有未过期的锁定，启动倒计时
+      this.#startCountdown(cfg.lockedUntil!)
+    } else if (isLockoutExpired(cfg.lockedUntil)) {
+      // 清理过期锁定
+      this.#clearLockout()
+    } else {
+      // 正常状态
+      this.#lockoutState = {
+        isLocked: false,
+        remainingSeconds: 0,
+        failedAttempts: cfg.failedAttempts,
+      }
+    }
+  }
+
+  // 启动倒计时
+  #startCountdown(lockedUntil: number) {
+    this.#stopCountdown()
+
+    const update = () => {
+      const remaining = getLockoutRemainingSeconds(lockedUntil)
+      if (remaining > 0) {
+        this.#lockoutState = {
+          isLocked: true,
+          remainingSeconds: remaining,
+          failedAttempts: 5, // 锁定时显示已用完5次
+        }
+      } else {
+        // 锁定结束
+        this.#stopCountdown()
+        this.#clearLockout()
+      }
+    }
+
+    update()
+    this.#countdownTimer = window.setInterval(update, 1000)
+  }
+
+  // 停止倒计时
+  #stopCountdown() {
+    if (this.#countdownTimer !== null) {
+      clearInterval(this.#countdownTimer)
+      this.#countdownTimer = null
+    }
+  }
+
+  // 清理过期锁定
+  #clearLockout() {
+    const cfg = this.config
+    if (cfg && isLockoutExpired(cfg.lockedUntil)) {
+      setting.updateSetting('security.twoFactorAuth', {
+        ...cfg,
+        failedAttempts: 0,
+        lockedUntil: undefined,
+      })
+    }
+    this.#lockoutState = {
+      isLocked: false,
+      remainingSeconds: 0,
+      failedAttempts: 0,
+    }
+  }
+
+  /**
+   * Force cleanup expired lockout (can be called externally)
+   */
+  cleanupExpiredLockout(): void {
+    this.#clearLockout()
   }
 
   /**
@@ -118,21 +213,29 @@ class App2FAStore {
   /**
    * Verify a TOTP code during login/unlock
    */
-  async verify(code: string): Promise<boolean> {
-    const cfg = this.config
+  async verify(code: string): Promise<VerifyResult> {
+    let cfg = this.config
     if (!cfg?.enabled) {
-      return true
+      return { ok: true }
     }
 
-    // Check lockout
-    if (isLockedOut(cfg.lockedUntil)) {
-      return false
+    // Check lockout - if expired, clear it first
+    if (isLockoutExpired(cfg.lockedUntil)) {
+      cfg = {
+        ...cfg,
+        failedAttempts: 0,
+        lockedUntil: undefined,
+      }
+      setting.updateSetting('security.twoFactorAuth', cfg)
+    }
+    else if (isLockedOut(cfg.lockedUntil)) {
+      return { ok: false, reason: 'LOCKED' }
     }
 
     // Check replay
     if (isReplayCode(code, cfg.lastUsedCode)) {
       this.#recordFailure()
-      return false
+      return { ok: false, reason: 'INVALID_CODE' }
     }
 
     let secret = ''
@@ -147,30 +250,40 @@ class App2FAStore {
           failedAttempts: 0,
           lockedUntil: undefined,
         })
-        return true
+        this.#onVerifySuccess()
+        return { ok: true }
       }
 
       this.#recordFailure()
-      return false
+      return { ok: false, reason: 'INVALID_CODE' }
     }
     finally {
       secret = ''
     }
   }
 
-  async verifyWithMasterKey(masterKey: Uint8Array, code: string): Promise<boolean> {
-    const cfg = this.config
+  async verifyWithMasterKey(masterKey: Uint8Array, code: string): Promise<VerifyResult> {
+    let cfg = this.config
     if (!cfg?.enabled) {
-      return true
+      return { ok: true }
     }
 
-    if (isLockedOut(cfg.lockedUntil)) {
-      return false
+    // Check lockout - if expired, clear it first
+    if (isLockoutExpired(cfg.lockedUntil)) {
+      cfg = {
+        ...cfg,
+        failedAttempts: 0,
+        lockedUntil: undefined,
+      }
+      setting.updateSetting('security.twoFactorAuth', cfg)
+    }
+    else if (isLockedOut(cfg.lockedUntil)) {
+      return { ok: false, reason: 'LOCKED' }
     }
 
     if (isReplayCode(code, cfg.lastUsedCode)) {
       this.#recordFailure()
-      return false
+      return { ok: false, reason: 'INVALID_CODE' }
     }
 
     let secret = ''
@@ -185,11 +298,12 @@ class App2FAStore {
           failedAttempts: 0,
           lockedUntil: undefined,
         })
-        return true
+        this.#onVerifySuccess()
+        return { ok: true }
       }
 
       this.#recordFailure()
-      return false
+      return { ok: false, reason: 'INVALID_CODE' }
     }
     finally {
       secret = ''
@@ -200,20 +314,29 @@ class App2FAStore {
    * Verify a backup code during login/unlock.
    * Consumes the code on success.
    */
-  async verifyBackup(code: string): Promise<boolean> {
-    const cfg = this.config
+  async verifyBackup(code: string): Promise<VerifyResult> {
+    let cfg = this.config
     if (!cfg?.enabled) {
-      return true
+      return { ok: true }
     }
 
-    if (isLockedOut(cfg.lockedUntil)) {
-      return false
+    // Check lockout - if expired, clear it first
+    if (isLockoutExpired(cfg.lockedUntil)) {
+      cfg = {
+        ...cfg,
+        failedAttempts: 0,
+        lockedUntil: undefined,
+      }
+      setting.updateSetting('security.twoFactorAuth', cfg)
+    }
+    else if (isLockedOut(cfg.lockedUntil)) {
+      return { ok: false, reason: 'LOCKED' }
     }
 
     const index = await verifyBackupCode(code, cfg.backupCodes)
     if (index === -1) {
       this.#recordFailure()
-      return false
+      return { ok: false, reason: 'INVALID_CODE' }
     }
 
     // Consume the backup code
@@ -227,10 +350,11 @@ class App2FAStore {
       lockedUntil: undefined,
     })
 
-    return true
+    this.#onVerifySuccess()
+    return { ok: true }
   }
 
-  async verifyBackupWithMasterKey(_masterKey: Uint8Array, code: string): Promise<boolean> {
+  async verifyBackupWithMasterKey(_masterKey: Uint8Array, code: string): Promise<VerifyResult> {
     return this.verifyBackup(code)
   }
 
@@ -275,6 +399,28 @@ class App2FAStore {
       failedAttempts: newAttempts,
       lockedUntil,
     })
+
+    // 如果触发了锁定，启动倒计时
+    if (lockedUntil) {
+      this.#startCountdown(lockedUntil)
+    } else {
+      // 未锁定，更新失败次数响应式状态
+      this.#lockoutState = {
+        isLocked: false,
+        remainingSeconds: 0,
+        failedAttempts: newAttempts,
+      }
+    }
+  }
+
+  // 验证成功后更新响应式状态
+  #onVerifySuccess() {
+    this.#stopCountdown()
+    this.#lockoutState = {
+      isLocked: false,
+      remainingSeconds: 0,
+      failedAttempts: 0,
+    }
   }
 }
 

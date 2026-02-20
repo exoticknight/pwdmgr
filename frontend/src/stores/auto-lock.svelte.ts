@@ -1,3 +1,4 @@
+import type { VerifyResult } from '@/services/app-2fa'
 import type { KeyData } from '@/types/crypto'
 import { app2FA } from './app-2fa.svelte'
 import { auth } from './auth.svelte'
@@ -73,16 +74,16 @@ class AutoLock {
     this.#pendingMasterKey = await auth.decryptMasterKey(password, this.#keyData!)
   }
 
-  async verify2FA(code: string): Promise<boolean> {
+  async verify2FA(code: string): Promise<VerifyResult> {
     if (!this.#pendingMasterKey) {
-      throw new Error('locked')
+      return { ok: false, reason: 'LOCKED' }
     }
     return app2FA.verifyWithMasterKey(this.#pendingMasterKey, code)
   }
 
-  async verify2FABackup(code: string): Promise<boolean> {
+  async verify2FABackup(code: string): Promise<VerifyResult> {
     if (!this.#pendingMasterKey) {
-      throw new Error('locked')
+      return { ok: false, reason: 'LOCKED' }
     }
     return app2FA.verifyBackupWithMasterKey(this.#pendingMasterKey, code)
   }

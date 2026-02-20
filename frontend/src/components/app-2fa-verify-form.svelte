@@ -1,14 +1,14 @@
 <script lang='ts'>
   import { KeyRound, ShieldCheck } from '@lucide/svelte'
-  import { getLockoutRemainingSeconds } from '@/services/app-2fa'
+  import type { VerifyResult } from '@/services/app-2fa'
   import { app2FA } from '@/stores/app-2fa.svelte'
   import { i18n } from '@/stores/i18n.svelte'
 
   interface Props {
     onSuccess: () => void
     provider?: {
-      verify: (code: string) => Promise<boolean>
-      verifyBackup: (code: string) => Promise<boolean>
+      verify: (code: string) => Promise<VerifyResult>
+      verifyBackup: (code: string) => Promise<VerifyResult>
     }
   }
 
@@ -19,33 +19,6 @@
   let error = $state('')
   let isBackupMode = $state(false)
   let isVerifying = $state(false)
-  let lockoutCountdown = $state(0)
-  let lockoutTimer = $state<number | null>(null)
-
-  $effect(() => {
-    if (app2FA.isLocked) {
-      startLockoutTimer()
-    }
-    return () => {
-      if (lockoutTimer !== null) {
-        clearInterval(lockoutTimer)
-      }
-    }
-  })
-
-  function startLockoutTimer() {
-    lockoutCountdown = getLockoutRemainingSeconds(app2FA.lockedUntil)
-    if (lockoutTimer !== null) {
-      clearInterval(lockoutTimer)
-    }
-    lockoutTimer = window.setInterval(() => {
-      lockoutCountdown = getLockoutRemainingSeconds(app2FA.lockedUntil)
-      if (lockoutCountdown <= 0 && lockoutTimer !== null) {
-        clearInterval(lockoutTimer)
-        lockoutTimer = null
-      }
-    }, 1000)
-  }
 
   async function handleSubmit(event: Event) {
     event.preventDefault()
@@ -57,23 +30,18 @@
     error = ''
 
     try {
-      let success: boolean
-      if (isBackupMode) {
-        success = await providerImpl.verifyBackup(code.trim())
-      }
-      else {
-        success = await providerImpl.verify(code.trim())
-      }
+      const result = isBackupMode
+        ? await providerImpl.verifyBackup(code.trim())
+        : await providerImpl.verify(code.trim())
 
-      if (success) {
+      if (result.ok) {
         code = ''
         error = ''
         onSuccess()
       }
       else {
         code = ''
-        if (app2FA.isLocked) {
-          startLockoutTimer()
+        if (result.reason === 'LOCKED') {
           error = i18n.t('app2fa.verify.locked')
         }
         else {
@@ -117,9 +85,9 @@
   </div>
 
   <form onsubmit={handleSubmit} class='verify-form'>
-    {#if app2FA.isLocked && lockoutCountdown > 0}
+    {#if app2FA.isLocked && app2FA.remainingSeconds > 0}
       <div class='lockout-warning'>
-        <p>{i18n.t('app2fa.verify.lockedMessage', { seconds: lockoutCountdown })}</p>
+        <p>{i18n.t('app2fa.verify.lockedMessage', { seconds: app2FA.remainingSeconds })}</p>
       </div>
     {:else}
       <div class='form-control'>

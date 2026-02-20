@@ -475,7 +475,7 @@ export const en = {
         verifyButton: 'Verify',
         invalidCode: 'Invalid verification code. Please try again.',
         invalidBackupCode: 'Invalid backup code. Please try again.',
-        locked: 'Too many failed attempts. Account is temporarily locked.',
+        locked: 'Too many failed attempts. 2FA is temporarily locked.',
         lockedMessage: 'Too many failed attempts. Try again in {{seconds}} seconds.',
         attemptsRemaining: '{{count}} attempt(s) remaining before lockout',
         backupTitle: 'Use Backup Code',

@@ -10,7 +10,6 @@
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
-  import { userState } from '@/stores/user.svelte'
 
   import { DataMetaType } from '@/types/data'
   import { compareISO8601String } from '@/utils/iso8601-compare'
@@ -69,9 +68,9 @@
     }
 
     try {
-      if (userState.dbPath) {
+      if (app.dbPath) {
         database.commitData()
-        await database.saveToFile(userState.dbPath)
+        await database.saveToFile(app.dbPath)
         app.markDataAsSaved()
         notification.success(i18n.t('notifications.saved'))
       }
@@ -173,7 +172,7 @@
     const filePath = filePaths[0]
 
     try {
-      userState.dbPath = filePath
+      app.dbPath = filePath
 
       database.commitData()
       await database.saveToFile(filePath)

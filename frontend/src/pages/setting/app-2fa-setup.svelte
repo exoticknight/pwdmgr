@@ -7,7 +7,6 @@
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
-  import { userState } from '@/stores/user.svelte'
 
   interface Props {
     isOpen: boolean
@@ -44,7 +43,7 @@
       if (success) {
         // Persist to file immediately
         database.commitSetting()
-        await database.saveToFile(userState.dbPath)
+        await database.saveToFile(app.dbPath)
         app.markSettingAsSaved()
         step = 'backup'
       }

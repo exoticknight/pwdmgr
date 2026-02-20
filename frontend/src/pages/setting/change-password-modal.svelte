@@ -8,7 +8,6 @@
   import { auth } from '@/stores/auth.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
-  import { userState } from '@/stores/user.svelte'
 
   interface Props {
     isOpen: boolean
@@ -82,7 +81,7 @@
 
       // Save database to persist any 2FA state changes
       database.commitSetting()
-      await database.saveToFile(userState.dbPath)
+      await database.saveToFile(app.dbPath)
       app.markSettingAsSaved()
 
       closeModal()

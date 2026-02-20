@@ -4,7 +4,6 @@
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
-  import { userState } from '@/stores/user.svelte'
 
   import {
     AboutSection,
@@ -13,7 +12,7 @@
     SecuritySection,
   } from './setting'
 
-  const hasDataFile = $derived(!!userState.dbPath)
+  const hasDataFile = $derived(!!app.dbPath)
 
   async function handleSaveSettings() {
     try {
@@ -23,7 +22,7 @@
       }
 
       database.commitSetting()
-      await database.saveToFile(userState.dbPath)
+      await database.saveToFile(app.dbPath)
 
       app.markSettingAsSaved()
       notification.success(i18n.t('notifications.saved'))

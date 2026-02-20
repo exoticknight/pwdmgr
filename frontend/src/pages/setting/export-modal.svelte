@@ -7,7 +7,6 @@
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
-  import { userState } from '@/stores/user.svelte'
   import { exportToCSV, exportToJSON } from '@/utils/export'
 
   interface Props {
@@ -48,7 +47,7 @@
 
       // Save database to persist any 2FA state changes
       database.commitSetting()
-      await database.saveToFile(userState.dbPath)
+      await database.saveToFile(app.dbPath)
       app.markSettingAsSaved()
 
       onClose()

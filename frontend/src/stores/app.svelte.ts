@@ -1,12 +1,14 @@
 interface AppState {
   hasDataUnsavedChanges: boolean
   hasSettingUnsavedChanges?: boolean
+  dbPath: string
 }
 
 class AppStore {
   #state = $state<AppState>({
     hasDataUnsavedChanges: false,
     hasSettingUnsavedChanges: false,
+    dbPath: '',
   })
 
   get hasDataUnsavedChanges() {
@@ -15,6 +17,14 @@ class AppStore {
 
   get hasSettingUnsavedChanges() {
     return this.#state.hasSettingUnsavedChanges
+  }
+
+  get dbPath(): string {
+    return this.#state.dbPath
+  }
+
+  set dbPath(value: string) {
+    this.#state.dbPath = value
   }
 
   markDataAsUnsaved(): void {
@@ -36,6 +46,7 @@ class AppStore {
   reset(): void {
     this.#state.hasDataUnsavedChanges = false
     this.#state.hasSettingUnsavedChanges = false
+    this.#state.dbPath = ''
   }
 }
 

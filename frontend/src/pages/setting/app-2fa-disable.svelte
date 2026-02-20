@@ -5,7 +5,6 @@
   import { auth } from '@/stores/auth.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
-  import { userState } from '@/stores/user.svelte'
 
   interface Props {
     isOpen: boolean
@@ -86,7 +85,7 @@
       // Disable and persist immediately
       app2FA.disable()
       database.commitSetting()
-      await database.saveToFile(userState.dbPath)
+      await database.saveToFile(app.dbPath)
       app.markSettingAsSaved()
 
       resetForm()

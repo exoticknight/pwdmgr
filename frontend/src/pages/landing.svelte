@@ -80,7 +80,9 @@
       if (selectedFilePath) {
         const content = await getIoService().readFile(selectedFilePath)
         const file = await getFileService().load(content)
-        if (file.keyData.recoveryEncryptedMasterKey) {
+        // 检查恢复码是否启用（非零表示已启用）
+        if (file.keyData.recovery?.encryptedMasterKey
+          && file.keyData.recovery.encryptedMasterKey.some(b => b !== 0)) {
           isRecoverable = true
         }
         await database.loadFromFile(file, password)

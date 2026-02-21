@@ -3,6 +3,7 @@
   import PasswordInput from '@/components/password-input.svelte'
   import { app } from '@/stores/app.svelte'
   import { auth } from '@/stores/auth.svelte'
+  import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { notification } from '@/stores/notification.svelte'
   import { copyTextToClipboard } from '@/utils/clipboard'
@@ -46,6 +47,11 @@
     isLoading = true
     try {
       code = await auth.enableRecovery()
+      // 自动保存
+      if (app.dbPath) {
+        await database.saveToFile(app.dbPath)
+        notification.success(i18n.t('notifications.saved'))
+      }
       step = 2
       isLoading = false
     }
@@ -60,6 +66,11 @@
     isLoading = true
     try {
       await auth.disableRecovery()
+      // 自动保存
+      if (app.dbPath) {
+        await database.saveToFile(app.dbPath)
+        notification.success(i18n.t('notifications.saved'))
+      }
       step = 2
       isLoading = false
     }

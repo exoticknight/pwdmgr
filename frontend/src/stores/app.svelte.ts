@@ -1,6 +1,6 @@
 interface AppState {
   hasDataUnsavedChanges: boolean
-  hasSettingUnsavedChanges?: boolean
+  hasSettingUnsavedChanges: boolean
   dbPath: string
 }
 

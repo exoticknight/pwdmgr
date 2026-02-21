@@ -20,7 +20,16 @@ class Auth {
 
   get keyData(): KeyData {
     return {
-      ...this.#keyData!,
+      password: {
+        salt: this.#keyData!.password.salt.slice(),
+        iv: this.#keyData!.password.iv.slice(),
+        encryptedMasterKey: this.#keyData!.password.encryptedMasterKey.slice(),
+      },
+      recovery: {
+        salt: this.#keyData!.recovery.salt.slice(),
+        iv: this.#keyData!.recovery.iv.slice(),
+        encryptedMasterKey: this.#keyData!.recovery.encryptedMasterKey.slice(),
+      },
     }
   }
 
@@ -86,44 +95,59 @@ class Auth {
   }
 
   async auth(password: string, keyData: KeyData) {
-    const masterKey = await this.#decrypt(password, keyData.passwordSalt, keyData.passwordIv, keyData.passwordEncryptedMasterKey)
+    const masterKey = await this.#decrypt(
+      password,
+      keyData.password.salt,
+      keyData.password.iv,
+      keyData.password.encryptedMasterKey,
+    )
     this.#setMasterKey(masterKey)
-    this.#setKeyData({
-      ...keyData,
-    })
+    this.#setKeyData(keyData)
     this.isAuthed = true
 
-    if (keyData.recoveryEncryptedMasterKey.some(b => b !== 0)) {
+    if (keyData.recovery.encryptedMasterKey.some(b => b !== 0)) {
       this.isRecoveryEnabled = true
     }
   }
 
   async decryptMasterKey(password: string, keyData: KeyData): Promise<Uint8Array> {
-    return this.#decrypt(password, keyData.passwordSalt, keyData.passwordIv, keyData.passwordEncryptedMasterKey)
+    return this.#decrypt(
+      password,
+      keyData.password.salt,
+      keyData.password.iv,
+      keyData.password.encryptedMasterKey,
+    )
   }
 
   authWithMasterKey(masterKey: Uint8Array, keyData: KeyData) {
     this.#setMasterKey(masterKey)
-    this.#setKeyData({
-      ...keyData,
-    })
+    this.#setKeyData(keyData)
     this.isAuthed = true
 
-    if (keyData.recoveryEncryptedMasterKey.some(b => b !== 0)) {
+    if (keyData.recovery.encryptedMasterKey.some(b => b !== 0)) {
       this.isRecoveryEnabled = true
     }
   }
 
   async recover(code: string, keyData: KeyData) {
-    const masterKey = await this.#decrypt(code, keyData.recoverySalt, keyData.recoveryIv, keyData.recoveryEncryptedMasterKey)
+    const masterKey = await this.#decrypt(
+      code,
+      keyData.recovery.salt,
+      keyData.recovery.iv,
+      keyData.recovery.encryptedMasterKey,
+    )
     this.#setMasterKey(masterKey)
     this.#setKeyData({
-      passwordEncryptedMasterKey: keyData.recoveryEncryptedMasterKey,
-      passwordSalt: keyData.recoverySalt,
-      passwordIv: keyData.recoveryIv,
-      recoveryEncryptedMasterKey: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
-      recoverySalt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
-      recoveryIv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
+      password: {
+        encryptedMasterKey: keyData.recovery.encryptedMasterKey,
+        salt: keyData.recovery.salt,
+        iv: keyData.recovery.iv,
+      },
+      recovery: {
+        encryptedMasterKey: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
+        salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
+        iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
+      },
     })
     this.isAuthed = true
     this.isRecoveryEnabled = false
@@ -143,8 +167,13 @@ class Auth {
   async validatePassword(password: string): Promise<boolean> {
     this.#mustAuthed()
     try {
-      const encryptedMasterKey = await this.#encrypt(password, this.#keyData!.passwordSalt, this.#keyData!.passwordIv, this.#masterKey!)
-      return equals(encryptedMasterKey, this.#keyData!.passwordEncryptedMasterKey)
+      const encryptedMasterKey = await this.#encrypt(
+        password,
+        this.#keyData!.password.salt,
+        this.#keyData!.password.iv,
+        this.#masterKey!,
+      )
+      return equals(encryptedMasterKey, this.#keyData!.password.encryptedMasterKey)
     }
     catch {
       return false
@@ -165,9 +194,9 @@ class Auth {
     const salt = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.saltLength))
     const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.ivLength))
 
-    this.#keyData!.recoverySalt = salt
-    this.#keyData!.recoveryIv = iv
-    this.#keyData!.recoveryEncryptedMasterKey = await this.#encrypt(recoveryCode, salt, iv, this.#masterKey!)
+    this.#keyData!.recovery.salt = salt
+    this.#keyData!.recovery.iv = iv
+    this.#keyData!.recovery.encryptedMasterKey = await this.#encrypt(recoveryCode, salt, iv, this.#masterKey!)
     this.isRecoveryEnabled = true
 
     return recoveryCode
@@ -175,9 +204,9 @@ class Auth {
 
   async disableRecovery() {
     this.#mustAuthed()
-    this.#keyData!.recoverySalt.fill(0)
-    this.#keyData!.recoveryIv.fill(0)
-    this.#keyData!.recoveryEncryptedMasterKey.fill(0)
+    this.#keyData!.recovery.salt.fill(0)
+    this.#keyData!.recovery.iv.fill(0)
+    this.#keyData!.recovery.encryptedMasterKey.fill(0)
     this.isRecoveryEnabled = false
   }
 
@@ -190,9 +219,9 @@ class Auth {
     const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.ivLength))
     const encryptedMasterKey = await this.#encrypt(newPassword, salt, iv, this.#masterKey!)
 
-    this.#keyData!.passwordSalt = salt
-    this.#keyData!.passwordIv = iv
-    this.#keyData!.passwordEncryptedMasterKey = encryptedMasterKey
+    this.#keyData!.password.salt = salt
+    this.#keyData!.password.iv = iv
+    this.#keyData!.password.encryptedMasterKey = encryptedMasterKey
   }
 
   async changeMasterKey(password: string) {
@@ -202,15 +231,31 @@ class Auth {
     const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.ivLength))
     const encryptedMasterKey = await this.#encrypt(password, salt, iv, masterKey)
 
+    // 初始化keyData（如果是新数据库）
+    if (!this.#keyData) {
+      this.#keyData = {
+        password: {
+          salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
+          iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
+          encryptedMasterKey: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
+        },
+        recovery: {
+          salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
+          iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
+          encryptedMasterKey: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
+        },
+      }
+    }
+
     this.#setMasterKey(masterKey)
-    this.#keyData!.passwordSalt = salt
-    this.#keyData!.passwordIv = iv
-    this.#keyData!.passwordEncryptedMasterKey = encryptedMasterKey
+    this.#keyData.password.salt = salt
+    this.#keyData.password.iv = iv
+    this.#keyData.password.encryptedMasterKey = encryptedMasterKey
 
     // change master key will disable recovery
-    this.#keyData!.recoveryEncryptedMasterKey.fill(0)
-    this.#keyData!.recoverySalt.fill(0)
-    this.#keyData!.recoveryIv.fill(0)
+    this.#keyData.recovery.encryptedMasterKey.fill(0)
+    this.#keyData.recovery.salt.fill(0)
+    this.#keyData.recovery.iv.fill(0)
     this.isRecoveryEnabled = false
 
     return {

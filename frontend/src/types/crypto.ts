@@ -1,8 +1,15 @@
+/**
+ * KeyData结构 (使用Object自描述的嵌套格式)
+ */
 export interface KeyData {
-  passwordSalt: Uint8Array
-  passwordIv: Uint8Array
-  passwordEncryptedMasterKey: Uint8Array
-  recoverySalt: Uint8Array
-  recoveryIv: Uint8Array
-  recoveryEncryptedMasterKey: Uint8Array
+  password: {
+    salt: Uint8Array
+    iv: Uint8Array
+    encryptedMasterKey: Uint8Array
+  }
+  recovery: {
+    salt: Uint8Array
+    iv: Uint8Array
+    encryptedMasterKey: Uint8Array
+  }
 }

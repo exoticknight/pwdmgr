@@ -10,7 +10,9 @@
     "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "ts-patch install"
+    "prepare": "ts-patch install",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
@@ -48,6 +50,7 @@
     "ts-patch": "^3.3.0",
     "type-fest": "^5.1.0",
     "typescript": "^5.9.3",
-    "vite": "^7.1.9"
+    "vite": "^7.1.9",
+    "vitest": "^4.0.18"
   }
 }

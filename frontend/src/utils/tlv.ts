@@ -1,16 +1,16 @@
 /**
- * TLV (Type-Length-Value) 序列化模块
+ * TLV (Type-Length-Value) serialization module.
  *
- * 格式: [type: 1 byte] [length: 2 bytes BE] [value: n bytes]
+ * Format: [type: 1 byte] [length: 2 bytes BE] [value: n bytes]
  *
- * Type ID 定义:
+ * Type IDs:
  * - 0x00: null
- * - 0x01: Object (字段数: 2 bytes BE, 每个字段: key(string) + value(TLV))
- * - 0x02: Array (元素数: 2 bytes BE, 每个元素: TLV)
- * - 0x03: Uint8Array (数据长度: 2 bytes BE)
- * - 0x04: string (UTF-8字节长度: 2 bytes BE)
+ * - 0x01: Object (field count: 2 bytes BE, each field: key(string) + value(TLV))
+ * - 0x02: Array (element count: 2 bytes BE, each element: TLV)
+ * - 0x03: Uint8Array (data length: 2 bytes BE)
+ * - 0x04: string (UTF-8 byte length: 2 bytes BE)
  *
- * 后续可扩展: bool (0x05), int (0x06) 等
+ * Extensible: bool (0x05), int (0x06), etc.
  */
 
 const TYPE_NULL = 0x00
@@ -29,7 +29,7 @@ export type SerializableValue
     | { [key: string]: SerializableValue }
 
 /**
- * 序列化一个值到Uint8Array
+ * Serialize a value to Uint8Array (TLV format).
  */
 export function serialize(value: SerializableValue): Uint8Array {
   if (value === undefined) {
@@ -63,7 +63,7 @@ export function serialize(value: SerializableValue): Uint8Array {
     }
 
     chunks.push(new Uint8Array([TYPE_ARRAY]))
-    chunks.push(createUint16BE(value.length)) // 元素个数
+    chunks.push(createUint16BE(value.length))
     chunks.push(...elementChunks)
   }
   else if (typeof value === 'object') {
@@ -78,7 +78,7 @@ export function serialize(value: SerializableValue): Uint8Array {
     }
 
     chunks.push(new Uint8Array([TYPE_OBJECT]))
-    chunks.push(createUint16BE(keys.length)) // 字段个数
+    chunks.push(createUint16BE(keys.length))
     chunks.push(...fieldChunks)
   }
   else {
@@ -89,7 +89,7 @@ export function serialize(value: SerializableValue): Uint8Array {
 }
 
 /**
- * 从Uint8Array反序列化一个值
+ * Deserialize a value from Uint8Array (TLV format).
  */
 export function deserialize(data: Uint8Array): SerializableValue {
   const { value } = deserializeRecursive(data, 0)
@@ -100,7 +100,6 @@ function deserializeRecursive(
   data: Uint8Array,
   offset: number,
 ): { value: SerializableValue, consumed: number } {
-  // 检查是否有足够的空间读取type(1) + length(2)
   if (offset + 3 > data.byteLength) {
     throw new Error(`Unexpected end of data at offset ${offset}: need 3 bytes, have ${data.byteLength - offset}`)
   }
@@ -108,7 +107,6 @@ function deserializeRecursive(
   const type = data[offset]
   const length = readUint16BE(data, offset + 1)
 
-  // 检查是否有足够的数据
   if (offset + 3 + length > data.byteLength) {
     throw new Error(`Unexpected end of data: type=${type}, length=${length}, offset=${offset}, total=${data.byteLength}`)
   }
@@ -163,13 +161,13 @@ function deserializeRecursive(
 function createUint16BE(value: number): Uint8Array {
   const arr = new Uint8Array(2)
   const view = new DataView(arr.buffer)
-  view.setUint16(0, value, false) // big-endian
+  view.setUint16(0, value, false)
   return arr
 }
 
 function readUint16BE(data: Uint8Array, offset: number): number {
   const view = new DataView(data.buffer, data.byteOffset + offset, 2)
-  return view.getUint16(0, false) // big-endian
+  return view.getUint16(0, false)
 }
 
 function concatUint8Arrays(arrays: Uint8Array[]): Uint8Array {

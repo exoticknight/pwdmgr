@@ -3,9 +3,6 @@ import { FILE_FORMAT } from '@/consts/file-format'
 import { deserializeKeyData, serializeKeyData } from '@/services/keydata'
 import { equals } from '@/utils/uin8array'
 
-const LEGACY_KEY_DATA_SIZE = 184 // 旧版本固定大小
-const LEGACY_VERSION = 1
-
 export interface FileStructure {
   userData: Uint8Array
   keyData: KeyData
@@ -30,7 +27,6 @@ export class FileService {
 
   /**
    * Get file version from content
-   * v1: 2 bytes (uint16 BE) at offset 4-5
    * v2: 1 byte (uint8) at offset 4
    */
   getVersion(content: Uint8Array): number {
@@ -38,20 +34,7 @@ export class FileService {
       return 0
     }
 
-    // 尝试读取1字节 (v2格式)
-    const v2Version = content[FILE_FORMAT.VERSION_OFFSET]
-
-    // 如果版本号是0或1，可能是v1格式
-    if (v2Version === 0 || v2Version === 1) {
-      if (content.byteLength >= 6) {
-        const v1Version = readUint16BE(content, FILE_FORMAT.VERSION_OFFSET)
-        if (v1Version === 1) {
-          return 1 // v1
-        }
-      }
-    }
-
-    return v2Version // v2或更高
+    return content[FILE_FORMAT.VERSION_OFFSET]
   }
 
   async load(content: Uint8Array): Promise<FileStructure> {
@@ -65,13 +48,8 @@ export class FileService {
     let keyData: KeyData
     let userData: Uint8Array
 
-    if (version === LEGACY_VERSION) {
-      // 旧版本格式 (v1)
-      keyData = this.#loadLegacyKeyData(content)
-      userData = content.slice(FILE_FORMAT.HEADER_SIZE + LEGACY_KEY_DATA_SIZE)
-    }
-    else if (version === FILE_FORMAT.CURRENT_VERSION) {
-      // 新版本格式 (v2) - TLV
+    if (version === FILE_FORMAT.CURRENT_VERSION) {
+      // v2 format - TLV
       const keyDataLength = readUint16BE(content, FILE_FORMAT.KEY_DATA_LENGTH_OFFSET)
       const keyDataStart = FILE_FORMAT.HEADER_SIZE
 
@@ -119,38 +97,6 @@ export class FileService {
     result.set(userData, offset)
 
     return result
-  }
-
-  /**
-   * Load KeyData from legacy format (v1)
-   */
-  #loadLegacyKeyData(content: Uint8Array): KeyData {
-    const encryptedContent = content.slice(FILE_FORMAT.HEADER_SIZE)
-
-    if (encryptedContent.byteLength < LEGACY_KEY_DATA_SIZE) {
-      throw new Error('Invalid content format: insufficient data')
-    }
-
-    // 旧版扁平结构
-    const passwordSalt = encryptedContent.slice(0, 32)
-    const passwordIv = encryptedContent.slice(32, 44)
-    const passwordEncryptedMasterKey = encryptedContent.slice(44, 92)
-    const recoverySalt = encryptedContent.slice(92, 124)
-    const recoveryIv = encryptedContent.slice(124, 136)
-    const recoveryEncryptedMasterKey = encryptedContent.slice(136, 184)
-
-    return {
-      password: {
-        salt: passwordSalt,
-        iv: passwordIv,
-        encryptedMasterKey: passwordEncryptedMasterKey,
-      },
-      recovery: {
-        salt: recoverySalt,
-        iv: recoveryIv,
-        encryptedMasterKey: recoveryEncryptedMasterKey,
-      },
-    }
   }
 }
 

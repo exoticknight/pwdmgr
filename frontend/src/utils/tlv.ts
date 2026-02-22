@@ -107,20 +107,22 @@ function deserializeRecursive(
   const type = data[offset]
   const length = readUint16BE(data, offset + 1)
 
-  if (offset + 3 + length > data.byteLength) {
-    throw new Error(`Unexpected end of data: type=${type}, length=${length}, offset=${offset}, total=${data.byteLength}`)
-  }
-
   switch (type) {
     case TYPE_NULL: {
       return { value: null, consumed: 3 }
     }
     case TYPE_STRING: {
+      if (offset + 3 + length > data.byteLength) {
+        throw new Error(`Unexpected end of data: type=${type}, length=${length}, offset=${offset}, total=${data.byteLength}`)
+      }
       const stringData = data.slice(offset + 3, offset + 3 + length)
       const value = new TextDecoder().decode(stringData)
       return { value, consumed: 3 + length }
     }
     case TYPE_UINT8_ARRAY: {
+      if (offset + 3 + length > data.byteLength) {
+        throw new Error(`Unexpected end of data: type=${type}, length=${length}, offset=${offset}, total=${data.byteLength}`)
+      }
       const arrayData = data.slice(offset + 3, offset + 3 + length)
       return { value: arrayData, consumed: 3 + length }
     }
@@ -141,7 +143,14 @@ function deserializeRecursive(
       let pos = offset + 3
 
       for (let i = 0; i < length; i++) {
+        // Check bounds for key length (2 bytes) and key data
+        if (pos + 2 > data.byteLength) {
+          throw new Error(`Unexpected end of data at offset ${pos}: need 2 bytes for key length`)
+        }
         const keyLength = readUint16BE(data, pos)
+        if (pos + 2 + keyLength > data.byteLength) {
+          throw new Error(`Unexpected end of data: key length=${keyLength}, offset=${pos}, total=${data.byteLength}`)
+        }
         const keyData = data.slice(pos + 2, pos + 2 + keyLength)
         const key = new TextDecoder().decode(keyData)
         pos += 2 + keyLength

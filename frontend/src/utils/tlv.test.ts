@@ -40,13 +40,13 @@ describe('tLV Serialization', () => {
   describe('boolean', () => {
     it('should serialize true', () => {
       const result = serialize(true)
-      // type(0x05) + length(0x00) + value(1)
+      // type(0x05) + length(0x0001)
       expect(uint8ArrayToHex(result)).toBe('05 00 01')
     })
 
     it('should serialize false', () => {
       const result = serialize(false)
-      // type(0x05) + length(0x00) + value(0)
+      // type(0x05) + length(0x0000)
       expect(uint8ArrayToHex(result)).toBe('05 00 00')
     })
 

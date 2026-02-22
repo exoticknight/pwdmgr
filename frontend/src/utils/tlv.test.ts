@@ -78,20 +78,22 @@ describe('tLV Serialization', () => {
       expect(result.byteLength).toBe(11) // 1 + 2 + 8
     })
 
-    it('should serialize positive integer as float', () => {
+    it('should serialize positive integer in length field', () => {
       const result = serialize(42)
-      // type(0x06) + length(0x0000) + float bytes (8)
+      // type(0x06) + length(0x002A) = 3 bytes total
       expect(result[0]).toBe(0x06) // TYPE_NUMBER
       expect(result[1]).toBe(0x00) // length high
-      expect(result[2]).toBe(0x00) // length = 0 (float marker)
+      expect(result[2]).toBe(0x2A) // length = 42 (optimized format)
+      expect(result.byteLength).toBe(3)
     })
 
-    it('should serialize max uint16 as float', () => {
+    it('should serialize max uint16 in length field', () => {
       const result = serialize(65535)
-      // type(0x06) + length(0x0000) + float bytes (8)
+      // type(0x06) + length(0xFFFF) = 3 bytes total
       expect(result[0]).toBe(0x06) // TYPE_NUMBER
-      expect(result[1]).toBe(0x00) // length high
-      expect(result[2]).toBe(0x00) // length = 0 (float marker)
+      expect(result[1]).toBe(0xFF) // length high
+      expect(result[2]).toBe(0xFF) // length low = 65535 (optimized format)
+      expect(result.byteLength).toBe(3)
     })
 
     it('should deserialize number', () => {

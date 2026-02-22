@@ -20,6 +20,8 @@ const TYPE_ARRAY = 0x02
 const TYPE_UINT8_ARRAY = 0x03
 const TYPE_STRING = 0x04
 
+const MAX_DEPTH = 64 // Maximum nesting depth to prevent stack overflow
+
 export type SerializableValue
   = | null
     | boolean
@@ -93,14 +95,19 @@ export function serialize(value: SerializableValue): Uint8Array {
  * Deserialize a value from Uint8Array (TLV format).
  */
 export function deserialize(data: Uint8Array): SerializableValue {
-  const { value } = deserializeRecursive(data, 0)
+  const { value } = deserializeRecursive(data, 0, 0)
   return value
 }
 
 function deserializeRecursive(
   data: Uint8Array,
   offset: number,
+  depth: number,
 ): { value: SerializableValue, consumed: number } {
+  if (depth > MAX_DEPTH) {
+    throw new Error(`Maximum nesting depth exceeded: ${MAX_DEPTH}`)
+  }
+
   if (offset + 3 > data.byteLength) {
     throw new Error(`Unexpected end of data at offset ${offset}: need 3 bytes, have ${data.byteLength - offset}`)
   }
@@ -116,7 +123,7 @@ function deserializeRecursive(
       if (offset + 3 + length > data.byteLength) {
         throw new Error(`Unexpected end of data: type=${type}, length=${length}, offset=${offset}, total=${data.byteLength}`)
       }
-      const stringData = data.slice(offset + 3, offset + 3 + length)
+      const stringData = data.subarray(offset + 3, offset + 3 + length)
       const value = new TextDecoder().decode(stringData)
       return { value, consumed: 3 + length }
     }
@@ -124,7 +131,7 @@ function deserializeRecursive(
       if (offset + 3 + length > data.byteLength) {
         throw new Error(`Unexpected end of data: type=${type}, length=${length}, offset=${offset}, total=${data.byteLength}`)
       }
-      const arrayData = data.slice(offset + 3, offset + 3 + length)
+      const arrayData = data.subarray(offset + 3, offset + 3 + length)
       return { value: arrayData, consumed: 3 + length }
     }
     case TYPE_ARRAY: {
@@ -132,7 +139,7 @@ function deserializeRecursive(
       let pos = offset + 3
 
       for (let i = 0; i < length; i++) {
-        const { value, consumed } = deserializeRecursive(data, pos)
+        const { value, consumed } = deserializeRecursive(data, pos, depth + 1)
         elements.push(value)
         pos += consumed
       }
@@ -152,11 +159,11 @@ function deserializeRecursive(
         if (pos + 2 + keyLength > data.byteLength) {
           throw new Error(`Unexpected end of data: key length=${keyLength}, offset=${pos}, total=${data.byteLength}`)
         }
-        const keyData = data.slice(pos + 2, pos + 2 + keyLength)
+        const keyData = data.subarray(pos + 2, pos + 2 + keyLength)
         const key = new TextDecoder().decode(keyData)
         pos += 2 + keyLength
 
-        const { value, consumed } = deserializeRecursive(data, pos)
+        const { value, consumed } = deserializeRecursive(data, pos, depth + 1)
         obj[key] = value
         pos += consumed
       }

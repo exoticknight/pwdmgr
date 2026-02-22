@@ -81,8 +81,9 @@ export class FileService {
     const fileHeader = new Uint8Array(FILE_FORMAT.HEADER_SIZE)
     fileHeader.set(FILE_FORMAT.MAGIC_BYTES, FILE_FORMAT.MAGIC_OFFSET)
     fileHeader[FILE_FORMAT.VERSION_OFFSET] = FILE_FORMAT.CURRENT_VERSION
-    fileHeader[FILE_FORMAT.KEY_DATA_LENGTH_OFFSET] = (keyDataLength >> 8) & 0xFF // 高字节
-    fileHeader[FILE_FORMAT.KEY_DATA_LENGTH_OFFSET + 1] = keyDataLength & 0xFF // 低字节
+
+    const keyDataLengthView = new DataView(fileHeader.buffer, fileHeader.byteOffset + FILE_FORMAT.KEY_DATA_LENGTH_OFFSET, 2)
+    keyDataLengthView.setUint16(0, keyDataLength, false) // big-endian
 
     // 合并所有部分
     const result = new Uint8Array(

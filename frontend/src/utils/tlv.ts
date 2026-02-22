@@ -64,7 +64,8 @@ export function serialize(value: SerializableValue): Uint8Array {
     chunks.push(data)
   }
   else if (typeof value === 'boolean') {
-    chunks.push(new Uint8Array([TYPE_BOOL, 0x00, value ? 1 : 0]))
+    chunks.push(new Uint8Array([TYPE_BOOL]))
+    chunks.push(createUint16BE(value ? 1 : 0))
   }
   else if (typeof value === 'number') {
     // Optimize: non-negative integers (1-65535) can be stored directly in the length field
@@ -222,8 +223,7 @@ function deserializeRecursive(
       if (offset + 3 > data.byteLength) {
         throw new Error(`Unexpected end of data: type=${type}, offset=${offset}, total=${data.byteLength}`)
       }
-      const boolValue = data[offset + 2] !== 0
-      return { value: boolValue, consumed: 3 }
+      return { value: length !== 0, consumed: 3 }
     }
     case TYPE_NUMBER: {
       // length = 0 indicates float (IEEE 754 double), otherwise length is the integer value

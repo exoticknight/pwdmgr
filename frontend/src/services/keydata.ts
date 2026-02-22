@@ -1,3 +1,4 @@
+import typia from 'typia'
 import type { KeyData } from '@/types/crypto'
 import type { SerializableValue } from '@/utils/tlv'
 import { deserialize, serialize } from '@/utils/tlv'
@@ -28,53 +29,9 @@ export function serializeKeyData(keyData: KeyData): Uint8Array {
 export function deserializeKeyData(data: Uint8Array): KeyData {
   const obj = deserialize(data)
 
-  if (typeof obj !== 'object' || obj === null) {
-    throw new Error('Invalid KeyData: expected object')
-  }
-
-  const objRecord = obj as Record<string, SerializableValue>
-
-  if (
-    !objRecord.password
-    || typeof objRecord.password !== 'object'
-    || objRecord.password === null
-  ) {
-    throw new Error('Invalid KeyData: missing password object')
-  }
-
-  if (
-    !objRecord.recovery
-    || typeof objRecord.recovery !== 'object'
-    || objRecord.recovery === null
-  ) {
-    throw new Error('Invalid KeyData: missing recovery object')
-  }
-
-  const password = objRecord.password as Record<string, SerializableValue>
-  const recovery = objRecord.recovery as Record<string, SerializableValue>
-
-  const extractUint8Array = (
-    obj: Record<string, SerializableValue>,
-    parentName: string,
-    field: string,
-  ): Uint8Array => {
-    const value = obj[field]
-    if (!(value instanceof Uint8Array)) {
-      throw new TypeError(`Invalid KeyData: ${parentName}.${field} is not Uint8Array`)
-    }
-    return value
-  }
-
-  return {
-    password: {
-      salt: extractUint8Array(password, 'password', 'salt'),
-      iv: extractUint8Array(password, 'password', 'iv'),
-      encryptedMasterKey: extractUint8Array(password, 'password', 'encryptedMasterKey'),
-    },
-    recovery: {
-      salt: extractUint8Array(recovery, 'recovery', 'salt'),
-      iv: extractUint8Array(recovery, 'recovery', 'iv'),
-      encryptedMasterKey: extractUint8Array(recovery, 'recovery', 'encryptedMasterKey'),
-    },
+  try {
+    return typia.assert<KeyData>(obj)
+  } catch (e) {
+    throw new Error(`Invalid KeyData format after deserialization: ${(e as Error).message}`)
   }
 }

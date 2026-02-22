@@ -25,8 +25,8 @@ TLV (Type-Length-Value) 是一种自描述的二进制序列化格式，每个�
 | 0x02 | Array | 元素个数 | 每个元素: TLV |
 | 0x03 | Uint8Array | 数据字节数 | 原始二进制数据 |
 | 0x04 | String | UTF-8 字节数 | UTF-8 编码字符串 |
-| 0x05 | Boolean | 0 | 0=false, 1=true |
-| 0x06 | Number | IEEE 754 double (8 字节) | 支持所有 JavaScript 数字 |
+| 0x05 | Boolean | Length 字段用作值（1=true, 0=false），Value 部分为空 | 3 字节编码 |
+| 0x06 | Number | Length > 0: 非负整数值（Length = 值）；Length = 0: IEEE 754 double (8 字节) | 整数 1-65535 使用 3 字节优化编码 |
 
 > **注意**:
 > - Object 类型的 key 使用 length-prefixed 格式（uint16 长度 + UTF-8 字节），而非独立的 TLV 结构
@@ -52,10 +52,16 @@ TLV (Type-Length-Value) 是一种自描述的二进制序列化格式，每个�
 [0x05] [0x00, 0x00]
 ```
 
-### Number 42 (IEEE 754 double)
+### Number 42 (整数优化编码)
 
 ```
-[0x06] [0x00, 0x00] [00 00 00 00 00 00 45 40]
+[0x06] [0x00, 0x2A]
+```
+
+### Number 3.14 (IEEE 754 double)
+
+```
+[0x06] [0x00, 0x00] [00 00 00 00 00 00 F8 40]
 ```
 
 ### String "hello"

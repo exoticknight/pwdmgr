@@ -70,25 +70,26 @@ export function deserializeKeyData(data: Uint8Array): KeyData {
 
   const extractUint8Array = (
     obj: Record<string, SerializableValue>,
+    parentName: string,
     field: string,
   ): Uint8Array => {
     const value = obj[field]
     if (!(value instanceof Uint8Array)) {
-      throw new TypeError(`Invalid KeyData: password.${field} is not Uint8Array`)
+      throw new TypeError(`Invalid KeyData: ${parentName}.${field} is not Uint8Array`)
     }
     return value
   }
 
   return {
     password: {
-      salt: extractUint8Array(password, 'salt'),
-      iv: extractUint8Array(password, 'iv'),
-      encryptedMasterKey: extractUint8Array(password, 'encryptedMasterKey'),
+      salt: extractUint8Array(password, 'password', 'salt'),
+      iv: extractUint8Array(password, 'password', 'iv'),
+      encryptedMasterKey: extractUint8Array(password, 'password', 'encryptedMasterKey'),
     },
     recovery: {
-      salt: extractUint8Array(recovery, 'salt'),
-      iv: extractUint8Array(recovery, 'iv'),
-      encryptedMasterKey: extractUint8Array(recovery, 'encryptedMasterKey'),
+      salt: extractUint8Array(recovery, 'recovery', 'salt'),
+      iv: extractUint8Array(recovery, 'recovery', 'iv'),
+      encryptedMasterKey: extractUint8Array(recovery, 'recovery', 'encryptedMasterKey'),
     },
   }
 }

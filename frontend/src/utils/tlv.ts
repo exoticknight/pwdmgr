@@ -74,7 +74,8 @@ export function serialize(value: SerializableValue): Uint8Array {
       // Integer: store value in length field (3 bytes total)
       chunks.push(new Uint8Array([TYPE_NUMBER]))
       chunks.push(createUint16BE(value))
-    } else {
+    }
+    else {
       // Float or out-of-range integer: use IEEE 754 double (11 bytes total)
       chunks.push(new Uint8Array([TYPE_NUMBER]))
       chunks.push(createUint16BE(0))
@@ -105,7 +106,7 @@ export function serialize(value: SerializableValue): Uint8Array {
     chunks.push(...elementChunks)
   }
   else if (typeof value === 'object') {
-    const keys = Object.keys(value)
+    const keys = Object.keys(value).sort()
     if (keys.length > MAX_UINT16) {
       throw new Error(`Object too large: ${keys.length} fields, max is ${MAX_UINT16}`)
     }
@@ -141,7 +142,7 @@ export function deserialize(data: Uint8Array): SerializableValue {
   // Validate: ensure the entire input buffer was consumed
   if (consumed !== data.byteLength) {
     throw new Error(
-      `Input not fully consumed: parsed ${consumed} bytes, total ${data.byteLength} bytes`
+      `Input not fully consumed: parsed ${consumed} bytes, total ${data.byteLength} bytes`,
     )
   }
 

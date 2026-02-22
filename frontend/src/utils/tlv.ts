@@ -10,8 +10,12 @@
  * - 0x02: Array (element count: 2 bytes BE, each element: TLV)
  * - 0x03: Uint8Array (data length: 2 bytes BE)
  * - 0x04: string (UTF-8 byte length: 2 bytes BE)
+ * - 0x05: boolean (0 = false, 1 = true)
+ * - 0x06: number
+ *        - If length > 0: non-negative integer (length = value)
+ *        - If length = 0: IEEE 754 double-precision float (8 bytes)
  *
- * Extensible: bool (0x05), int (0x06), etc.
+ * Max length for string, Uint8Array, array elements, and object fields: 65535
  */
 
 const TYPE_NULL = 0x00
@@ -19,8 +23,12 @@ const TYPE_OBJECT = 0x01
 const TYPE_ARRAY = 0x02
 const TYPE_UINT8_ARRAY = 0x03
 const TYPE_STRING = 0x04
+const TYPE_BOOL = 0x05
+const TYPE_NUMBER = 0x06
 
 const MAX_DEPTH = 64 // Maximum nesting depth to prevent stack overflow
+const MAX_UINT16 = 65535
+const NUMBER_BYTE_LENGTH = 8 // IEEE 754 double-precision
 
 export type SerializableValue
   = | null
@@ -47,19 +55,38 @@ export function serialize(value: SerializableValue): Uint8Array {
   else if (typeof value === 'string') {
     const data = new TextEncoder().encode(value)
     const length = data.byteLength
+    if (length > MAX_UINT16) {
+      throw new Error(`String too long: ${length} bytes, max is ${MAX_UINT16}`)
+    }
 
     chunks.push(new Uint8Array([TYPE_STRING]))
     chunks.push(createUint16BE(length))
     chunks.push(data)
   }
+  else if (typeof value === 'boolean') {
+    chunks.push(new Uint8Array([TYPE_BOOL, 0x00, value ? 1 : 0]))
+  }
+  else if (typeof value === 'number') {
+    // Always serialize as IEEE 754 double-precision float
+    // Use length = 0 as marker to indicate this is a number (not integer)
+    chunks.push(new Uint8Array([TYPE_NUMBER]))
+    chunks.push(createUint16BE(0))
+    chunks.push(floatToBytes(value))
+  }
   else if (value instanceof Uint8Array) {
     const length = value.byteLength
+    if (length > MAX_UINT16) {
+      throw new Error(`Uint8Array too long: ${length} bytes, max is ${MAX_UINT16}`)
+    }
 
     chunks.push(new Uint8Array([TYPE_UINT8_ARRAY]))
     chunks.push(createUint16BE(length))
     chunks.push(value)
   }
   else if (Array.isArray(value)) {
+    if (value.length > MAX_UINT16) {
+      throw new Error(`Array too long: ${value.length} elements, max is ${MAX_UINT16}`)
+    }
     const elementChunks: Uint8Array[] = []
     for (const item of value) {
       elementChunks.push(serialize(item))
@@ -71,10 +98,16 @@ export function serialize(value: SerializableValue): Uint8Array {
   }
   else if (typeof value === 'object') {
     const keys = Object.keys(value)
+    if (keys.length > MAX_UINT16) {
+      throw new Error(`Object too large: ${keys.length} fields, max is ${MAX_UINT16}`)
+    }
     const fieldChunks: Uint8Array[] = []
 
     for (const key of keys) {
       const keyData = new TextEncoder().encode(key)
+      if (keyData.byteLength > MAX_UINT16) {
+        throw new Error(`Object key too long: ${keyData.byteLength} bytes, max is ${MAX_UINT16}`)
+      }
       fieldChunks.push(createUint16BE(keyData.byteLength))
       fieldChunks.push(keyData)
       fieldChunks.push(serialize(value[key]))
@@ -170,6 +203,26 @@ function deserializeRecursive(
 
       return { value: obj, consumed: pos - offset }
     }
+    case TYPE_BOOL: {
+      if (offset + 3 > data.byteLength) {
+        throw new Error(`Unexpected end of data: type=${type}, offset=${offset}, total=${data.byteLength}`)
+      }
+      const boolValue = data[offset + 2] !== 0
+      return { value: boolValue, consumed: 3 }
+    }
+    case TYPE_NUMBER: {
+      // length = 0 indicates float (IEEE 754 double), otherwise length is the integer value
+      if (length === 0) {
+        // It's a float (8 bytes)
+        if (offset + 3 + NUMBER_BYTE_LENGTH > data.byteLength) {
+          throw new Error(`Unexpected end of data: type=${type}, offset=${offset}, total=${data.byteLength}`)
+        }
+        const floatValue = readFloat64BE(data, offset + 3)
+        return { value: floatValue, consumed: 3 + NUMBER_BYTE_LENGTH }
+      }
+      // It's an integer (length is the value)
+      return { value: length, consumed: 3 }
+    }
     default:
       throw new Error(`Unknown type: ${type}`)
   }
@@ -185,6 +238,18 @@ function createUint16BE(value: number): Uint8Array {
 function readUint16BE(data: Uint8Array, offset: number): number {
   const view = new DataView(data.buffer, data.byteOffset + offset, 2)
   return view.getUint16(0, false)
+}
+
+function floatToBytes(value: number): Uint8Array {
+  const arr = new Uint8Array(NUMBER_BYTE_LENGTH)
+  const view = new DataView(arr.buffer)
+  view.setFloat64(0, value, false) // big-endian
+  return arr
+}
+
+function readFloat64BE(data: Uint8Array, offset: number): number {
+  const view = new DataView(data.buffer, data.byteOffset + offset, NUMBER_BYTE_LENGTH)
+  return view.getFloat64(0, false)
 }
 
 function concatUint8Arrays(arrays: Uint8Array[]): Uint8Array {

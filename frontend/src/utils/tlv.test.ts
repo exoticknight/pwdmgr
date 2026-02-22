@@ -16,7 +16,7 @@ function arraysEqual(a: Uint8Array, b: Uint8Array): boolean {
   return true
 }
 
-describe('TLV Serialization', () => {
+describe('tLV Serialization', () => {
   describe('null', () => {
     it('should serialize null', () => {
       const result = serialize(null)
@@ -34,6 +34,85 @@ describe('TLV Serialization', () => {
       const serialized = serialize(null)
       const deserialized = deserialize(serialized)
       expect(deserialized).toBeNull()
+    })
+  })
+
+  describe('boolean', () => {
+    it('should serialize true', () => {
+      const result = serialize(true)
+      // type(0x05) + length(0x00) + value(1)
+      expect(uint8ArrayToHex(result)).toBe('05 00 01')
+    })
+
+    it('should serialize false', () => {
+      const result = serialize(false)
+      // type(0x05) + length(0x00) + value(0)
+      expect(uint8ArrayToHex(result)).toBe('05 00 00')
+    })
+
+    it('should deserialize true', () => {
+      const data = new Uint8Array([0x05, 0x00, 0x01])
+      const result = deserialize(data)
+      expect(result).toBe(true)
+    })
+
+    it('should deserialize false', () => {
+      const data = new Uint8Array([0x05, 0x00, 0x00])
+      const result = deserialize(data)
+      expect(result).toBe(false)
+    })
+
+    it('should round-trip boolean', () => {
+      expect(deserialize(serialize(true))).toBe(true)
+      expect(deserialize(serialize(false))).toBe(false)
+    })
+  })
+
+  describe('number', () => {
+    it('should serialize zero as float', () => {
+      const result = serialize(0)
+      // type(0x06) + length(0x0000) + float bytes (8)
+      expect(result[0]).toBe(0x06) // TYPE_NUMBER
+      expect(result[1]).toBe(0x00) // length high
+      expect(result[2]).toBe(0x00) // length = 0 (float marker)
+      expect(result.byteLength).toBe(11) // 1 + 2 + 8
+    })
+
+    it('should serialize positive integer as float', () => {
+      const result = serialize(42)
+      // type(0x06) + length(0x0000) + float bytes (8)
+      expect(result[0]).toBe(0x06) // TYPE_NUMBER
+      expect(result[1]).toBe(0x00) // length high
+      expect(result[2]).toBe(0x00) // length = 0 (float marker)
+    })
+
+    it('should serialize max uint16 as float', () => {
+      const result = serialize(65535)
+      // type(0x06) + length(0x0000) + float bytes (8)
+      expect(result[0]).toBe(0x06) // TYPE_NUMBER
+      expect(result[1]).toBe(0x00) // length high
+      expect(result[2]).toBe(0x00) // length = 0 (float marker)
+    })
+
+    it('should deserialize number', () => {
+      // Use serialize to generate valid data, then deserialize
+      const data = serialize(42)
+      const result = deserialize(data)
+      expect(result).toBeCloseTo(42, 10)
+    })
+
+    it('should round-trip number', () => {
+      const testCases = [0, 1, 42, 100, 65535, -1, 3.14, 65536]
+      for (const testCase of testCases) {
+        const serialized = serialize(testCase)
+        const deserialized = deserialize(serialized)
+        if (typeof testCase === 'number' && !Number.isInteger(testCase)) {
+          expect(deserialized).toBeCloseTo(testCase, 10)
+        }
+        else {
+          expect(deserialized).toBe(testCase)
+        }
+      }
     })
   })
 
@@ -299,6 +378,34 @@ describe('TLV Serialization', () => {
   describe('error handling', () => {
     it('should throw on undefined', () => {
       expect(() => serialize(undefined as unknown as SerializableValue)).toThrow('Cannot serialize undefined')
+    })
+
+    it('should throw on string exceeding max length', () => {
+      const longString = 'a'.repeat(65536)
+      expect(() => serialize(longString)).toThrow('String too long')
+    })
+
+    it('should throw on Uint8Array exceeding max length', () => {
+      const longArray = new Uint8Array(65536)
+      expect(() => serialize(longArray)).toThrow('Uint8Array too long')
+    })
+
+    it('should throw on array exceeding max length', () => {
+      const longArray: SerializableValue[] = Array.from({ length: 65536 }, () => 'a')
+      expect(() => serialize(longArray)).toThrow('Array too long')
+    })
+
+    it('should throw on object exceeding max fields', () => {
+      const largeObj: Record<string, string> = {}
+      for (let i = 0; i < 65536; i++) {
+        largeObj[`key${i}`] = 'value'
+      }
+      expect(() => serialize(largeObj)).toThrow('Object too large')
+    })
+
+    it('should throw on object key exceeding max length', () => {
+      const longKey = 'a'.repeat(65536)
+      expect(() => serialize({ [longKey]: 'value' })).toThrow('Object key too long')
     })
 
     it('should throw on truncated data', () => {

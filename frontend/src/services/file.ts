@@ -61,7 +61,7 @@ export class FileService {
       keyData = deserializeKeyData(keyDataBytes)
 
       const userDataStart = keyDataStart + keyDataLength
-      userData = content.slice(userDataStart)
+      userData = content.subarray(userDataStart)
     }
     else {
       throw new Error(`Unsupported file version: ${version}`)

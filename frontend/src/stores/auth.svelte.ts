@@ -139,9 +139,9 @@ class Auth {
     this.#setMasterKey(masterKey)
     this.#setKeyData({
       password: {
-        encryptedMasterKey: keyData.recovery.encryptedMasterKey,
-        salt: keyData.recovery.salt,
-        iv: keyData.recovery.iv,
+        encryptedMasterKey: keyData.recovery.encryptedMasterKey.slice(),
+        salt: keyData.recovery.salt.slice(),
+        iv: keyData.recovery.iv.slice(),
       },
       recovery: {
         encryptedMasterKey: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),

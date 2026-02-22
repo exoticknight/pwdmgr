@@ -67,11 +67,18 @@ export function serialize(value: SerializableValue): Uint8Array {
     chunks.push(new Uint8Array([TYPE_BOOL, 0x00, value ? 1 : 0]))
   }
   else if (typeof value === 'number') {
-    // Always serialize as IEEE 754 double-precision float
-    // Use length = 0 as marker to indicate this is a number (not integer)
-    chunks.push(new Uint8Array([TYPE_NUMBER]))
-    chunks.push(createUint16BE(0))
-    chunks.push(floatToBytes(value))
+    // Optimize: non-negative integers (1-65535) can be stored directly in the length field
+    // length > 0 means integer value, length = 0 means IEEE 754 float (8 bytes)
+    if (Number.isInteger(value) && value >= 1 && value <= MAX_UINT16) {
+      // Integer: store value in length field (3 bytes total)
+      chunks.push(new Uint8Array([TYPE_NUMBER]))
+      chunks.push(createUint16BE(value))
+    } else {
+      // Float or out-of-range integer: use IEEE 754 double (11 bytes total)
+      chunks.push(new Uint8Array([TYPE_NUMBER]))
+      chunks.push(createUint16BE(0))
+      chunks.push(floatToBytes(value))
+    }
   }
   else if (value instanceof Uint8Array) {
     const length = value.byteLength
@@ -128,7 +135,15 @@ export function serialize(value: SerializableValue): Uint8Array {
  * Deserialize a value from Uint8Array (TLV format).
  */
 export function deserialize(data: Uint8Array): SerializableValue {
-  const { value } = deserializeRecursive(data, 0, 0)
+  const { value, consumed } = deserializeRecursive(data, 0, 0)
+
+  // Validate: ensure the entire input buffer was consumed
+  if (consumed !== data.byteLength) {
+    throw new Error(
+      `Input not fully consumed: parsed ${consumed} bytes, total ${data.byteLength} bytes`
+    )
+  }
+
   return value
 }
 

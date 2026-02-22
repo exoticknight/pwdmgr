@@ -21,10 +21,12 @@ TLV (Type-Length-Value) 是一种自描述的二进制序列化格式，每个�
 | Type ID | 数据类型 | Length 含义 | 说明 |
 |---------|----------|-------------|------|
 | 0x00 | Null | 0 | 空值/结束标记 |
-| 0x01 | Object | 字段个数 | 每个字段: key(string) + value(TLV) |
+| 0x01 | Object | 字段个数 | 每个字段: key_len(uint16) + key(string) + value(TLV) |
 | 0x02 | Array | 元素个数 | 每个元素: TLV |
 | 0x03 | Uint8Array | 数据字节数 | 原始二进制数据 |
 | 0x04 | String | UTF-8 字节数 | UTF-8 编码字符串 |
+
+> **注意**: Object 类型的 key 使用 length-prefixed 格式（uint16 长度 + UTF-8 字节），而非独立的 TLV 结构。
 
 ## 编码示例
 
@@ -50,9 +52,9 @@ TLV (Type-Length-Value) 是一种自描述的二进制序列化格式，每个�
 
 ### Object { "name": "test" }
 ```
-[0x01] [0x00, 0x01]  // 1 个字段
-  [0x00, 0x04] [6E 61 6D 65]  // key: "name" (4 字节)
-  [0x04] [0x00, 0x04] [74 65 73 74]  // value: "test" (4 字节)
+[0x01] [0x00, 0x01]              // type=Object, 1 field
+  [0x00, 0x04] [6E 61 6D 65]    // key_len=4, key="name" (UTF-8)
+  [0x04] [0x00, 0x04] [74 65 73 74]  // type=String, len=4, value="test"
 ```
 
 ## 扩展性

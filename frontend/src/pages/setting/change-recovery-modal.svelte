@@ -47,11 +47,7 @@
     isLoading = true
     try {
       code = await auth.enableRecovery()
-      // 自动保存
-      if (app.dbPath) {
-        await database.saveToFile(app.dbPath)
-        notification.success(i18n.t('notifications.saved'))
-      }
+      await autoSaveDatabase()
       step = 2
       isLoading = false
     }
@@ -66,17 +62,20 @@
     isLoading = true
     try {
       await auth.disableRecovery()
-      // 自动保存
-      if (app.dbPath) {
-        await database.saveToFile(app.dbPath)
-        notification.success(i18n.t('notifications.saved'))
-      }
+      await autoSaveDatabase()
       step = 2
       isLoading = false
     }
     catch (error) {
       console.error(error)
       errorMsg = i18n.t('errors.recoverError')
+    }
+  }
+
+  async function autoSaveDatabase() {
+    if (app.dbPath) {
+      await database.saveToFile(app.dbPath)
+      notification.success(i18n.t('notifications.saved'))
     }
   }
 

@@ -5,7 +5,8 @@
  *
  * Type IDs:
  * - 0x00: null
- * - 0x01: Object (field count: 2 bytes BE, each field: key(string) + value(TLV))
+ * - 0x01: Object (field count: 2 bytes BE)
+ *        Each field: [keyLength: 2 bytes BE] [key: n bytes UTF-8] [value: TLV]
  * - 0x02: Array (element count: 2 bytes BE, each element: TLV)
  * - 0x03: Uint8Array (data length: 2 bytes BE)
  * - 0x04: string (UTF-8 byte length: 2 bytes BE)

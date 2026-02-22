@@ -1,5 +1,5 @@
-import type { SerializableValue } from '@/utils/serialize'
-import { deserialize, serialize } from '@/utils/serialize'
+import type { SerializableValue } from '@/utils/tlv'
+import { deserialize, serialize } from '@/utils/tlv'
 
 /**
  * KeyData结构 (使用Object自描述的嵌套格式)

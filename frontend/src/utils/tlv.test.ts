@@ -1,6 +1,6 @@
-import type { SerializableValue } from '@/utils/serialize'
+import type { SerializableValue } from '@/utils/tlv'
 import { describe, expect, it } from 'vitest'
-import { deserialize, serialize } from '@/utils/serialize'
+import { deserialize, serialize } from '@/utils/tlv'
 
 function uint8ArrayToHex(arr: Uint8Array): string {
   return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join(' ')
@@ -16,7 +16,7 @@ function arraysEqual(a: Uint8Array, b: Uint8Array): boolean {
   return true
 }
 
-describe('tLV Serialization', () => {
+describe('TLV Serialization', () => {
   describe('null', () => {
     it('should serialize null', () => {
       const result = serialize(null)

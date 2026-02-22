@@ -57,7 +57,7 @@ export class FileService {
         throw new Error('Invalid v2 format: keyData length exceeds file size')
       }
 
-      const keyDataBytes = content.slice(keyDataStart, keyDataStart + keyDataLength)
+      const keyDataBytes = content.subarray(keyDataStart, keyDataStart + keyDataLength)
       keyData = deserializeKeyData(keyDataBytes)
 
       const userDataStart = keyDataStart + keyDataLength

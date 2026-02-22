@@ -30,6 +30,10 @@ const MAX_DEPTH = 64 // Maximum nesting depth to prevent stack overflow
 const MAX_UINT16 = 65535
 const NUMBER_BYTE_LENGTH = 8 // IEEE 754 double-precision
 
+// Reuse TextEncoder/TextDecoder instances to avoid GC pressure
+const textEncoder = new TextEncoder()
+const textDecoder = new TextDecoder()
+
 export type SerializableValue
   = | null
     | boolean
@@ -46,6 +50,13 @@ export function serialize(value: SerializableValue): Uint8Array {
   if (value === undefined) {
     throw new Error('Cannot serialize undefined')
   }
+  return serializeRecursive(value, 0)
+}
+
+function serializeRecursive(value: SerializableValue, depth: number): Uint8Array {
+  if (depth > MAX_DEPTH) {
+    throw new Error(`Maximum nesting depth exceeded: ${MAX_DEPTH}`)
+  }
 
   const chunks: Uint8Array[] = []
 
@@ -53,7 +64,7 @@ export function serialize(value: SerializableValue): Uint8Array {
     chunks.push(new Uint8Array([TYPE_NULL, 0x00, 0x00]))
   }
   else if (typeof value === 'string') {
-    const data = new TextEncoder().encode(value)
+    const data = textEncoder.encode(value)
     const length = data.byteLength
     if (length > MAX_UINT16) {
       throw new Error(`String too long: ${length} bytes, max is ${MAX_UINT16}`)
@@ -98,7 +109,7 @@ export function serialize(value: SerializableValue): Uint8Array {
     }
     const elementChunks: Uint8Array[] = []
     for (const item of value) {
-      elementChunks.push(serialize(item))
+      elementChunks.push(serializeRecursive(item, depth + 1))
     }
 
     chunks.push(new Uint8Array([TYPE_ARRAY]))
@@ -113,13 +124,13 @@ export function serialize(value: SerializableValue): Uint8Array {
     const fieldChunks: Uint8Array[] = []
 
     for (const key of keys) {
-      const keyData = new TextEncoder().encode(key)
+      const keyData = textEncoder.encode(key)
       if (keyData.byteLength > MAX_UINT16) {
         throw new Error(`Object key too long: ${keyData.byteLength} bytes, max is ${MAX_UINT16}`)
       }
       fieldChunks.push(createUint16BE(keyData.byteLength))
       fieldChunks.push(keyData)
-      fieldChunks.push(serialize(value[key]))
+      fieldChunks.push(serializeRecursive(value[key], depth + 1))
     }
 
     chunks.push(new Uint8Array([TYPE_OBJECT]))
@@ -174,7 +185,7 @@ function deserializeRecursive(
         throw new Error(`Unexpected end of data: type=${type}, length=${length}, offset=${offset}, total=${data.byteLength}`)
       }
       const stringData = data.subarray(offset + 3, offset + 3 + length)
-      const value = new TextDecoder().decode(stringData)
+      const value = textDecoder.decode(stringData)
       return { value, consumed: 3 + length }
     }
     case TYPE_UINT8_ARRAY: {
@@ -210,7 +221,7 @@ function deserializeRecursive(
           throw new Error(`Unexpected end of data: key length=${keyLength}, offset=${pos}, total=${data.byteLength}`)
         }
         const keyData = data.subarray(pos + 2, pos + 2 + keyLength)
-        const key = new TextDecoder().decode(keyData)
+        const key = textDecoder.decode(keyData)
         pos += 2 + keyLength
 
         const { value, consumed } = deserializeRecursive(data, pos, depth + 1)

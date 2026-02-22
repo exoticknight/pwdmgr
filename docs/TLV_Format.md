@@ -25,32 +25,59 @@ TLV (Type-Length-Value) 是一种自描述的二进制序列化格式，每个�
 | 0x02 | Array | 元素个数 | 每个元素: TLV |
 | 0x03 | Uint8Array | 数据字节数 | 原始二进制数据 |
 | 0x04 | String | UTF-8 字节数 | UTF-8 编码字符串 |
+| 0x05 | Boolean | 0 | 0=false, 1=true |
+| 0x06 | Number | IEEE 754 double (8 字节) | 支持所有 JavaScript 数字 |
 
-> **注意**: Object 类型的 key 使用 length-prefixed 格式（uint16 长度 + UTF-8 字节），而非独立的 TLV 结构。
+> **注意**:
+> - Object 类型的 key 使用 length-prefixed 格式（uint16 长度 + UTF-8 字节），而非独立的 TLV 结构
+> - String、Uint8Array、Array、Object 的长度/个数不能超过 65535
 
 ## 编码示例
 
 ### Null
+
 ```
 [0x00] [0x00, 0x00]
 ```
 
+### Boolean true
+
+```
+[0x05] [0x00, 0x01]
+```
+
+### Boolean false
+
+```
+[0x05] [0x00, 0x00]
+```
+
+### Number 42 (IEEE 754 double)
+
+```
+[0x06] [0x00, 0x00] [00 00 00 00 00 00 45 40]
+```
+
 ### String "hello"
+
 ```
 [0x04] [0x00, 0x05] [68 65 6C 6C 6F]
 ```
 
 ### Uint8Array (32 字节)
+
 ```
 [0x03] [0x00, 0x20] [32 字节数据...]
 ```
 
 ### Array [1, 2, 3] (假设用嵌套表示)
+
 ```
 [0x02] [0x00, 0x03] [TLV(1)] [TLV(2)] [TLV(3)]
 ```
 
 ### Object { "name": "test" }
+
 ```
 [0x01] [0x00, 0x01]              // type=Object, 1 field
   [0x00, 0x04] [6E 61 6D 65]    // key_len=4, key="name" (UTF-8)
@@ -59,12 +86,12 @@ TLV (Type-Length-Value) 是一种自描述的二进制序列化格式，每个�
 
 ## 扩展性
 
+已实现的类型：0x00-0x06
+
 后续可扩展的类型：
 
 | Type ID | 数据类型 | 说明 |
 |---------|----------|------|
-| 0x05 | Bool | 布尔值 |
-| 0x06 | Int | 整数 |
 | 0x07 | Float | 浮点数 |
 | ... | ... | 保留 |
 

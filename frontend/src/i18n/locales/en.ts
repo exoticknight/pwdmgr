@@ -6,6 +6,15 @@ export const en = {
       slogan: 'Secure • Simple • Local',
     },
 
+    // FIDO / Passkey
+    fido: {
+      authenticating: 'Authenticating with Passkey...',
+      selectDevice: 'Select Device',
+      usePasswordInstead: 'Use password instead',
+      verifyTitle: 'Passkey Verification',
+      selectDeviceToVerify: 'Select a device to verify',
+    },
+
     // Common UI elements
     common: {
       loading: 'Loading...',
@@ -335,6 +344,20 @@ export const en = {
         twoFactorAuthDescription: 'Require a TOTP code from your authenticator app when unlocking',
         twoFactorAuthEnableButton: 'Enable',
         twoFactorAuthDisableButton: 'Disable',
+
+        // FIDO / Passkey
+        fidoTitle: 'Passkey',
+        fidoEnabled: 'Enable Passkey Login',
+        fidoEnabledDescription: 'Use Passkey to log in to your vault',
+        fidoAsPrimary: 'Replace Master Password',
+        fidoAsPrimaryDescription: 'Use Passkey instead of password to log in',
+        fidoAsSecondFactor: 'Replace 2FA',
+        fidoAsSecondFactorDescription: 'Use Passkey instead of TOTP code',
+        fidoDevices: 'Registered Devices',
+        fidoDevicesEmpty: 'No devices registered',
+        fidoAddDevice: 'Add Device',
+        fidoEnterPassword: 'Enter Password to Secure Device',
+        fidoEnterPasswordDesc: 'Your device has been registered. Enter your master password to secure it.',
       },
 
       // Data settings

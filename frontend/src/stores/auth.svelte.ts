@@ -1,5 +1,6 @@
-import type { KeyData } from '@/types/crypto'
+import type { FidoDevice, KeyData } from '@/types/crypto'
 import { ENCRYPTION_CONFIG } from '@/consts/encryption'
+import * as fidoService from '@/services/fido'
 import { PasswordGenerator } from '@/utils/password-generator'
 import { equals } from '@/utils/uin8array'
 
@@ -16,10 +17,15 @@ class Auth {
   #keyData: KeyData | null = null
   #setKeyData(keyData: KeyData) {
     this.#keyData = keyData
+    this.#updateFidoDevicesList()
+  }
+
+  #updateFidoDevicesList() {
+    this.fidoDevicesList = this.#keyData?.fido?.devices?.map(d => ({ ...d })) ?? []
   }
 
   get keyData(): KeyData {
-    return {
+    const base: KeyData = {
       password: {
         salt: this.#keyData!.password.salt.slice(),
         iv: this.#keyData!.password.iv.slice(),
@@ -31,7 +37,23 @@ class Auth {
         encryptedMasterKey: this.#keyData!.recovery.encryptedMasterKey.slice(),
       },
     }
+    if (this.#keyData!.fido) {
+      base.fido = {
+        devices: this.#keyData!.fido.devices.map(d => ({
+          ...d,
+          encryptedMasterKey: d.encryptedMasterKey.slice(),
+        })),
+      }
+    }
+    return base
   }
+
+  get fidoDevices(): FidoDevice[] {
+    return this.#keyData?.fido?.devices ?? []
+  }
+
+  // 用于 UI 响应式的 FIDO 设备列表
+  fidoDevicesList = $state<FidoDevice[]>([])
 
   isAuthed = $state(false)
   isRecoveryEnabled = $state(false)
@@ -151,6 +173,119 @@ class Auth {
     })
     this.isAuthed = true
     this.isRecoveryEnabled = false
+  }
+
+  /**
+   * 使用 FIDO 设备验证
+   * @param device - FIDO 设备
+   * @param password - 主密码（用于解密 master key）
+   * @returns 验证是否成功
+   */
+  async authWithFido(device: FidoDevice, password: string): Promise<boolean> {
+    if (!this.#keyData?.fido?.devices) {
+      throw new Error('No FIDO devices registered')
+    }
+
+    // 查找设备
+    const foundDevice = this.#keyData.fido.devices.find(d => d.id === device.id)
+    if (!foundDevice) {
+      throw new Error('Device not found')
+    }
+
+    // 生成认证选项
+    const options = fidoService.generateAuthenticationOptions(foundDevice.credentialId)
+
+    try {
+      // 调用 WebAuthn 验证
+      const response = await fidoService.authenticate(options)
+
+      if (response.verified) {
+        // FIDO 签名验证成功
+        // 使用密码解密 master key
+        const masterKey = await this.#decrypt(
+          password,
+          foundDevice.passwordSalt,
+          foundDevice.passwordIv,
+          foundDevice.encryptedMasterKey,
+        )
+
+        if (masterKey) {
+          this.#setMasterKey(masterKey)
+          this.#setKeyData(this.#keyData)
+          this.isAuthed = true
+          return true
+        }
+      }
+      return false
+    }
+    catch (error) {
+      console.error('FIDO authentication failed:', error)
+      return false
+    }
+  }
+
+  /**
+   * 添加 FIDO 设备（注册新设备）
+   * 需要主密码来加密 master key
+   */
+  async addFidoDevice(
+    credentialId: string,
+    publicKey: string,
+    name: string,
+    password: string,
+  ): Promise<void> {
+    this.#mustAuthed()
+
+    // 用主密码加密 master key，存储到设备中
+    const salt = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.saltLength))
+    const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.ivLength))
+    const encryptedMasterKey = await this.#encrypt(password, salt, iv, this.#masterKey!)
+
+    const newDevice: FidoDevice = {
+      id: crypto.randomUUID(),
+      name,
+      credentialId,
+      publicKey,
+      createdAt: Date.now(),
+      passwordSalt: salt,
+      passwordIv: iv,
+      encryptedMasterKey,
+    }
+
+    if (!this.#keyData!.fido) {
+      this.#keyData!.fido = { devices: [] }
+    }
+
+    this.#keyData!.fido.devices.push(newDevice)
+    this.#updateFidoDevicesList()
+  }
+
+  /**
+   * 移除 FIDO 设备
+   */
+  async removeFidoDevice(deviceId: string): Promise<void> {
+    this.#mustAuthed()
+
+    if (!this.#keyData!.fido?.devices) {
+      return
+    }
+
+    const index = this.#keyData!.fido.devices.findIndex(d => d.id === deviceId)
+    if (index !== -1) {
+      this.#keyData!.fido.devices.splice(index, 1)
+      this.#updateFidoDevicesList()
+    }
+  }
+
+  /**
+   * 获取 FIDO 设备列表（不含敏感数据）
+   */
+  getFidoDevicesList(): Array<Pick<FidoDevice, 'id' | 'name' | 'createdAt'>> {
+    return (this.#keyData?.fido?.devices ?? []).map(d => ({
+      id: d.id,
+      name: d.name,
+      createdAt: d.createdAt,
+    }))
   }
 
   unauth() {

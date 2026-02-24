@@ -6,6 +6,15 @@ export const zh = {
       slogan: '安全 • 简单 • 本地',
     },
 
+    // FIDO / Passkey
+    fido: {
+      authenticating: '正在通过 Passkey 验证...',
+      selectDevice: '选择登录设备',
+      usePasswordInstead: '使用密码登录',
+      verifyTitle: 'Passkey 验证',
+      selectDeviceToVerify: '选择设备进行验证',
+    },
+
     // Common UI elements
     common: {
       loading: '加载中...',
@@ -335,6 +344,20 @@ export const zh = {
         twoFactorAuthDescription: '解锁时需要验证器应用中的TOTP代码',
         twoFactorAuthEnableButton: '启用',
         twoFactorAuthDisableButton: '禁用',
+
+        // FIDO / Passkey
+        fidoTitle: 'Passkey',
+        fidoEnabled: '启用 Passkey 登录',
+        fidoEnabledDescription: '使用 Passkey 登录您的密码库',
+        fidoAsPrimary: '替换主密码',
+        fidoAsPrimaryDescription: '使用 Passkey 替代密码直接登录',
+        fidoAsSecondFactor: '替换双重验证',
+        fidoAsSecondFactorDescription: '使用 Passkey 替代 TOTP 验证码',
+        fidoDevices: '已注册的设备',
+        fidoDevicesEmpty: '暂无已注册的设备',
+        fidoAddDevice: '添加设备',
+        fidoEnterPassword: '输入密码以保护设备',
+        fidoEnterPasswordDesc: '设备已注册成功，请输入主密码以安全保存。',
       },
 
       // 数据设置

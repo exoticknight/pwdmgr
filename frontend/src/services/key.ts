@@ -194,3 +194,15 @@ export function resetKeyService(): void {
     keyServiceInstance = null
   }
 }
+
+/**
+ * 使用密码解密数据（导出的版本，供外部使用）
+ */
+export async function decryptDataWithKey(
+  password: string,
+  salt: Uint8Array,
+  iv: Uint8Array,
+  encrypted: Uint8Array,
+): Promise<Uint8Array> {
+  return decrypt(password, salt, iv, encrypted)
+}

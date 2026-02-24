@@ -17,6 +17,7 @@
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
     "@mateothegreat/svelte5-router": "^2.15.3",
+    "@simplewebauthn/browser": "^13.2.2",
     "@types/d3-scale": "^4.0.9",
     "@types/d3-shape": "^3.1.7",
     "d3-scale": "^4.0.2",

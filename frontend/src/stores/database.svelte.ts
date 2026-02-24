@@ -99,6 +99,24 @@ class DatabaseStore {
     this.#initialize(dataFile)
   }
 
+  /**
+   * 从文件加载数据库（使用已解密的主密钥）
+   */
+  async loadFromFileWithMasterKey(file: FileStructure, masterKey: Uint8Array) {
+    try {
+      auth.authWithMasterKey(masterKey, file.keyData)
+    }
+    catch (error) {
+      console.error('Authentication error:', error)
+      throw error
+    }
+
+    const decryptedData = await auth.decryptData(file.userData)
+    const dataFile = JSON.parse(decryptedData) as DataFile
+
+    this.#initialize(dataFile)
+  }
+
   async loadFromRecovery(filePath: string, recoveryCode: string) {
     const content = await this.#ioService.readFile(filePath)
     const file = await this.#fileService.load(content)

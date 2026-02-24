@@ -6,6 +6,15 @@ export const ja = {
       slogan: 'セキュア • シンプル • ローカル',
     },
 
+    // FIDO / Passkey
+    fido: {
+      authenticating: 'パスキーで認証中...',
+      selectDevice: 'デバイスを選択',
+      usePasswordInstead: 'パスワードを使用',
+      verifyTitle: 'パスキー認証',
+      selectDeviceToVerify: '検証するデバイスを選択',
+    },
+
     // 共通UI要素
     common: {
       loading: '読み込み中...',
@@ -335,6 +344,20 @@ export const ja = {
         twoFactorAuthDescription: 'ロック解除時に認証アプリのTOTPコードを要求します',
         twoFactorAuthEnableButton: '有効にする',
         twoFactorAuthDisableButton: '無効にする',
+
+        // FIDO / Passkey
+        fidoTitle: 'パスキー',
+        fidoEnabled: 'パスキーログインを有効にする',
+        fidoEnabledDescription: 'パスキーでロックを解除',
+        fidoAsPrimary: 'マスターパスワードを置き換える',
+        fidoAsPrimaryDescription: 'パスキーをパスワードの代わりに使用',
+        fidoAsSecondFactor: '2FAを置き換える',
+        fidoAsSecondFactorDescription: 'パスキーをTOTPコードの代わりに使用',
+        fidoDevices: '登録済みデバイス',
+        fidoDevicesEmpty: '登録済みデバイスなし',
+        fidoAddDevice: 'デバイスを追加',
+        fidoEnterPassword: 'デバイスを保護するためにパスワードを入力',
+        fidoEnterPasswordDesc: 'デバイスが登録されました。マスターパスワードを入力して保護してください。',
       },
 
       // データ設定

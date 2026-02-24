@@ -27,5 +27,8 @@ export interface Setting {
     autoLock: boolean
     autoLockTime: number // in minutes
     twoFactorAuth?: TwoFactorAuthConfig
+    fidoEnabled: boolean
+    fidoAsPrimary: boolean
+    fidoAsSecondFactor: boolean
   }
 }

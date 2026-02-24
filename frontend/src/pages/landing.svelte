@@ -1,15 +1,15 @@
 <script lang='ts'>
-  import { FileLock, Plus } from '@lucide/svelte'
+  import { FileLock, Key, Plus } from '@lucide/svelte'
 
   import App2FAVerifyForm from '@/components/app-2fa-verify-form.svelte'
   import LanguageSelector from '@/components/language-selector.svelte'
 
   import WailsFileSelect from '@/components/wails-file-select.svelte'
+  import { authenticate, generateAuthenticationOptions, isSupported as isFidoSupported } from '@/services/fido'
   import { getFileService } from '@/services/file'
-
   import { getIoService } from '@/services/io'
-  import { app } from '@/stores/app.svelte'
 
+  import { app } from '@/stores/app.svelte'
   import { database } from '@/stores/database.svelte'
   import { i18n } from '@/stores/i18n.svelte'
   import { navigation } from '@/stores/navigation.svelte'
@@ -28,11 +28,156 @@
   let show2FAVerification = $state(false)
   let isNewDatabase = $state(false)
   let selectedFilePath = $state<string | null>(null)
+
+  // FIDO 相关状态
+  let fidoSupported = $state(false)
+  let fidoDevices = $state<Array<{ id: string, name: string }>>([])
+  let showFidoSelect = $state(false)
+  let isFidoAuthenticating = $state(false)
+  let currentKeyData = $state<any>(null)
+  let pendingFidoAuth = $state<{ deviceId: string } | null>(null)
+  let pendingFidoAsSecondFactor = $state(false)
+
   async function handleFileSelected(filePath: string) {
     isNewDatabase = false
     selectedFilePath = filePath
 
-    // proceed to show password input
+    // 读取文件获取 keyData（不解密）
+    try {
+      const content = await getIoService().readFile(filePath)
+      const file = await getFileService().load(content)
+      currentKeyData = file.keyData
+
+      // 检查 FIDO 设备
+      fidoDevices = file.keyData.fido?.devices?.map(d => ({ id: d.id, name: d.name })) ?? []
+      fidoSupported = isFidoSupported() && fidoDevices.length > 0
+
+      // 如果有 FIDO 设备且启用了，尝试自动认证
+      if (fidoSupported && setting.data.security.fidoEnabled) {
+        // 检查是否可以直接用 FIDO 登录（不需要密码）
+        if (setting.data.security.fidoAsPrimary) {
+          // 尝试自动 FIDO 认证
+          await tryFidoAuth()
+          return
+        }
+      }
+
+      // 否则显示密码输入
+      showPasswordInput = true
+    }
+    catch (error) {
+      console.error('Failed to read file:', error)
+      notification.error(i18n.t('messages.loadDatabaseFileFailed'))
+    }
+  }
+
+  // 尝试 FIDO 认证
+  async function tryFidoAuth() {
+    if (fidoDevices.length === 0) {
+      showPasswordInput = true
+      return
+    }
+
+    isFidoAuthenticating = true
+
+    try {
+      // 如果有多个设备，显示选择界面
+      if (fidoDevices.length > 1) {
+        showFidoSelect = true
+        isFidoAuthenticating = false
+        return
+      }
+
+      // 单设备直接认证
+      const device = fidoDevices[0]
+      await authenticateWithFido(device.id)
+    }
+    catch (error) {
+      console.error('FIDO authentication failed:', error)
+      // FIDO 失败，回退到密码输入
+      showPasswordInput = true
+    }
+    finally {
+      isFidoAuthenticating = false
+    }
+  }
+
+  // 使用指定设备进行 FIDO 认证
+  async function authenticateWithFido(deviceId: string) {
+    isFidoAuthenticating = true
+    showFidoSelect = false
+
+    try {
+      const device = currentKeyData.fido?.devices?.find((d: any) => d.id === deviceId)
+      if (!device) {
+        throw new Error('Device not found')
+      }
+
+      // 生成认证选项
+      const options = generateAuthenticationOptions(device.credentialId)
+
+      // 调用 WebAuthn 认证
+      const response = await authenticate(options)
+
+      // WebAuthn 验证成功（用户已通过设备验证）
+      if (response && response.id) {
+        // 检查是否是 fidoAsSecondFactor 模式（密码后用 FIDO 替代 2FA）
+        if (pendingFidoAsSecondFactor) {
+          // FIDO 验证成功，直接进入主页面
+          pendingFidoAsSecondFactor = false
+          route.navigate(navigation.visibleItems.at(0)?.route || Routes.ITEMS_ALL)
+          return
+        }
+
+        // 检查是否是 fidoAsPrimary 模式（不需要密码）
+        if (setting.data.security.fidoAsPrimary) {
+          // 直接用 FIDO 设备存储的 encryptedMasterKey 解密
+          // 需要读取文件获取设备信息
+          const content = await getIoService().readFile(selectedFilePath!)
+          const file = await getFileService().load(content)
+          const fidoDevice = file.keyData.fido?.devices?.find((d: any) => d.id === deviceId)
+
+          if (fidoDevice) {
+            // 这里需要密码来解密 master key，所以还是需要密码
+            // 但如果是真正的无密码模式，需要重新设计
+            // 暂时还是需要密码来解密
+            pendingFidoAuth = { deviceId }
+            showPasswordInput = true
+          }
+          else {
+            notification.error('Device not found in file')
+            showPasswordInput = true
+          }
+        }
+        else {
+          // 普通模式：保存待处理的 FIDO 认证信息，等待用户输入密码
+          pendingFidoAuth = { deviceId }
+          showPasswordInput = true
+        }
+      }
+      else {
+        notification.error('FIDO authentication failed')
+        showPasswordInput = true
+      }
+    }
+    catch (error: any) {
+      console.error('FIDO auth error:', error)
+      // 用户取消或失败，回退到密码
+      if (error.message?.includes('cancel') || error.name === 'NotAllowedError') {
+        showPasswordInput = true
+      }
+      else {
+        notification.error(error.message || 'FIDO authentication failed')
+        showPasswordInput = true
+      }
+    }
+    finally {
+      isFidoAuthenticating = false
+    }
+  }
+
+  function usePasswordInstead() {
+    showFidoSelect = false
     showPasswordInput = true
   }
   function handleFilesSelected(filePaths: string[]) {
@@ -80,11 +225,36 @@
       if (selectedFilePath) {
         const content = await getIoService().readFile(selectedFilePath)
         const file = await getFileService().load(content)
+
         // 检查恢复码是否启用（非零表示已启用）
         if (file.keyData.recovery?.encryptedMasterKey.some(b => b !== 0)) {
           isRecoverable = true
         }
-        await database.loadFromFile(file, password)
+
+        // 如果有 pending FIDO 认证，使用设备的 encryptedMasterKey
+        if (pendingFidoAuth) {
+          const device = file.keyData.fido?.devices?.find((d: any) => d.id === pendingFidoAuth.deviceId)
+          if (device) {
+            // 用密码解密设备的 encryptedMasterKey
+            const { decryptDataWithKey } = await import('@/services/key')
+            const masterKey = await decryptDataWithKey(
+              password,
+              device.passwordSalt,
+              device.passwordIv,
+              device.encryptedMasterKey,
+            )
+            await database.loadFromFileWithMasterKey(file, masterKey)
+            pendingFidoAuth = null
+          }
+          else {
+            // 设备找不到，回退到常规登录
+            await database.loadFromFile(file, password)
+          }
+        }
+        else {
+          await database.loadFromFile(file, password)
+        }
+
         app.dbPath = selectedFilePath
       }
       else if (isNewDatabase) {
@@ -92,9 +262,18 @@
         app.dbPath = ''
       }
 
-      // Check if 2FA is enabled (after DB decrypted and settings loaded)
+      // Check if 2FA or FIDO as second factor is enabled (after DB decrypted and settings loaded)
       const twoFactorAuth = setting.getSetting('security.twoFactorAuth')
-      if (twoFactorAuth?.enabled) {
+      const fidoAsSecondFactor = setting.data.security.fidoAsSecondFactor
+
+      if (fidoAsSecondFactor && fidoDevices.length > 0) {
+        // 使用 FIDO 替代 2FA
+        // 标记状态并触发 FIDO 认证
+        pendingFidoAsSecondFactor = true
+        await tryFidoAuth()
+        return
+      }
+      else if (twoFactorAuth?.enabled) {
         show2FAVerification = true
         return
       }
@@ -130,7 +309,35 @@
 
 <div class='landing-container'>
   <div class='landing-content'>
-    {#if show2FAVerification}
+    {#if isFidoAuthenticating}
+      <!-- FIDO 认证中 -->
+      <div class='verify-standalone'>
+        <div class='text-center'>
+          <div class='loading loading-spinner loading-lg mb-4'></div>
+          <p>{i18n.t('fido.authenticating')}</p>
+        </div>
+      </div>
+    {:else if showFidoSelect}
+      <!-- FIDO 设备选择 -->
+      <div class='verify-standalone'>
+        <h3 class='text-lg font-bold mb-4'>{i18n.t('fido.selectDevice')}</h3>
+        <div class='space-y-2'>
+          {#each fidoDevices as device}
+            <button
+              class='btn btn-outline w-full justify-start'
+              onclick={() => authenticateWithFido(device.id)}
+            >
+              <Key size={18} />
+              {device.name}
+            </button>
+          {/each}
+        </div>
+        <div class='divider'></div>
+        <button class='btn btn-ghost w-full' onclick={usePasswordInstead}>
+          {i18n.t('fido.usePasswordInstead')}
+        </button>
+      </div>
+    {:else if show2FAVerification}
       <div class='verify-standalone'>
         <App2FAVerifyForm onSuccess={handle2FAVerified} />
       </div>

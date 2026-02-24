@@ -14,5 +14,8 @@ export const DEFAULT_SETTINGS: Setting = {
   security: {
     autoLock: false,
     autoLockTime: 5,
+    fidoEnabled: false,
+    fidoAsPrimary: false,
+    fidoAsSecondFactor: false,
   },
 }

@@ -166,7 +166,7 @@ class Auth {
         iv: keyData.recovery.iv.slice(),
       },
       recovery: {
-        value: new Uint8Array(ENCRYPTION_CONFIG.valueLength),
+        value: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
         salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
         iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
       },
@@ -372,12 +372,12 @@ class Auth {
         password: {
           salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
           iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
-          value: new Uint8Array(ENCRYPTION_CONFIG.valueLength),
+          value: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
         },
         recovery: {
           salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
           iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
-          value: new Uint8Array(ENCRYPTION_CONFIG.valueLength),
+          value: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
         },
       }
     }

@@ -13,6 +13,8 @@ export const zh = {
       usePasswordInstead: '使用密码登录',
       verifyTitle: 'Passkey 验证',
       selectDeviceToVerify: '选择设备进行验证',
+      deviceNotFound: '文件中未找到设备',
+      authFailed: 'FIDO 验证失败',
     },
 
     // Common UI elements
@@ -22,6 +24,11 @@ export const zh = {
       file: '文件',
       or: '或者',
       exit: '退出',
+      delete: '删除',
+      cancel: '取消',
+      confirm: '确认',
+      on: '开启',
+      off: '关闭',
     },
 
     navigation: {
@@ -338,12 +345,8 @@ export const zh = {
         changePasswordDescription: '更改用于访问此密码库的主密码',
         recoveryCode: '恢复代码',
         recoveryCodeDescription: '忘记密码时使用恢复代码重置密码',
-        recoveryCodeButtonText: '启用',
-        recoveryCodeEnabledButtonText: '禁用',
         twoFactorAuth: '双重验证',
         twoFactorAuthDescription: '解锁时需要验证器应用中的TOTP代码',
-        twoFactorAuthEnableButton: '启用',
-        twoFactorAuthDisableButton: '禁用',
 
         // FIDO / Passkey
         fidoTitle: 'Passkey',
@@ -358,6 +361,16 @@ export const zh = {
         fidoAddDevice: '添加设备',
         fidoEnterPassword: '输入密码以保护设备',
         fidoEnterPasswordDesc: '设备已注册成功，请输入主密码以安全保存。',
+        fidoDeviceName: '设备',
+        fidoRegistrationCancelled: '注册已取消或失败',
+        fidoRegisterFailed: '注册设备失败',
+        fidoPasswordRequired: '需要输入密码',
+        fidoDeviceAdded: '设备添加成功',
+        fidoDeviceSaveFailed: '保存设备失败',
+        fidoDeviceRemoved: '设备已删除',
+        fidoDeviceRemoveFailed: '删除设备失败',
+        fidoShowDevices: '查看设备',
+        fidoVerifyToShow: '验证后查看设备',
       },
 
       // 数据设置
@@ -525,8 +538,8 @@ export const zh = {
         copyBackupCodes: '复制备用码',
         copied: '已复制！',
         completeButton: '完成',
-        enabledSuccess: '双重验证已启用。',
-        disabledSuccess: '双重验证已禁用。',
+        turnedOnSuccess: '双重验证已开启。',
+        turnedOffSuccess: '双重验证已关闭。',
       },
       disable: {
         title: '禁用双重验证',

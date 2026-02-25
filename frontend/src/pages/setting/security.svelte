@@ -23,10 +23,28 @@
   let passwordForFido = $state('')
   let isRegistering = $state(false)
 
+  // 设备列表验证状态
+  let showDevicesListVerified = $state(false)
+
   function closePasswordModal() {
     showPasswordModal = false
     pendingCredential = null
     passwordForFido = ''
+  }
+
+  // 验证通过后显示设备列表
+  async function verifyAndShowDevices() {
+    const fidoDevices = auth.fidoDevicesList
+    if (fidoDevices.length === 0) {
+      showDevicesListVerified = true
+      return
+    }
+
+    // 使用twofa gate进行验证
+    const ok = await twoFAGate.verify()
+    if (ok) {
+      showDevicesListVerified = true
+    }
   }
 
   // 直接调起 WebAuthn 注册
@@ -34,14 +52,14 @@
     isRegistering = true
     try {
       // 直接调用 WebAuthn 注册（系统会弹出 Passkey 注册界面）
-      const deviceName = `Device ${(auth.fidoDevicesList.length + 1)}`
+      const deviceName = `${i18n.t('setting.security.fidoDeviceName')} ${(auth.fidoDevicesList.length + 1)}`
       const options = generateRegistrationOptions('bei3mat6', 'default-user', deviceName)
       const response = await register(options)
 
       // 检查注册是否成功
       if (!response?.id || !response?.response?.publicKey) {
         console.warn('Registration was cancelled or failed:', response)
-        notification.error('Registration cancelled or failed')
+        notification.error(i18n.t('setting.security.fidoRegistrationCancelled'))
         return
       }
 
@@ -58,7 +76,7 @@
     }
     catch (error) {
       console.error('Failed to register device:', error)
-      notification.error('Failed to register device')
+      notification.error(i18n.t('setting.security.fidoRegisterFailed'))
     }
     finally {
       isRegistering = false
@@ -66,9 +84,9 @@
   }
 
   // 输入密码后完成添加设备
-  async function confirmAddDevice(markUnsaved: () => void) {
+  async function confirmAddDevice(_markUnsaved: () => void) {
     if (!passwordForFido || !pendingCredential) {
-      notification.error('Password required')
+      notification.error(i18n.t('setting.security.fidoPasswordRequired'))
       return
     }
 
@@ -81,64 +99,99 @@
         passwordForFido,
       )
 
-      // 保存数据库
+      // 自动保存数据库
       await database.saveToFile(app.dbPath)
 
       closePasswordModal()
-      notification.success('Device added successfully')
-      markUnsaved()
+      notification.success(i18n.t('setting.security.fidoDeviceAdded'))
     }
     catch (error) {
       console.error('Failed to save device:', error)
-      notification.error('Failed to save device')
+      notification.error(i18n.t('setting.security.fidoDeviceSaveFailed'))
     }
   }
 
-  function handleAutoLockChange(event: Event, markUnsaved: () => void) {
+  function handleAutoLockChange(event: Event, _markUnsaved: () => void) {
     const checkbox = event.target as HTMLInputElement
 
     setting.updateSetting('security.autoLock', checkbox.checked)
-    markUnsaved()
+    // 自动保存
+    void database.saveToFile(app.dbPath)
   }
 
-  function handleAutoLockTimeChange(event: Event, markUnsaved: () => void) {
+  function handleAutoLockTimeChange(event: Event, _markUnsaved: () => void) {
     const select = event.target as HTMLSelectElement
     const selectedTime = Number(select.value)
 
     setting.updateSetting('security.autoLockTime', selectedTime)
-    markUnsaved()
+    // 自动保存
+    void database.saveToFile(app.dbPath)
   }
 
-  // FIDO 开关处理
-  function handleFidoEnabledChange(event: Event, markUnsaved: () => void) {
-    const checkbox = event.target as HTMLInputElement
-    setting.updateSetting('security.fidoEnabled', checkbox.checked)
-    markUnsaved()
+  // FIDO 开关处理 - 关闭时需要验证，开启不需要
+  async function handleFidoEnabledToggle(_markUnsaved: () => void) {
+    const currentValue = setting.data.security.fidoEnabled
+    const newValue = !currentValue // 切换状态
+
+    // 关闭FIDO需要验证
+    if (!newValue) {
+      const ok = await twoFAGate.verify()
+      if (!ok) {
+        return // 验证失败，不更新状态，UI保持原状
+      }
+    }
+
+    // 更新设置
+    setting.updateSetting('security.fidoEnabled', newValue)
+    // 自动保存
+    void database.saveToFile(app.dbPath)
   }
 
-  function handleFidoAsPrimaryChange(event: Event, markUnsaved: () => void) {
-    const checkbox = event.target as HTMLInputElement
-    setting.updateSetting('security.fidoAsPrimary', checkbox.checked)
-    markUnsaved()
+  async function handleFidoAsPrimaryToggle(_markUnsaved: () => void) {
+    const currentValue = setting.data.security.fidoAsPrimary
+    const newValue = !currentValue
+
+    // 关闭需要验证
+    if (!newValue) {
+      const ok = await twoFAGate.verify()
+      if (!ok) {
+        return
+      }
+    }
+
+    setting.updateSetting('security.fidoAsPrimary', newValue)
+    // 自动保存
+    void database.saveToFile(app.dbPath)
   }
 
-  function handleFidoAsSecondFactorChange(event: Event, markUnsaved: () => void) {
-    const checkbox = event.target as HTMLInputElement
-    setting.updateSetting('security.fidoAsSecondFactor', checkbox.checked)
-    markUnsaved()
+  async function handleFidoAsSecondFactorToggle(_markUnsaved: () => void) {
+    const currentValue = setting.data.security.fidoAsSecondFactor
+    const newValue = !currentValue
+
+    // 关闭需要验证
+    if (!newValue) {
+      const ok = await twoFAGate.verify()
+      if (!ok) {
+        return
+      }
+    }
+
+    setting.updateSetting('security.fidoAsSecondFactor', newValue)
+    // 自动保存
+    void database.saveToFile(app.dbPath)
   }
 
   // 删除设备
-  async function handleRemoveDevice(deviceId: string, markUnsaved: () => void) {
+  async function handleRemoveDevice(deviceId: string, _markUnsaved: () => void) {
     try {
       await auth.removeFidoDevice(deviceId)
+      // 自动保存
       await database.saveToFile(app.dbPath)
-      notification.success('Device removed')
-      markUnsaved()
+      notification.success(i18n.t('setting.security.fidoDeviceRemoved'))
     }
     catch (error) {
       console.error('Failed to remove device:', error)
-      notification.error('Failed to remove device')
+      notification.error(i18n.t('setting.security.fidoDeviceRemoveFailed'))
     }
   }
 
@@ -179,7 +232,7 @@
   }
   function handle2FAComplete() {
     show2FASetupModal = false
-    notification.success(i18n.t('app2fa.setup.enabledSuccess'))
+    notification.success(i18n.t('app2fa.setup.turnedOnSuccess'))
   }
 
   let show2FADisableModal = $state(false)
@@ -191,7 +244,7 @@
   }
   function handle2FADisabled() {
     show2FADisableModal = false
-    notification.success(i18n.t('app2fa.setup.disabledSuccess'))
+    notification.success(i18n.t('app2fa.setup.turnedOffSuccess'))
   }
 </script>
 
@@ -258,11 +311,7 @@
           class:btn-error={auth.isRecoveryEnabled}
           onclick={handleRecoveryCodeOpen}
         >
-          {#if auth.isRecoveryEnabled}
-            {i18n.t('setting.security.recoveryCodeEnabledButtonText')}
-          {:else}
-            {i18n.t('setting.security.recoveryCodeButtonText')}
-          {/if}
+          {auth.isRecoveryEnabled ? i18n.t('common.off') : i18n.t('common.on')}
         </button>
       {/snippet}
     </SettingItem>
@@ -278,7 +327,7 @@
             class='btn btn-outline btn-error'
             onclick={open2FADisable}
           >
-            {i18n.t('setting.security.twoFactorAuthDisableButton')}
+            {i18n.t('common.off')}
           </button>
         {:else}
           <button
@@ -286,7 +335,7 @@
             class='btn btn-outline'
             onclick={open2FASetup}
           >
-            {i18n.t('setting.security.twoFactorAuthEnableButton')}
+            {i18n.t('common.on')}
           </button>
         {/if}
       {/snippet}
@@ -303,13 +352,14 @@
         description={i18n.t('setting.security.fidoEnabledDescription')}
       >
         {#snippet control()}
-          <input
-            id='fido-enabled-toggle'
-            type='checkbox'
-            class='toggle'
-            checked={setting.data.security.fidoEnabled}
-            onchange={e => handleFidoEnabledChange(e, markUnsaved)}
-          />
+          <button
+            type='button'
+            class='btn btn-outline'
+            class:btn-error={setting.data.security.fidoEnabled}
+            onclick={() => handleFidoEnabledToggle(markUnsaved)}
+          >
+            {setting.data.security.fidoEnabled ? i18n.t('common.off') : i18n.t('common.on')}
+          </button>
         {/snippet}
       </SettingItem>
 
@@ -319,13 +369,14 @@
           description={i18n.t('setting.security.fidoAsPrimaryDescription')}
         >
           {#snippet control()}
-            <input
-              id='fido-as-primary-toggle'
-              type='checkbox'
-              class='toggle'
-              checked={setting.data.security.fidoAsPrimary}
-              onchange={e => handleFidoAsPrimaryChange(e, markUnsaved)}
-            />
+            <button
+              type='button'
+              class='btn btn-outline'
+              class:btn-error={setting.data.security.fidoAsPrimary}
+              onclick={() => handleFidoAsPrimaryToggle(markUnsaved)}
+            >
+              {setting.data.security.fidoAsPrimary ? i18n.t('common.off') : i18n.t('common.on')}
+            </button>
           {/snippet}
         </SettingItem>
 
@@ -334,49 +385,65 @@
           description={i18n.t('setting.security.fidoAsSecondFactorDescription')}
         >
           {#snippet control()}
-            <input
-              id='fido-as-second-factor-toggle'
-              type='checkbox'
-              class='toggle'
-              checked={setting.data.security.fidoAsSecondFactor}
-              onchange={e => handleFidoAsSecondFactorChange(e, markUnsaved)}
-            />
+            <button
+              type='button'
+              class='btn btn-outline'
+              class:btn-error={setting.data.security.fidoAsSecondFactor}
+              onclick={() => handleFidoAsSecondFactorToggle(markUnsaved)}
+            >
+              {setting.data.security.fidoAsSecondFactor ? i18n.t('common.off') : i18n.t('common.on')}
+            </button>
           {/snippet}
         </SettingItem>
 
         <!-- 已注册的设备列表 -->
         <div class='fido-devices'>
-          <div class='fido-devices-header'>
-            {i18n.t('setting.security.fidoDevices')}
-          </div>
-          {#if auth.fidoDevicesList.length === 0}
-            <p class='fido-devices-empty'>
-              {i18n.t('setting.security.fidoDevicesEmpty')}
-            </p>
-          {:else}
-            {#each auth.fidoDevicesList as device}
-              <div class='fido-device-item'>
-                <span class='fido-device-name'>{device.name}</span>
-                <button
-                  type='button'
-                  class='btn btn-outline btn-sm btn-error'
-                  onclick={() => handleRemoveDevice(device.id, markUnsaved)}
-                >
-                  {i18n.t('common.delete')}
-                </button>
-              </div>
-            {/each}
-          {/if}
-          <button
-            type='button'
-            class='btn btn-outline btn-sm mt-2'
-            onclick={() => startAddDevice(() => {})}
-          >
-            {#if isRegistering}
-              <span class='loading loading-spinner loading-sm'></span>
+          {#if showDevicesListVerified}
+            <!-- 验证通过后显示设备列表 -->
+            <div class='fido-devices-header'>
+              {i18n.t('setting.security.fidoDevices')}
+            </div>
+            {#if auth.fidoDevicesList.length === 0}
+              <p class='fido-devices-empty'>
+                {i18n.t('setting.security.fidoDevicesEmpty')}
+              </p>
+            {:else}
+              {#each auth.fidoDevicesList as device}
+                <div class='fido-device-item'>
+                  <span class='fido-device-name'>{device.name}</span>
+                  <button
+                    type='button'
+                    class='btn btn-outline btn-sm btn-error'
+                    onclick={() => handleRemoveDevice(device.id, markUnsaved)}
+                  >
+                    {i18n.t('common.delete')}
+                  </button>
+                </div>
+              {/each}
             {/if}
-            {i18n.t('setting.security.fidoAddDevice')}
-          </button>
+            <button
+              type='button'
+              class='btn btn-outline btn-sm mt-2'
+              onclick={() => startAddDevice(() => {})}
+            >
+              {#if isRegistering}
+                <span class='loading loading-spinner loading-sm'></span>
+              {/if}
+              {i18n.t('setting.security.fidoAddDevice')}
+            </button>
+          {:else}
+            <!-- 未验证时显示查看按钮 -->
+            <button
+              type='button'
+              class='btn btn-outline btn-sm'
+              onclick={() => verifyAndShowDevices()}
+            >
+              {i18n.t('setting.security.fidoShowDevices')}
+            </button>
+            <p class='text-xs text-base-content/50 mt-1'>
+              {i18n.t('setting.security.fidoVerifyToShow')}
+            </p>
+          {/if}
         </div>
       {/if}
     {/snippet}

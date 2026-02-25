@@ -13,6 +13,8 @@ export const ja = {
       usePasswordInstead: 'パスワードを使用',
       verifyTitle: 'パスキー認証',
       selectDeviceToVerify: '検証するデバイスを選択',
+      deviceNotFound: 'デバイスが見つかりません',
+      authFailed: 'パスキー認証に失敗しました',
     },
 
     // 共通UI要素
@@ -22,6 +24,11 @@ export const ja = {
       file: 'ファイル',
       or: 'または',
       exit: '終了',
+      delete: '削除',
+      cancel: 'キャンセル',
+      confirm: '確認',
+      on: 'オンにする',
+      off: 'オフにする',
     },
 
     navigation: {
@@ -338,12 +345,8 @@ export const ja = {
         changePasswordDescription: 'このパスワードデータベースにアクセスするためのマスターパスワードを変更',
         recoveryCode: 'リカバリーコード',
         recoveryCodeDescription: 'パスワードを忘れた場合にリカバリーコードを使用してパスワードをリセットできます',
-        recoveryCodeButtonText: '有効にする',
-        recoveryCodeEnabledButtonText: '無効にする',
         twoFactorAuth: '二要素認証',
         twoFactorAuthDescription: 'ロック解除時に認証アプリのTOTPコードを要求します',
-        twoFactorAuthEnableButton: '有効にする',
-        twoFactorAuthDisableButton: '無効にする',
 
         // FIDO / Passkey
         fidoTitle: 'パスキー',
@@ -358,6 +361,16 @@ export const ja = {
         fidoAddDevice: 'デバイスを追加',
         fidoEnterPassword: 'デバイスを保護するためにパスワードを入力',
         fidoEnterPasswordDesc: 'デバイスが登録されました。マスターパスワードを入力して保護してください。',
+        fidoDeviceName: 'デバイス',
+        fidoRegistrationCancelled: '登録がキャンセルされたか失敗しました',
+        fidoRegisterFailed: 'デバイスの登録に失敗しました',
+        fidoPasswordRequired: 'パスワードが必要です',
+        fidoDeviceAdded: 'デバイスが正常に追加されました',
+        fidoDeviceSaveFailed: 'デバイスの保存に失敗しました',
+        fidoDeviceRemoved: 'デバイスが削除されました',
+        fidoDeviceRemoveFailed: 'デバイスの削除に失敗しました',
+        fidoShowDevices: 'デバイスを表示',
+        fidoVerifyToShow: '確認してデバイスを表示',
       },
 
       // データ設定
@@ -525,8 +538,8 @@ export const ja = {
         copyBackupCodes: 'バックアップコードをコピー',
         copied: 'コピーしました！',
         completeButton: '完了',
-        enabledSuccess: '二要素認証が有効になりました。',
-        disabledSuccess: '二要素認証が無効になりました。',
+        turnedOnSuccess: '二要素認証がオンになりました。',
+        turnedOffSuccess: '二要素認証がオフになりました。',
       },
       disable: {
         title: '二要素認証を無効にする',

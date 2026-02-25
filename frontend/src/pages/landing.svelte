@@ -145,7 +145,7 @@
             showPasswordInput = true
           }
           else {
-            notification.error('Device not found in file')
+            notification.error(i18n.t('fido.deviceNotFound'))
             showPasswordInput = true
           }
         }
@@ -156,7 +156,7 @@
         }
       }
       else {
-        notification.error('FIDO authentication failed')
+        notification.error(i18n.t('fido.authFailed'))
         showPasswordInput = true
       }
     }
@@ -167,7 +167,7 @@
         showPasswordInput = true
       }
       else {
-        notification.error(error.message || 'FIDO authentication failed')
+        notification.error(error.message || i18n.t('fido.authFailed'))
         showPasswordInput = true
       }
     }

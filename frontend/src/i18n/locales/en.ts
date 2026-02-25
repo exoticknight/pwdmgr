@@ -13,6 +13,8 @@ export const en = {
       usePasswordInstead: 'Use password instead',
       verifyTitle: 'Passkey Verification',
       selectDeviceToVerify: 'Select a device to verify',
+      deviceNotFound: 'Device not found in file',
+      authFailed: 'FIDO authentication failed',
     },
 
     // Common UI elements
@@ -22,6 +24,11 @@ export const en = {
       file: 'File',
       or: 'or',
       exit: 'Exit',
+      delete: 'Delete',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+      on: 'Turn On',
+      off: 'Turn Off',
     },
 
     navigation: {
@@ -338,12 +345,8 @@ export const en = {
         changePasswordDescription: 'Change the master password used to access this password database',
         recoveryCode: 'Recovery Code',
         recoveryCodeDescription: 'Enable recovery code to reset password if forgotten',
-        recoveryCodeButtonText: 'Enable',
-        recoveryCodeEnabledButtonText: 'Disable',
         twoFactorAuth: 'Two-Factor Authentication',
         twoFactorAuthDescription: 'Require a TOTP code from your authenticator app when unlocking',
-        twoFactorAuthEnableButton: 'Enable',
-        twoFactorAuthDisableButton: 'Disable',
 
         // FIDO / Passkey
         fidoTitle: 'Passkey',
@@ -358,6 +361,16 @@ export const en = {
         fidoAddDevice: 'Add Device',
         fidoEnterPassword: 'Enter Password to Secure Device',
         fidoEnterPasswordDesc: 'Your device has been registered. Enter your master password to secure it.',
+        fidoDeviceName: 'Device',
+        fidoRegistrationCancelled: 'Registration cancelled or failed',
+        fidoRegisterFailed: 'Failed to register device',
+        fidoPasswordRequired: 'Password required',
+        fidoDeviceAdded: 'Device added successfully',
+        fidoDeviceSaveFailed: 'Failed to save device',
+        fidoDeviceRemoved: 'Device removed',
+        fidoDeviceRemoveFailed: 'Failed to remove device',
+        fidoShowDevices: 'View Devices',
+        fidoVerifyToShow: 'Verify to view devices',
       },
 
       // Data settings
@@ -525,8 +538,8 @@ export const en = {
         copyBackupCodes: 'Copy Backup Codes',
         copied: 'Copied!',
         completeButton: 'Done',
-        enabledSuccess: 'Two-factor authentication has been enabled.',
-        disabledSuccess: 'Two-factor authentication has been disabled.',
+        turnedOnSuccess: 'Two-factor authentication has been turned on.',
+        turnedOffSuccess: 'Two-factor authentication has been turned off.',
       },
       disable: {
         title: 'Disable Two-Factor Authentication',

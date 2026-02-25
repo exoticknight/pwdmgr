@@ -14,21 +14,23 @@ export interface FidoDevice {
   aaguid?: string
   createdAt?: number
   // 加密的 master key（用主密码加密）
-  passwordSalt: Uint8Array
-  passwordIv: Uint8Array
-  encryptedMasterKey: Uint8Array
+  salt: Uint8Array
+  iv: Uint8Array
+  value: Uint8Array
 }
 
 export interface KeyData {
   password: {
     salt: Uint8Array
     iv: Uint8Array
-    encryptedMasterKey: Uint8Array
+    /** 加密的 master key */
+    value: Uint8Array
   }
   recovery: {
     salt: Uint8Array
     iv: Uint8Array
-    encryptedMasterKey: Uint8Array
+    /** 加密的 master key */
+    value: Uint8Array
   }
   fido?: {
     devices: FidoDevice[]

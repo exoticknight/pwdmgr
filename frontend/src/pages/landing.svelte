@@ -131,7 +131,7 @@
 
         // 检查是否是 fidoAsPrimary 模式（不需要密码）
         if (setting.data.security.fidoAsPrimary) {
-          // 直接用 FIDO 设备存储的 encryptedMasterKey 解密
+          // 直接用 FIDO 设备存储的 value 解密
           // 需要读取文件获取设备信息
           const content = await getIoService().readFile(selectedFilePath!)
           const file = await getFileService().load(content)
@@ -227,21 +227,21 @@
         const file = await getFileService().load(content)
 
         // 检查恢复码是否启用（非零表示已启用）
-        if (file.keyData.recovery?.encryptedMasterKey.some(b => b !== 0)) {
+        if (file.keyData.recovery?.value.some(b => b !== 0)) {
           isRecoverable = true
         }
 
-        // 如果有 pending FIDO 认证，使用设备的 encryptedMasterKey
+        // 如果有 pending FIDO 认证，使用设备的 value
         if (pendingFidoAuth) {
           const device = file.keyData.fido?.devices?.find((d: any) => d.id === pendingFidoAuth.deviceId)
           if (device) {
-            // 用密码解密设备的 encryptedMasterKey
+            // 用密码解密设备的 value
             const { decryptDataWithKey } = await import('@/services/key')
             const masterKey = await decryptDataWithKey(
               password,
-              device.passwordSalt,
-              device.passwordIv,
-              device.encryptedMasterKey,
+              device.salt,
+              device.iv,
+              device.value,
             )
             await database.loadFromFileWithMasterKey(file, masterKey)
             pendingFidoAuth = null

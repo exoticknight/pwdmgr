@@ -29,19 +29,19 @@ class Auth {
       password: {
         salt: this.#keyData!.password.salt.slice(),
         iv: this.#keyData!.password.iv.slice(),
-        encryptedMasterKey: this.#keyData!.password.encryptedMasterKey.slice(),
+        value: this.#keyData!.password.value.slice(),
       },
       recovery: {
         salt: this.#keyData!.recovery.salt.slice(),
         iv: this.#keyData!.recovery.iv.slice(),
-        encryptedMasterKey: this.#keyData!.recovery.encryptedMasterKey.slice(),
+        value: this.#keyData!.recovery.value.slice(),
       },
     }
     if (this.#keyData!.fido) {
       base.fido = {
         devices: this.#keyData!.fido.devices.map(d => ({
           ...d,
-          encryptedMasterKey: d.encryptedMasterKey.slice(),
+          value: d.value.slice(),
         })),
       }
     }
@@ -121,13 +121,13 @@ class Auth {
       password,
       keyData.password.salt,
       keyData.password.iv,
-      keyData.password.encryptedMasterKey,
+      keyData.password.value,
     )
     this.#setMasterKey(masterKey)
     this.#setKeyData(keyData)
     this.isAuthed = true
 
-    if (keyData.recovery.encryptedMasterKey.some(b => b !== 0)) {
+    if (keyData.recovery.value.some(b => b !== 0)) {
       this.isRecoveryEnabled = true
     }
   }
@@ -137,7 +137,7 @@ class Auth {
       password,
       keyData.password.salt,
       keyData.password.iv,
-      keyData.password.encryptedMasterKey,
+      keyData.password.value,
     )
   }
 
@@ -146,7 +146,7 @@ class Auth {
     this.#setKeyData(keyData)
     this.isAuthed = true
 
-    if (keyData.recovery.encryptedMasterKey.some(b => b !== 0)) {
+    if (keyData.recovery.value.some(b => b !== 0)) {
       this.isRecoveryEnabled = true
     }
   }
@@ -156,17 +156,17 @@ class Auth {
       code,
       keyData.recovery.salt,
       keyData.recovery.iv,
-      keyData.recovery.encryptedMasterKey,
+      keyData.recovery.value,
     )
     this.#setMasterKey(masterKey)
     this.#setKeyData({
       password: {
-        encryptedMasterKey: keyData.recovery.encryptedMasterKey.slice(),
+        value: keyData.recovery.value.slice(),
         salt: keyData.recovery.salt.slice(),
         iv: keyData.recovery.iv.slice(),
       },
       recovery: {
-        encryptedMasterKey: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
+        value: new Uint8Array(ENCRYPTION_CONFIG.valueLength),
         salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
         iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
       },
@@ -204,9 +204,9 @@ class Auth {
         // 使用密码解密 master key
         const masterKey = await this.#decrypt(
           password,
-          foundDevice.passwordSalt,
-          foundDevice.passwordIv,
-          foundDevice.encryptedMasterKey,
+          foundDevice.salt,
+          foundDevice.iv,
+          foundDevice.value,
         )
 
         if (masterKey) {
@@ -239,7 +239,7 @@ class Auth {
     // 用主密码加密 master key，存储到设备中
     const salt = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.saltLength))
     const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.ivLength))
-    const encryptedMasterKey = await this.#encrypt(password, salt, iv, this.#masterKey!)
+    const value = await this.#encrypt(password, salt, iv, this.#masterKey!)
 
     const newDevice: FidoDevice = {
       id: crypto.randomUUID(),
@@ -247,9 +247,9 @@ class Auth {
       credentialId,
       publicKey,
       createdAt: Date.now(),
-      passwordSalt: salt,
-      passwordIv: iv,
-      encryptedMasterKey,
+      salt: salt,
+      iv: iv,
+      value,
     }
 
     if (!this.#keyData!.fido) {
@@ -302,13 +302,13 @@ class Auth {
   async validatePassword(password: string): Promise<boolean> {
     this.#mustAuthed()
     try {
-      const encryptedMasterKey = await this.#encrypt(
+      const value = await this.#encrypt(
         password,
         this.#keyData!.password.salt,
         this.#keyData!.password.iv,
         this.#masterKey!,
       )
-      return equals(encryptedMasterKey, this.#keyData!.password.encryptedMasterKey)
+      return equals(value, this.#keyData!.password.value)
     }
     catch {
       return false
@@ -331,7 +331,7 @@ class Auth {
 
     this.#keyData!.recovery.salt = salt
     this.#keyData!.recovery.iv = iv
-    this.#keyData!.recovery.encryptedMasterKey = await this.#encrypt(recoveryCode, salt, iv, this.#masterKey!)
+    this.#keyData!.recovery.value = await this.#encrypt(recoveryCode, salt, iv, this.#masterKey!)
     this.isRecoveryEnabled = true
 
     return recoveryCode
@@ -341,7 +341,7 @@ class Auth {
     this.#mustAuthed()
     this.#keyData!.recovery.salt.fill(0)
     this.#keyData!.recovery.iv.fill(0)
-    this.#keyData!.recovery.encryptedMasterKey.fill(0)
+    this.#keyData!.recovery.value.fill(0)
     this.isRecoveryEnabled = false
   }
 
@@ -352,11 +352,11 @@ class Auth {
 
     const salt = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.saltLength))
     const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.ivLength))
-    const encryptedMasterKey = await this.#encrypt(newPassword, salt, iv, this.#masterKey!)
+    const value = await this.#encrypt(newPassword, salt, iv, this.#masterKey!)
 
     this.#keyData!.password.salt = salt
     this.#keyData!.password.iv = iv
-    this.#keyData!.password.encryptedMasterKey = encryptedMasterKey
+    this.#keyData!.password.value = value
   }
 
   async changeMasterKey(password: string) {
@@ -364,7 +364,7 @@ class Auth {
     const masterKey = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.masterKeyLength))
     const salt = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.saltLength))
     const iv = crypto.getRandomValues(new Uint8Array(ENCRYPTION_CONFIG.ivLength))
-    const encryptedMasterKey = await this.#encrypt(password, salt, iv, masterKey)
+    const value = await this.#encrypt(password, salt, iv, masterKey)
 
     // 初始化keyData（如果是新数据库）
     if (!this.#keyData) {
@@ -372,12 +372,12 @@ class Auth {
         password: {
           salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
           iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
-          encryptedMasterKey: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
+          value: new Uint8Array(ENCRYPTION_CONFIG.valueLength),
         },
         recovery: {
           salt: new Uint8Array(ENCRYPTION_CONFIG.saltLength),
           iv: new Uint8Array(ENCRYPTION_CONFIG.ivLength),
-          encryptedMasterKey: new Uint8Array(ENCRYPTION_CONFIG.encryptedMasterKeyLength),
+          value: new Uint8Array(ENCRYPTION_CONFIG.valueLength),
         },
       }
     }
@@ -385,10 +385,10 @@ class Auth {
     this.#setMasterKey(masterKey)
     this.#keyData.password.salt = salt
     this.#keyData.password.iv = iv
-    this.#keyData.password.encryptedMasterKey = encryptedMasterKey
+    this.#keyData.password.value = value
 
     // change master key will disable recovery
-    this.#keyData.recovery.encryptedMasterKey.fill(0)
+    this.#keyData.recovery.value.fill(0)
     this.#keyData.recovery.salt.fill(0)
     this.#keyData.recovery.iv.fill(0)
     this.isRecoveryEnabled = false
@@ -396,7 +396,7 @@ class Auth {
     return {
       salt,
       iv,
-      encryptedMasterKey,
+      value,
     }
   }
 

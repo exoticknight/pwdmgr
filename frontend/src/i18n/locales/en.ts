@@ -371,6 +371,10 @@ export const en = {
         fidoDeviceRemoveFailed: 'Failed to remove device',
         fidoShowDevices: 'View Devices',
         fidoVerifyToShow: 'Verify to view devices',
+        fidoNameModalTitle: 'Name Your Device',
+        fidoNameModalDescription: 'Enter a name to identify this passkey device.',
+        fidoNameInputLabel: 'Device name',
+        fidoDeviceNamePlaceholder: 'Passkey 1',
       },
 
       // Data settings

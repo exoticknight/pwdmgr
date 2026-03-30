@@ -371,6 +371,10 @@ export const ja = {
         fidoDeviceRemoveFailed: 'デバイスの削除に失敗しました',
         fidoShowDevices: 'デバイスを表示',
         fidoVerifyToShow: '確認してデバイスを表示',
+        fidoNameModalTitle: 'デバイスに名前を付ける',
+        fidoNameModalDescription: 'このパスキーデバイスを識別するための名前を入力してください。',
+        fidoNameInputLabel: 'デバイス名',
+        fidoDeviceNamePlaceholder: 'Passkey 1',
       },
 
       // データ設定

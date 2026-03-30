@@ -371,6 +371,10 @@ export const zh = {
         fidoDeviceRemoveFailed: '删除设备失败',
         fidoShowDevices: '查看设备',
         fidoVerifyToShow: '验证后查看设备',
+        fidoNameModalTitle: '为设备命名',
+        fidoNameModalDescription: '输入一个名称来识别此 Passkey 设备。',
+        fidoNameInputLabel: '设备名称',
+        fidoDeviceNamePlaceholder: 'Passkey 1',
       },
 
       // 数据设置

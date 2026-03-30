@@ -13,15 +13,18 @@
   import App2FASetup from './app-2fa-setup.svelte'
   import ChangePasswordModal from './change-password-modal.svelte'
   import ChangeRecoveryModal from './change-recovery-modal.svelte'
+  import FidoDeviceNameModal from './fido-device-name-modal.svelte'
   import SettingItem from './setting-item.svelte'
   import SettingSection from './setting-section.svelte'
 
   // FIDO 状态
   const fidoSupported = isFidoSupported()
   let showPasswordModal = $state(false)
+  let showDeviceNameModal = $state(false)
   let pendingCredential = $state<{ credentialId: string, publicKey: string, deviceName: string } | null>(null)
   let passwordForFido = $state('')
   let isRegistering = $state(false)
+  let deviceNameDraft = $state('')
 
   // 设备列表验证状态
   let showDevicesListVerified = $state(false)
@@ -47,12 +50,17 @@
     }
   }
 
-  // 直接调起 WebAuthn 注册
-  async function startAddDevice(_markUnsaved: () => void) {
+  // 打开设备名称弹窗
+  function startAddDevice(_markUnsaved: () => void) {
+    deviceNameDraft = `${i18n.t('setting.security.fidoDeviceName')} ${(auth.fidoDevicesList.length + 1)}`
+    showDeviceNameModal = true
+  }
+
+  // 使用指定名称进行 WebAuthn 注册
+  async function startAddDeviceWithName(deviceName: string) {
     isRegistering = true
     try {
       // 直接调用 WebAuthn 注册（系统会弹出 Passkey 注册界面）
-      const deviceName = `${i18n.t('setting.security.fidoDeviceName')} ${(auth.fidoDevicesList.length + 1)}`
       const options = generateRegistrationOptions('bei3mat6', 'default-user', deviceName)
       const response = await register(options)
 
@@ -449,6 +457,18 @@
     {/snippet}
   </SettingSection>
 {/if}
+
+<FidoDeviceNameModal
+  isOpen={showDeviceNameModal}
+  defaultName={deviceNameDraft}
+  onConfirm={(name) => {
+    showDeviceNameModal = false
+    startAddDeviceWithName(name)
+  }}
+  onCancel={() => {
+    showDeviceNameModal = false
+  }}
+/>
 
 <!-- 输入密码 Modal（WebAuthn 注册后） -->
 {#if showPasswordModal}
